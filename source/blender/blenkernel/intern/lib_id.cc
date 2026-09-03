@@ -1374,9 +1374,9 @@ void *BKE_libblock_alloc_in_lib(Main *bmain,
   BLI_assert((flag & LIB_ID_CREATE_NO_MAIN) != 0 || (flag & LIB_ID_CREATE_LOCAL) == 0);
 
   ID *id = BKE_libblock_alloc_notest(type);
-  BKE_libblock_runtime_ensure(*id);
 
   if (id) {
+    BKE_libblock_runtime_ensure(*id);
     if ((flag & LIB_ID_CREATE_NO_MAIN) != 0) {
       id->tag |= ID_TAG_NO_MAIN;
     }
