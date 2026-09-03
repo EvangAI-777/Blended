@@ -1,7 +1,7 @@
 # BLENDED — Identity & Design Agreements
 
 **Developer/Publisher:** CHJ 3 Productions LLC (Indiana).
-**Status:** Living document. Working agreements from the rebuild conversation. Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — runtime audit + GitHub Pages launch workstreams in progress.
+**Status:** Living document. Working agreements from the rebuild conversation. Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes diagnosed and fixed, Category D updated). Phase 2 GitHub Pages launch pending Phase 1 completion.
 **Purpose:** So any future session, contributor, or Claude instance can pick up without re-litigating what's already been decided. Read this first before proposing changes to scope, identity, or architecture.
 
 ---

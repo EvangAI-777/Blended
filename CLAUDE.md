@@ -4,7 +4,7 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the found
 
 **Read `BLENDED.md` first.** It is the design authority — identity, architecture, datablock audit, pipeline specs, locked decisions, open questions, and guardrails. This file is operational context for Claude sessions: what's been built, what the patterns are, what not to repeat.
 
-**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude), then Phase 2 GitHub Pages launch. Release tag when both phases clear.
+**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, Category D table updated. Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
 
 ---
 

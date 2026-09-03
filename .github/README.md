@@ -11,7 +11,7 @@ Blended
 
 Blended is a fork of [Blender](https://www.blender.org) being rebuilt from the foundation up around one stated identity: **free 2D and 3D software tools, with an explicit focus on the craft of animation.**
 
-Currently at 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. 1.0.x: foundation complete — runtime audit + GitHub Pages launch in progress. Release tag when both clear.
+Currently at 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes fixed, Category D updated). Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both clear.
 
 What Blended Is
 ---------------
@@ -75,7 +75,7 @@ Contributors
 
 Blended is developed and published by **CHJ 3 Productions LLC** (Indiana).
 
-Developed with [Claude](https://anthropic.com) (Anthropic) as primary implementation partner across the full rebuild — version identity, CI pipeline, rig compatibility, update checker, datablock audit (0.2.x–0.5.x), evaluation model seam closure (0.6.x), launcher and full product identity (0.7.x), file format (0.8.x), `.blend` import (0.9.x), and 1.0.x runtime audit (crash triage, Scar 10 sweep, binary naming fix, build 103 allocator namemap fix PR #235, build 104 LISTBASE_FOREACH compile fix PR #237). [Codex](https://openai.com) (OpenAI) contributes automated code review on pull requests, catching regressions and missed sites throughout 0.4.x–0.9.x. Per-release detail in [`CHANGELOG.md`](../CHANGELOG.md).
+Developed with [Claude](https://anthropic.com) (Anthropic) as primary implementation partner across the full rebuild — version identity, CI pipeline, rig compatibility, update checker, datablock audit (0.2.x–0.5.x), evaluation model seam closure (0.6.x), launcher and full product identity (0.7.x), file format (0.8.x), `.blend` import (0.9.x), and 1.0.x runtime audit (crash triage, Scar 10 sweep, binary naming fix, build 103 allocator namemap fix PR #235, build 104 LISTBASE_FOREACH compile fix PR #237, build 106 null dereference startup crash fix PR #240/PR #241). [Codex](https://openai.com) (OpenAI) contributes automated code review on pull requests, catching regressions and missed sites throughout 0.4.x–0.9.x. Per-release detail in [`CHANGELOG.md`](../CHANGELOG.md).
 
 Upstream Blender Resources
 --------------------------
