@@ -71,6 +71,13 @@ The PR #235 Scar 10 lambda fix used `LISTBASE_FOREACH` inside the `BLI_uniquenam
 
 **Claude AI contributor (2026-06-05 — 1.0.0-dev Phase 1 third findings):** Build 104 MSVC compile failure triage and fix. Identified `LISTBASE_FOREACH` as file-local in `listbase.cc` (not available in any header); replaced with explicit for loop in all 11 Scar 10 allocators (PR #237). Updated Scar 10 template in CLAUDE.md and Scar 24 second-generation note. Category D table updated in CHANGELOG.md and BLENDED.md. CLAUDE.md, CHANGELOG.md, BLENDED.md, .github/README.md all updated.
 
+**Phase 1 runtime audit — fourth findings (2026-09-03):**
+
+*Build 106 startup crash — null dereference before null check in BKE_libblock_alloc_in_lib (Category D):*
+Build 106 Windows x64 binary crashed immediately at startup with `EXCEPTION_ACCESS_VIOLATION 0x00007FF6dCAFAD54` before splash screen could render. Root cause: `BKE_libblock_alloc_in_lib` at line 1377 (`source/blender/blenkernel/intern/lib_id.cc`) called `BKE_libblock_runtime_ensure(*id)` on a potentially-null pointer, then checked `if (id)` afterward. Crash trigger: startup file loading → `BKE_scene_add("Empty")` in `blendfile.cc:1054` to create default scene → `BKE_id_new<Scene>` → `BKE_libblock_alloc_in_lib` → dereference before null check. Fix: moved `BKE_libblock_runtime_ensure(*id)` call inside the `if (id)` null check guard (commit ddea9c75). CI green on subsequent builds.
+
+**Claude AI contributor (2026-09-03 — 1.0.0-dev Phase 1 fourth findings):** Build 106 startup crash diagnosis and fix. Traced execution path from `blendfile.cc` → `scene.cc` → `lib_id.hh` → `lib_id.cc`; identified null pointer dereference at line 1377 where `BKE_libblock_runtime_ensure(*id)` was called before null check; moved the call inside the null guard (commit ddea9c75); verified fix enables subsequent builds to launch. Category D table updated in CLAUDE.md. Documented in PR #240 and CLAUDE.md. Created PR #241 to merge documentation update into main.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
