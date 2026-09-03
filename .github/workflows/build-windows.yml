@@ -105,6 +105,15 @@ jobs:
     - name: Install Ninja
       uses: seanmiddleditch/gha-setup-ninja@v5
 
+    # ── Clean ──────────────────────────────────────────────────
+    - name: Clean build directory
+      shell: pwsh
+      run: |
+        if (Test-Path $env:BUILD_DIR) {
+          Remove-Item -Recurse -Force $env:BUILD_DIR
+          Write-Host "Cleaned build directory"
+        }
+
     # ── Configure ─────────────────────────────────────────────
     - name: CMake configure
       shell: cmd
