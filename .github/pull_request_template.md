@@ -51,3 +51,7 @@
 <!-- What reviewers should know: corrections made during review, what's still open,
      false starts that were reworked, anything unexpected. An accurate record beats
      a clean one. -->
+
+---
+
+_Generated with [Claude Code](https://claude.ai/code)_
