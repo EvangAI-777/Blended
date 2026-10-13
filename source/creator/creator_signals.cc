@@ -117,8 +117,13 @@ static void crashlog_file_generate(const char *filepath, const void *os_info)
             errno ? strerror(errno) : "Unknown error opening file");
   }
   else {
-    if (wm) {
+    /* `wm->runtime` can be null if the crash happened while the window manager was being
+     * created; de-referencing it here would crash the handler and leave an empty log. */
+    if (wm && wm->runtime) {
       BKE_report_write_file_fp(fp, &wm->runtime->reports, header);
+    }
+    else {
+      fputs(header, fp);
     }
 
     fputs("\n# backtrace\n", fp);
