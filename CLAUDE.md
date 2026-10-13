@@ -155,7 +155,7 @@ The more specific the report, the faster the triage. "It crashed" is harder to w
 # Desktop builds
 make debug          # Debug binary
 make release        # Release with all options
-make lite           # Smaller binary, faster build (used by branch CI)
+make lite           # Smaller binary, faster build (not used by CI — the workflow has no branch-push trigger)
 make ninja          # Use Ninja instead of Make
 make ccache         # Use ccache for faster rebuilds
 
@@ -218,7 +218,7 @@ make check_mypy     # Python type checking
 - Reads `bpy.app.blended_version_major/minor/patch` (wired into `source/blender/python/intern/bpy_app.cc` — `app_info_fields[]` + `make_app_info()`).
 
 ### CI / Build Config
-- `.github/workflows/build-windows.yml` — branch pushes: lite build (compile check); tags/manual: full release build → artifact + GitHub Release
+- `.github/workflows/build-windows.yml` — triggers only on `v*` tag pushes and manual `workflow_dispatch` — branch pushes and PRs run no CI; full release build → artifact + GitHub Release
 - `build_files/cmake/config/blended_release.cmake` — inherits `blender_release.cmake`, disables `WITH_CYCLES_CUDA/HIP/ONEAPI_BINARIES` and `WITH_FREESTYLE`
 
 ### Version Management
