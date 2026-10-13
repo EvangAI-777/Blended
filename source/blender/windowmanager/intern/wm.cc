@@ -354,6 +354,9 @@ void wm_add_default(Main *bmain, bContext *C)
    * BKE_libblock_runtime_ensure(*id) dereferences nullptr → crash.
    * Use the Scar 10 manual allocation pattern instead. */
   wmWindowManager *wm = MEM_new<wmWindowManager>("WinMan");
+  /* Allocate runtime before `wm` is reachable from `bmain->wm`: the crash handler reads
+   * `wm->runtime->reports` from `G_MAIN->wm.first`. */
+  wm->runtime = MEM_new<bke::WindowManagerRuntime>(__func__);
   BKE_libblock_runtime_ensure(wm->id);
   *(reinterpret_cast<short *>(wm->id.name)) = ID_WM_LEGACY;
   wm->id.us = 1;
@@ -385,7 +388,6 @@ void wm_add_default(Main *bmain, bContext *C)
   BKE_workspace_active_layout_set(win->workspace_hook, win->winid, workspace, layout);
   screen->winid = win->winid;
 
-  wm->runtime = MEM_new<bke::WindowManagerRuntime>(__func__);
   wm->runtime->winactive = win;
   wm->file_saved = 1;
   wm_window_make_drawable(wm, win);
