@@ -151,6 +151,9 @@
 #include "wm_event_system.hh"
 #include "wm_files.hh"
 #include "wm_window.hh"
+#ifdef WITH_XR_OPENXR
+#  include "wm_xr.hh"
+#endif
 
 #include "CLG_log.h"
 
@@ -613,6 +616,16 @@ static void wm_file_read_pre(bool use_data, bool /*use_userdef*/)
 {
   if (use_data) {
     BLI_timer_on_file_load();
+
+#ifdef WITH_XR_OPENXR
+    /* Files never contain a window manager, so the current one is always kept and a running XR
+     * session would survive the load with its context's #Main and its offscreen View3D pointing
+     * into the replaced data. End it, as happens upstream when the file's window manager replaces
+     * the current one (#wm_close_and_free). */
+    if (wmWindowManager *wm = static_cast<wmWindowManager *>(G_MAIN->wm.first)) {
+      wm_xr_exit(wm);
+    }
+#endif
   }
 
   /* Always do this as both startup and preferences may have loaded in many font's
