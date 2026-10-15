@@ -22,6 +22,7 @@
 #include "DNA_scene_types.h"
 #include "DNA_screen_types.h"
 #include "DNA_space_types.h"
+#include "DNA_view3d_types.h"
 #include "DNA_windowmanager_types.h"
 #include "DNA_workspace_types.h"
 
@@ -937,6 +938,23 @@ static void kept_ui_id_properties_foreach_id(ID &id, LibraryForeachIDData *data)
 }
 
 /**
+ * #BKE_screen_foreach_id_screen_area, plus the View3D shading ID properties, which no
+ * `foreach_id` walks (add-ons can register data-block pointers on `View3DShading`).
+ */
+static void kept_ui_area_foreach_id(LibraryForeachIDData *data, ScrArea *area)
+{
+  BKE_screen_foreach_id_screen_area(data, area);
+  for (SpaceLink &sl : area->spacedata) {
+    if (sl.spacetype == SPACE_VIEW3D) {
+      IDP_foreach_property(
+          reinterpret_cast<View3D &>(sl).shading.prop, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
+            BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
+          });
+    }
+  }
+}
+
+/**
  * Call `callback` on every ID pointer held by the kept window manager: its windows (including
  * their global areas), its XR settings, its ID properties, the windows' active workspaces, and
  * every screen in `bmain`.
@@ -960,11 +978,15 @@ static void kept_ui_foreach_id(Main *bmain,
           BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, win.new_scene, IDWALK_CB_NOP);
           BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, win.unpinned_scene, IDWALK_CB_NOP);
           for (ScrArea &area : win.global_areas.areabase) {
-            BKE_screen_foreach_id_screen_area(data, &area);
+            kept_ui_area_foreach_id(data, &area);
           }
         }
         BKE_LIB_FOREACHID_PROCESS_IDSUPER(
             data, wm->xr.session_settings.base_pose_object, IDWALK_CB_NOP);
+        IDP_foreach_property(
+            wm->xr.session_settings.shading.prop, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
+              BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
+            });
         kept_ui_id_properties_foreach_id(wm->id, data);
       },
       callback,
@@ -988,8 +1010,8 @@ static void kept_ui_foreach_id(Main *bmain,
           BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, workspace->sequencer_scene, IDWALK_CB_NOP);
           BKE_viewer_path_foreach_id(data, &workspace->viewer_path);
           kept_ui_id_properties_foreach_id(workspace->id, data);
-          /* Tool settings are ID-property groups and may hold ID pointers (e.g. add-on
-           * operator `PointerProperty`s). */
+          /* Tool settings are operator properties, which can't hold data-block pointers
+           * (#STRUCT_NO_DATABLOCK_IDPROPERTIES); walked anyway in case C code stores one. */
           for (bToolRef &tref : workspace->tools) {
             IDP_foreach_property(tref.properties, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
               BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
@@ -1008,7 +1030,7 @@ static void kept_ui_foreach_id(Main *bmain,
         &screen.id,
         [&](LibraryForeachIDData *data) {
           for (ScrArea &area : screen.areabase) {
-            BKE_screen_foreach_id_screen_area(data, &area);
+            kept_ui_area_foreach_id(data, &area);
           }
           kept_ui_id_properties_foreach_id(screen.id, data);
         },
