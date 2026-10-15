@@ -988,6 +988,13 @@ static void kept_ui_foreach_id(Main *bmain,
           BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, workspace->sequencer_scene, IDWALK_CB_NOP);
           BKE_viewer_path_foreach_id(data, &workspace->viewer_path);
           kept_ui_id_properties_foreach_id(workspace->id, data);
+          /* Tool settings are ID-property groups and may hold ID pointers (e.g. add-on
+           * operator `PointerProperty`s). */
+          for (bToolRef &tref : workspace->tools) {
+            IDP_foreach_property(tref.properties, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
+              BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
+            });
+          }
         },
         callback,
         user_data,
