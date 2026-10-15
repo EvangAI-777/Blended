@@ -636,6 +636,13 @@ void screen_area_spacelink_add(const Scene *scene, ScrArea *area, eSpace_Type sp
   BLI_listbase_clear(&slink->regionbase);
 }
 
+void ED_area_spacedata_init(ScrArea *area, const Scene *scene, const int type)
+{
+  BLI_assert(BLI_listbase_is_empty(&area->spacedata));
+  area->spacetype = type;
+  screen_area_spacelink_add(scene, area, eSpace_Type(type));
+}
+
 /* ****************** EXPORTED API TO OTHER MODULES *************************** */
 
 /* screen sets cursor based on active region */
