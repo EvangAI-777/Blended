@@ -95,6 +95,15 @@ ID_WM, ID_WS and ID_SCR are deregistered, so the startup file read produces no w
 
 **Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 sixth findings):** Confirmed build 108 green and the artifact uploaded; read the developer's build 108 crash log and console output; traced the backtrace through `wm_add_default`, `BKE_workspace_layout_find_global`, `setup_app_data` and `wm_file_read_setup_wm_finalize` to the missing startup UI bootstrap; wrote the fix plan at implementation resolution into CLAUDE.md so Codex can review the plan before any code is written. Four mandatory docs updated.
 
+*Startup crash and File > Open UI — fix implemented (awaiting build verification):*
+Plan PR #243 merged (`c5fcdc25`). Implementation on branch `ccr-f893c14b-mioock`, one commit per layer:
+- `4d9f25ef` (steps 1–3): `wm_add_default` (`wm.cc`) creates a `Launcher` workspace and layout for the new window instead of asking the stub, with a nominal 1920×1080 window size while the screen is created (reset to 0 so the GHOST window still gets default geometry). New `ED_area_spacedata_init` (`screen_edit.cc`, `ED_screen.hh`) makes the screen's single area `SPACE_BLENDED_LAUNCHER` without a window in context.
+- `12961f3a` (step 4): `wm_file_read_setup_wm_keep_old` (`wm_files.cc`) no longer adopts UI from the file; the kept windows keep their own workspace, layout and screen.
+- `851cce83` (steps 5–7): when the window manager is kept, `setup_app_data` (`blendfile.cc`) moves the old `Main`'s screens into the new one and remaps every ID pointer held by the kept windows, global areas, screens, XR settings and window-manager/screen ID properties to the same-named ID in the new `Main` (or null). Found while implementing: the remapper and the ID map can't handle deregistered ID types, and the plan's callback would have remapped `area->full` to null. Screens, workspaces and the window manager are now left as they are, and other deregistered (Scar 2) IDs are cleared. CLAUDE.md plan steps 8–9 record the deviation.
+Not yet compiled on Windows or run. The four changed `.cc` files pass a local `g++ -fsyntax-only` check (with stub generated headers) with no errors or new warnings in the changed code.
+
+**Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 seventh findings):** Merged plan PR #243 and implemented plan steps 1–7 across `wm.cc`, `screen_edit.cc`/`ED_screen.hh`, `wm_files.cc` and `blendfile.cc`. Read each cited API before calling it; found and handled the deregistered-type gap in the remap plan; set up a local syntax-only compile to check the changed files. Four mandatory docs updated.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
