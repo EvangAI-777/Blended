@@ -375,17 +375,30 @@ void wm_add_default(Main *bmain, bContext *C)
     BKE_main_unlock(bmain);
   }
   BKE_lib_libblock_session_uid_ensure(&wm->id);
-  wmWindow *win;
-  bScreen *screen = CTX_wm_screen(C); /* XXX: from file read hrmf. */
-  WorkSpace *workspace;
-  WorkSpaceLayout *layout = BKE_workspace_layout_find_global(bmain, screen, &workspace);
+  /* Files never contain workspaces or screens (ID_WS and ID_SCR are deregistered), so the
+   * startup UI is built from nothing: one window showing the launcher (BLENDED.md section 11). */
+  WorkSpace *workspace = ED_workspace_add(bmain, "Launcher");
 
   CTX_wm_manager_set(C, wm);
-  win = wm_window_new(bmain, wm, nullptr, false);
+  wmWindow *win = wm_window_new(bmain, wm, nullptr, false);
   win->scene = CTX_data_scene(C);
   STRNCPY_UTF8(win->view_layer_name, CTX_data_view_layer(C)->name);
   BKE_workspace_active_set(win->workspace_hook, workspace);
-  BKE_workspace_active_layout_set(win->workspace_hook, win->winid, workspace, layout);
+
+  /* The screen is sized from the window, which has no size before its GHOST window exists. Use a
+   * nominal size so the screen isn't degenerate, then reset it so
+   * #wm_window_ghostwindow_ensure still applies the default window geometry. The screen is
+   * rescaled to the real window size on its first refresh. */
+  win->sizex = 1920;
+  win->sizey = 1080;
+  WorkSpaceLayout *layout = ED_workspace_layout_add(bmain, workspace, win, "Launcher");
+  win->sizex = 0;
+  win->sizey = 0;
+
+  WM_window_set_active_layout(win, workspace, layout);
+  bScreen *screen = BKE_workspace_layout_screen_get(layout);
+  ED_area_spacedata_init(
+      static_cast<ScrArea *>(screen->areabase.first), win->scene, SPACE_BLENDED_LAUNCHER);
   screen->winid = win->winid;
 
   wm->runtime->winactive = win;

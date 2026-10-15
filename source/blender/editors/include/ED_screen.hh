@@ -262,6 +262,13 @@ void ED_area_status_text(ScrArea *area, const char *str);
  * \param skip_region_exit: Skip calling area exit callback. Set for opening temp spaces.
  */
 void ED_area_newspace(bContext *C, ScrArea *area, int type, bool skip_region_exit);
+/**
+ * Set the space type of an area that has no space data yet (e.g. the single #SPACE_EMPTY area of
+ * a screen just created by #ED_workspace_layout_add) and create its space data. Unlike
+ * #ED_area_newspace this needs no window in context, so it can be used while the startup window
+ * manager is being built.
+ */
+void ED_area_spacedata_init(ScrArea *area, const Scene *scene, int type);
 void ED_area_prevspace(bContext *C, ScrArea *area);
 void ED_area_swapspace(bContext *C, ScrArea *sa1, ScrArea *sa2);
 int ED_area_headersize();
