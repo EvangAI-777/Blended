@@ -316,63 +316,16 @@ static void wm_file_read_setup_wm_substitute_old_window(wmWindowManager *oldwm,
 }
 
 /**
- * Support loading older files without multiple windows (pre 2.5),
- * in this case the #bScreen from the users file should be used but the current
- * windows (from `current_wm_list` are kept).
- *
- * As the original file did not have multiple windows, duplicate the layout into each window.
- * An alternative solution could also be to close all windows except the first however this is
- * enough of a corner case that it's the current behavior is acceptable.
+ * The current window manager is kept because the newly read file has none (Blended files never
+ * contain window managers, workspaces or screens: ID_WM, ID_WS and ID_SCR are deregistered).
+ * The kept windows keep their own workspace, layout and screen; there is no UI data in the file
+ * to adopt. Their scene pointers are remapped to the new #Main in #setup_app_data.
  */
-static void wm_file_read_setup_wm_keep_old(const bContext *C,
-                                           Main *bmain,
-                                           BlendFileReadWMSetupData *wm_setup_data,
-                                           wmWindowManager *wm,
-                                           const bool load_ui)
+static void wm_file_read_setup_wm_keep_old(BlendFileReadWMSetupData *wm_setup_data)
 {
   /* This data is not needed here, besides detecting that old WM has been kept (in caller code).
    * Since `old_wm` is kept, do not free it, just clear the pointer as clean-up. */
   wm_setup_data->old_wm = nullptr;
-
-  if (!load_ui) {
-    /* When loading without UI (i.e. keeping existing UI), no matching needed.
-     *
-     * The other UI data (workspaces, layouts, screens) has also been re-used from old Main, and
-     * newly read one from file has already been discarded in #setup_app_data. */
-    return;
-  }
-
-  /* Old WM is being reused, but other UI data (workspaces, layouts, screens) comes from the new
-   * file, so the WM needs to be updated to use these. */
-  bScreen *screen = CTX_wm_screen(C);
-  if (screen != nullptr) {
-    for (wmWindow &win : wm->windows) {
-      WorkSpace *workspace;
-
-      WorkSpaceLayout *layout_ref = BKE_workspace_layout_find_global(bmain, screen, &workspace);
-      BKE_workspace_active_set(win.workspace_hook, workspace);
-      win.scene = CTX_data_scene(C);
-
-      /* All windows get active screen from file. */
-      if (screen->winid == 0) {
-        WM_window_set_active_screen(&win, workspace, screen);
-      }
-      else {
-#if 0
-        /* NOTE(@ideasman42): The screen referenced from the window has been freed,
-         * see: #107525. */
-        WorkSpaceLayout *layout_ref = WM_window_get_active_layout(win);
-#endif
-        WorkSpaceLayout *layout_new = ED_workspace_layout_duplicate(
-            bmain, workspace, layout_ref, &win);
-
-        WM_window_set_active_layout(&win, workspace, layout_new);
-      }
-
-      bScreen *win_screen = WM_window_get_active_screen(&win);
-      win_screen->winid = win.winid;
-    }
-  }
 }
 
 static void wm_file_read_setup_wm_use_new(bContext *C,
@@ -461,11 +414,8 @@ static void wm_file_read_setup_wm_finalize(bContext *C,
   }
   else if (wm_setup_data->old_wm != nullptr) {
     if (wm_setup_data->old_wm == wm) {
-      /* Old WM was kept, update it with new workspaces/layouts/screens read from file.
-       *
-       * Happens when not loading UI, or when the newly read file has no WM (pre-2.5 files). */
-      wm_file_read_setup_wm_keep_old(
-          C, bmain, wm_setup_data, wm, (G.fileflags & G_FILE_NO_UI) == 0);
+      /* Old WM was kept: the newly read file has no WM (always the case for Blended). */
+      wm_file_read_setup_wm_keep_old(wm_setup_data);
     }
     else {
       /* Using new WM from read file, try to keep current GHOST windows, transfer keymaps, etc.,
