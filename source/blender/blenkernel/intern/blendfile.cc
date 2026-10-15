@@ -18,6 +18,7 @@
 #include "MEM_guardedalloc.h"
 
 #include "DNA_brush_types.h"
+#include "DNA_object_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_screen_types.h"
 #include "DNA_space_types.h"
@@ -27,6 +28,7 @@
 #include "BLI_function_ref.hh"
 #include "BLI_listbase.h"
 #include "BLI_path_utils.hh"
+#include "BLI_set.hh"
 #include "BLI_string.h"
 #include "BLI_string_utf8.h"
 #include "BLI_system.h"
@@ -48,6 +50,7 @@
 #include "BKE_colorband.hh"
 #include "BKE_context.hh"
 #include "BKE_global.hh"
+#include "BKE_idprop.hh"
 #include "BKE_idtype.hh"
 #include "BKE_layer.hh"
 #include "BKE_lib_id.hh"
@@ -888,6 +891,162 @@ static void view3d_data_consistency_ensure(wmWindow *win, Scene *scene, ViewLaye
   }
 }
 
+/* -------------------------------------------------------------------- */
+/** \name Kept UI Handling
+ *
+ * Files never contain a window manager, workspaces or screens (ID_WM, ID_WS and ID_SCR are
+ * deregistered), so opening a file always keeps the current window manager and its UI. The
+ * kept screens are moved into the new #Main, and the ID pointers held by the kept windows and
+ * editors are remapped from the old #Main (freed after loading) to the matching IDs of the new
+ * one, or cleared.
+ * \{ */
+
+/**
+ * Screens, workspaces (which have no ID code) and the window manager are the kept UI itself:
+ * pointers to them stay as they are.
+ */
+static bool kept_ui_id_is_ui_data(const ID *id)
+{
+  return ELEM(GS(id->name), ID_SCR_LEGACY, ID_WM_LEGACY, 0);
+}
+
+static void kept_ui_screens_move(Main *old_bmain, Main *new_bmain)
+{
+  /* Screens are never read from files, so the new list is always empty. Swap the lists directly
+   * rather than with #swap_old_bmain_data_for_blendfile, which would run generic ID remapping
+   * over a deregistered type. */
+  BLI_assert(BLI_listbase_is_empty(&new_bmain->screens));
+  std::swap(new_bmain->screens, old_bmain->screens);
+  for (bScreen &screen : new_bmain->screens) {
+    /* Necessary as all `session_uid` are renewed on blendfile loading. */
+    BKE_lib_libblock_session_uid_renew(&screen.id);
+  }
+}
+
+static void kept_ui_id_properties_foreach_id(ID &id, LibraryForeachIDData *data)
+{
+  /* #BKE_library_foreach_subdata_id does not walk the owner's ID properties. */
+  IDP_foreach_property(id.properties, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
+    BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
+  });
+  IDP_foreach_property(id.system_properties, IDP_TYPE_FILTER_ID, [&](IDProperty *prop) {
+    BKE_lib_query_idpropertiesForeachIDLink_callback(prop, data);
+  });
+}
+
+/**
+ * Call `callback` on every ID pointer held by the kept window manager: its windows (including
+ * their global areas), its XR settings, its ID properties, and every screen in `bmain`.
+ *
+ * The window manager has no #IDTypeInfo (and so no `foreach_id`), and screens are not in
+ * #BKE_main_lists_get, so neither is reached by the generic remapping code.
+ */
+static void kept_ui_foreach_id(Main *bmain,
+                               wmWindowManager *wm,
+                               FunctionRef<LibraryIDLinkCallback> callback,
+                               void *user_data,
+                               const LibraryForeachIDFlag flag)
+{
+  BKE_library_foreach_subdata_id(
+      bmain,
+      &wm->id,
+      &wm->id,
+      [&](LibraryForeachIDData *data) {
+        for (wmWindow &win : wm->windows) {
+          BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, win.scene, IDWALK_CB_NOP);
+          BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, win.new_scene, IDWALK_CB_NOP);
+          BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, win.unpinned_scene, IDWALK_CB_NOP);
+          for (ScrArea &area : win.global_areas.areabase) {
+            BKE_screen_foreach_id_screen_area(data, &area);
+          }
+        }
+        BKE_LIB_FOREACHID_PROCESS_IDSUPER(
+            data, wm->xr.session_settings.base_pose_object, IDWALK_CB_NOP);
+        kept_ui_id_properties_foreach_id(wm->id, data);
+      },
+      callback,
+      user_data,
+      flag);
+
+  for (bScreen &screen : bmain->screens) {
+    BKE_library_foreach_subdata_id(
+        bmain,
+        &screen.id,
+        &screen.id,
+        [&](LibraryForeachIDData *data) {
+          for (ScrArea &area : screen.areabase) {
+            BKE_screen_foreach_id_screen_area(data, &area);
+          }
+          kept_ui_id_properties_foreach_id(screen.id, data);
+        },
+        callback,
+        user_data,
+        flag);
+  }
+}
+
+/**
+ * Add a remapping rule for every ID used by the kept UI: to the same-named ID in the new #Main,
+ * or to null. Must run while `reuse_data->id_map` exists.
+ *
+ * IDs of deregistered types can't go through the remapper (it requires an ID filter) and are
+ * never in the ID map. UI data is kept; any other deregistered ID (legacy Scar 2 data) is freed
+ * with the old #Main, so it is added to `r_ids_to_clear`.
+ */
+static void kept_ui_remap_collect(ReuseOldBMainData *reuse_data,
+                                  wmWindowManager *wm,
+                                  Set<ID *> &r_ids_to_clear)
+{
+  BLI_assert(reuse_data->id_map != nullptr);
+  kept_ui_foreach_id(
+      reuse_data->new_bmain,
+      wm,
+      [&](LibraryIDLinkCallbackData *cb_data) {
+        ID *id = *cb_data->id_pointer;
+        if (id != nullptr && BKE_idtype_get_info_from_id(id) == nullptr) {
+          if (!kept_ui_id_is_ui_data(id)) {
+            r_ids_to_clear.add(id);
+          }
+          return int(IDWALK_RET_NOP);
+        }
+        return swap_old_bmain_data_for_blendfile_dependencies_process_cb(cb_data);
+      },
+      reuse_data,
+      IDWALK_READONLY);
+  /* Ensure the remapping is applied (see #setup_app_data) even if only cleared IDs were found. */
+  reuse_bmain_data_remapper_ensure(reuse_data);
+}
+
+/** Apply the rules added by #kept_ui_remap_collect. */
+static void kept_ui_remap_apply(ReuseOldBMainData *reuse_data,
+                                wmWindowManager *wm,
+                                const Set<ID *> &ids_to_clear)
+{
+  const id::IDRemapper &remapper = *reuse_data->remapper;
+  kept_ui_foreach_id(
+      reuse_data->new_bmain,
+      wm,
+      [&](LibraryIDLinkCallbackData *cb_data) {
+        ID **id_p = cb_data->id_pointer;
+        if (*id_p == nullptr) {
+          return int(IDWALK_RET_NOP);
+        }
+        if (ids_to_clear.contains(*id_p)) {
+          *id_p = nullptr;
+        }
+        else if (BKE_idtype_get_info_from_id(*id_p) != nullptr) {
+          /* Old IDs are freed with the old #Main, user counts are not maintained (same as
+           * #ID_REMAP_SKIP_USER_REFCOUNT in the raw remapping). */
+          remapper.apply(id_p, ID_REMAP_APPLY_DEFAULT);
+        }
+        return int(IDWALK_RET_NOP);
+      },
+      nullptr,
+      IDWALK_NOP);
+}
+
+/** \} */
+
 static void wm_data_consistency_ensure(wmWindowManager *curwm,
                                        Scene *cur_scene,
                                        ViewLayer *cur_view_layer)
@@ -988,16 +1147,34 @@ static void setup_app_data(bContext *C,
   const bool reuse_editable_assets = mode != LOAD_UNDO && !params->is_factory_settings &&
                                      reuse_editable_asset_needed(&reuse_data);
 
+  /* The kept window manager (see #kept_ui_foreach_id), and the deregistered IDs its UI uses that
+   * must be cleared rather than remapped. */
+  wmWindowManager *kept_wm = nullptr;
+  Set<ID *> kept_ui_ids_to_clear;
+
   if (mode != LOAD_UNDO) {
     /* WM needs special complex handling, regardless of whether UI is kept or loaded from file. */
     swap_wm_data_for_blendfile(&reuse_data, mode == LOAD_UI);
+
+    /* Files never contain a window manager, so the current one is kept whenever there is one. */
+    if (wm_setup_data != nullptr && wm_setup_data->old_wm != nullptr &&
+        wm_setup_data->old_wm == bfd->main->wm.first)
+    {
+      kept_wm = wm_setup_data->old_wm;
+      kept_ui_screens_move(reuse_data.old_bmain, reuse_data.new_bmain);
+    }
 
     /* Needs to happen after all data from `old_bmain` has been moved into new one. */
     BLI_assert(reuse_data.id_map == nullptr);
     reuse_data.id_map = BKE_main_idmap_create(
         reuse_data.new_bmain, true, reuse_data.old_bmain, MAIN_IDMAP_TYPE_NAME);
 
+    if (kept_wm != nullptr) {
+      kept_ui_remap_collect(&reuse_data, kept_wm, kept_ui_ids_to_clear);
+    }
+
     BKE_main_idmap_destroy(reuse_data.id_map);
+    reuse_data.id_map = nullptr;
 
     if (reuse_editable_assets) {
       unpin_file_local_grease_pencil_brush_materials(&reuse_data);
@@ -1097,6 +1274,10 @@ static void setup_app_data(bContext *C,
      * be needed in undo case, this is to address cases like:
      * "opening a blend-file that was a library of the previous opened blend-file". */
     reuse_bmain_data_invalid_local_usages_fix(&reuse_data);
+
+    if (kept_wm != nullptr) {
+      kept_ui_remap_apply(&reuse_data, kept_wm, kept_ui_ids_to_clear);
+    }
 
     MEM_delete(reuse_data.remapper);
     reuse_data.remapper = nullptr;
