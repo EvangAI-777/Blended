@@ -23,6 +23,7 @@
 #include "DNA_screen_types.h"
 #include "DNA_space_types.h"
 #include "DNA_windowmanager_types.h"
+#include "DNA_workspace_types.h"
 
 #include "BLI_fileops.h"
 #include "BLI_function_ref.hh"
@@ -67,6 +68,7 @@
 #include "BKE_screen.hh"
 #include "BKE_studiolight.h"
 #include "BKE_undo_system.hh"
+#include "BKE_viewer_path.hh"
 #include "BKE_workspace.hh"
 
 #include "BLO_read_write.hh"
@@ -936,10 +938,11 @@ static void kept_ui_id_properties_foreach_id(ID &id, LibraryForeachIDData *data)
 
 /**
  * Call `callback` on every ID pointer held by the kept window manager: its windows (including
- * their global areas), its XR settings, its ID properties, and every screen in `bmain`.
+ * their global areas), its XR settings, its ID properties, the windows' active workspaces, and
+ * every screen in `bmain`.
  *
- * The window manager has no #IDTypeInfo (and so no `foreach_id`), and screens are not in
- * #BKE_main_lists_get, so neither is reached by the generic remapping code.
+ * The window manager and workspaces have no #IDTypeInfo (and so no `foreach_id`), and screens are
+ * not in #BKE_main_lists_get, so none of them is reached by the generic remapping code.
  */
 static void kept_ui_foreach_id(Main *bmain,
                                wmWindowManager *wm,
@@ -967,6 +970,29 @@ static void kept_ui_foreach_id(Main *bmain,
       callback,
       user_data,
       flag);
+
+  /* Workspaces are not stored in #Main (ID_WS is deregistered); the kept ones are reached through
+   * the windows. A workspace may be active in several windows, walk each once. */
+  Set<WorkSpace *> workspaces;
+  for (wmWindow &win : wm->windows) {
+    WorkSpace *workspace = BKE_workspace_active_get(win.workspace_hook);
+    if (workspace == nullptr || !workspaces.add(workspace)) {
+      continue;
+    }
+    BKE_library_foreach_subdata_id(
+        bmain,
+        &workspace->id,
+        &workspace->id,
+        [&](LibraryForeachIDData *data) {
+          BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, workspace->pin_scene, IDWALK_CB_NOP);
+          BKE_LIB_FOREACHID_PROCESS_IDSUPER(data, workspace->sequencer_scene, IDWALK_CB_NOP);
+          BKE_viewer_path_foreach_id(data, &workspace->viewer_path);
+          kept_ui_id_properties_foreach_id(workspace->id, data);
+        },
+        callback,
+        user_data,
+        flag);
+  }
 
   for (bScreen &screen : bmain->screens) {
     BKE_library_foreach_subdata_id(
