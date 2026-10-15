@@ -85,6 +85,16 @@ Build 107 (commit `b55d9759`, includes PR #240) still crashes at startup on Wind
 
 **Claude AI contributor (2026-10-13 — 1.0.0-dev Phase 1 fifth findings):** Empty crash log diagnosis and fix. Traced the 0-byte log to the crash handler crashing on a null `wm->runtime`; fixed the handler guard and the `wm_add_default` allocation order (PR #242, commit `d3ad8086`). Re-ran the allocation sweep including the `BKE_id_new<T>` template path (not covered by the Scar 10 grep): every hard-coded allocation uses a registered type. Category D updated in CLAUDE.md and BLENDED.md; corrected the unverified "launch verified" claim in the fourth-findings note.
 
+**Phase 1 runtime audit — sixth findings (2026-10-15):**
+
+*Build 108 — crash log fix verified on hardware; first real backtrace of the startup crash:*
+CI build 108 (run 38347059952, `main` @ `4dd31798`, the PR #242 merge) went green after a clean-directory compile, so both PR #242 files compiled from scratch. On hardware, the startup crash now produces a complete crash log and the crash dialog. This is the first symbolized backtrace of the startup crash in the project: `EXCEPTION_ACCESS_VIOLATION` reading `0x00000000000001A8` in `BLI_listbase_bytes_find` ← `BKE_workspace_active_layout_set` ← `wm_add_default` ← `wm_file_read_setup_wm_finalize` ← `wm_homefile_read_ex` ← `WM_init` ← `main`. The console logged `Library file, loading empty scene` just before.
+
+*Startup crash — root cause identified, fix planned (open):*
+ID_WM, ID_WS and ID_SCR are deregistered, so the startup file read produces no window manager, workspace or screen. `setup_app_data` takes `LOAD_UI_OFF`, `wm_file_read_setup_wm_finalize` calls `wm_add_default`, and `wm_add_default` asks the `BKE_workspace_layout_find_global` stub for the workspace. The stub always returns null (workspaces are no longer stored in `Main`), and `BKE_workspace_active_layout_set` reads `workspace->hook_layout_relations` from it. The crash is deterministic, and each earlier startup fix got one line further into the same function. Planned fix (BLENDED.md §11: the launcher is the default view): `wm_add_default` builds a runtime `Launcher` workspace, layout and screen whose single area is `SPACE_BLENDED_LAUNCHER`. Site-by-site plan is in CLAUDE.md "Open — startup crash". Out of scope, to be logged: the runtime workspace is never freed (no owner since ID_WS removal), and two non-startup callers of the same stub (`wm_files.cc:352`, `bpy_rna_context.cc`).
+
+**Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 sixth findings):** Confirmed build 108 green and the artifact uploaded; read the developer's build 108 crash log and console output; traced the backtrace through `wm_add_default`, `BKE_workspace_layout_find_global`, `setup_app_data` and `wm_file_read_setup_wm_finalize` to the missing startup UI bootstrap; wrote the fix plan at implementation resolution into CLAUDE.md so Codex can review the plan before any code is written. Four mandatory docs updated.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
