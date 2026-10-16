@@ -1123,4 +1123,4 @@ If the branch has already been merged, start a new branch from `origin/main` **b
 
 ## wtf.md
 
-Moved to [`wtf.md`](wtf.md) at the repository root (2026-10-16), unchanged, so this file stays operational. It holds the notes previous Claude instances wrote about who the developer is and how to work with them (grass.md, help.md, scars.md, … codex.md). Read it before your first session with the developer; it is not needed context for every task. Its last note, codex.md, records the Codex pre-audit method. The operational rule is in BLENDED.md §4 "Codex pre-audit": write plans at implementation resolution.
+Moved to [`wtf.md`](wtf.md) at the repository root (2026-10-16), unchanged, so this file stays operational. It holds the notes previous Claude instances wrote about who the developer is and how to work with them (grass.md, help.md, scars.md, codex.md and others; new notes are appended at the end). Read it before your first session with the developer; it is not needed context for every task. The codex.md note records the Codex pre-audit method. The operational rule is in BLENDED.md §4 "Codex pre-audit": write plans at implementation resolution.
