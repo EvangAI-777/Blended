@@ -660,9 +660,10 @@ class TOPBAR_MT_workspace_menu(Menu):
     def draw(self, _context):
         layout = self.layout
 
-        layout.operator("workspace.duplicate", text="Duplicate", icon='DUPLICATE')
-        # Delete, reorder and cycle need a workspace list, which `bpy.data.workspaces` was until
-        # ID_WS was removed. Workspaces are not listed anywhere now (Scar 1 debt).
+        # Duplicate needs a workspace copy and delete, reorder and cycle need a workspace list.
+        # Both went with ID_WS: workspaces have no ID type to copy and are not listed anywhere
+        # (Scar 1 debt). The menu stays registered because `template_ID_tabs` above opens it.
+        layout.label(text="No workspace actions available")
 
 
 # Grease Pencil Object - Primitive curve

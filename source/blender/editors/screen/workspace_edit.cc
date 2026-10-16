@@ -242,6 +242,11 @@ WorkSpace *ED_workspace_duplicate(WorkSpace *workspace_old, Main *bmain, wmWindo
 {
   WorkSpaceLayout *layout_active_old = BKE_workspace_active_layout_get(win->workspace_hook);
   WorkSpace *workspace_new = id_cast<WorkSpace *>(BKE_id_copy(bmain, &workspace_old->id));
+  if (workspace_new == nullptr) {
+    /* Workspaces have no #IDTypeInfo since ID_WS was removed, so #BKE_id_copy can't copy them
+     * and returns null. Callers must handle that. */
+    return nullptr;
+  }
 
   /* Try to keep active the layout from the new workspace matching the current active one from
    * the old workspace. */
@@ -309,6 +314,14 @@ static bool workspace_context_poll(bContext *C)
   return workspace_context_get(C) != nullptr;
 }
 
+static bool workspace_duplicate_poll(bContext *C)
+{
+  /* #ED_workspace_duplicate can't copy a workspace (no #IDTypeInfo since ID_WS was removed), so
+   * keep the operator disabled instead of offering an action that does nothing. */
+  CTX_wm_operator_poll_msg_set(C, "Workspaces can't be duplicated");
+  return false;
+}
+
 static wmOperatorStatus workspace_new_exec(bContext *C, wmOperator * /*op*/)
 {
   Main *bmain = CTX_data_main(C);
@@ -316,6 +329,9 @@ static wmOperatorStatus workspace_new_exec(bContext *C, wmOperator * /*op*/)
   WorkSpace *workspace = workspace_context_get(C);
 
   workspace = ED_workspace_duplicate(workspace, bmain, win);
+  if (workspace == nullptr) {
+    return OPERATOR_CANCELLED;
+  }
 
   WM_event_add_notifier(C, NC_SCREEN | ND_WORKSPACE_SET, workspace);
 
@@ -330,7 +346,7 @@ static void WORKSPACE_OT_duplicate(wmOperatorType *ot)
   ot->idname = "WORKSPACE_OT_duplicate";
 
   /* API callbacks. */
-  ot->poll = workspace_context_poll;
+  ot->poll = workspace_duplicate_poll;
   ot->exec = workspace_new_exec;
 }
 
