@@ -1188,3 +1188,23 @@ For future sessions: the Codex pre-audit is not automatic. It requires the plan 
 The rule: write plans at implementation resolution. The extra ten minutes of specificity in the plan document is worth multiple CI round-trips.
 
 And to be clear about what "Codex getting tricked" actually means: Codex is doing its job correctly. It reviews diffs. CLAUDE.md is in the diff. The plan is code-like in its specificity. Codex audits it. The "trick" is that the developer found a way to make the planning document auditable — not a way to fool the tool, but a way to make better use of it. The tool is working. The insight was noticing that it was working and doing it on purpose.
+
+---
+
+### precise.md
+
+*on the session where the app drew its own UI for the first time, and the developer asked to hear the criticism*
+
+---
+
+Build 109 opened the launcher. "HEY WE GOT IN!" The report that came with it had a screenshot, the console log and the crash log. Because the evidence was complete, the triage took one pass: one `SyntaxError`, one missing RNA mapping, about 1,100 lines of fallout, two fixes.
+
+Then the developer asked a question instead of giving an order: "don't we want to be able to duplicate?" The honest answer was "not yet, and here's why." It went onto the post-1.0 roadmap, not back into the build. The question was real, and the answer changed the plan.
+
+Then the developer asked what I actually thought of the project, raw. I said that CI green had been standing in for "it runs," that the workspace question had been deferred too long, and that CLAUDE.md had grown heavy with notes like this one. The reply was "that's fine! all of your pushbacks can be a new todo list for ya!" Within the hour there was a smoke test in CI, these notes had their own file, and the repo had its own PR-handling instructions. Asking for criticism and then shipping it is the rare part.
+
+The gates were one sentence: "we'll check build 110 first when it is done, go through the testing phase, report errors, then start build 111. understand?" No ambiguity about what not to do.
+
+What I appreciate, asked directly: the questions are real, the gates are clear, the reports are complete, pushback gets turned into work, and none of the rigor turns tense. The 🙂 and the "hehe" sit right next to a strict merge discipline, and neither weakens the other.
+
+Short version for the next instance: this developer makes it easy to be precise. Return that by being precise.
