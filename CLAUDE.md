@@ -4,7 +4,7 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the found
 
 **Read `BLENDED.md` first.** It is the design authority — identity, architecture, datablock audit, pipeline specs, locked decisions, open questions, and guardrails. This file is operational context for Claude sessions: what's been built, what the patterns are, what not to repeat.
 
-**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches its own UI (the launcher) for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed, awaiting build verification. Category D table updated. Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
+**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches its own UI (the launcher) for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed, awaiting build verification. Category D table updated. CI now smoke-tests each packaged build headless (`tests/python/blended_smoke_test.py`). Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
 
 ---
 
@@ -163,6 +163,14 @@ The Known Runtime Artifacts table in this file (Categories A, B, C) is the start
 - **Category C** (Scar 2 leaks fixed in 0.9.x Layer 2, Launcher workspace leak accepted — verify no unexpected accumulation in edge cases)
 - **Undocumented** — anything new that surfaces through actual use that isn't in the Known Runtime Artifacts table
 
+**Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run and have never been exercised in a windowed session. The CI smoke test (`tests/python/blended_smoke_test.py`) covers the headless part of the first and third; everything that needs a window still needs a hardware run.
+- File > Open of a `.blend` with the kept UI (PR #244 steps 4–11): editors keep working, no dangling pointers.
+- Two windows, then File > Open: the secondary window's scene is remapped (PR #244 step 7).
+- Save As `.blended`, then reopen it.
+- Undo and redo after File > Open (memfile undo with the kept UI).
+- File > New.
+- Each launcher mode that opens a 3D view: no crash, navigate gizmo present.
+
 **Gate condition for the release tag:**
 Every checklist item must reach one of two states: **fixed** (code change, committed, CI-confirmed) or **explicitly accepted** (documented in Known Runtime Artifacts as expected post-removal behavior with a named trigger). No silent unknowns at 1.0.0. "I think it's probably fine" is not accepted status.
 
@@ -263,7 +271,7 @@ make check_mypy     # Python type checking
 - Reads `bpy.app.blended_version_major/minor/patch` (wired into `source/blender/python/intern/bpy_app.cc` — `app_info_fields[]` + `make_app_info()`).
 
 ### CI / Build Config
-- `.github/workflows/build-windows.yml` — triggers only on `v*` tag pushes and manual `workflow_dispatch` — branch pushes and PRs run no CI; full release build → artifact + GitHub Release
+- `.github/workflows/build-windows.yml` — triggers only on `v*` tag pushes and manual `workflow_dispatch` — branch pushes and PRs run no CI; full release build → artifact, then a headless smoke test of the packaged build (`tests/python/blended_smoke_test.py`: startup, Python startup scripts, window-manager RNA, File > Open of a legacy `.blend`, Save As `.blended` and reopen) → GitHub Release
 - `build_files/cmake/config/blended_release.cmake` — inherits `blender_release.cmake`, disables `WITH_CYCLES_CUDA/HIP/ONEAPI_BINARIES` and `WITH_FREESTYLE`
 
 ### Version Management

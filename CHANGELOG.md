@@ -118,6 +118,26 @@ The crash log reads `0x88` in `WM_operator_properties_create_ptr` ← `WM_gizmo_
 
 **Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 eighth findings):** Merged PR #244 and dispatched build 109. Read the developer's launcher screenshot, console log and crash log; grouped the log's errors by root cause; traced the gizmo crash to the `bl_ui` syntax error through `bl_operators` and `WM_OT_context_toggle`; traced the keymap failures to RNA refinement of the window manager. Fixed both, plus three removed-`bpy.data` references found by a sweep of `scripts/`. Four mandatory docs updated. Codex Standard pass on the docs: corrected the startup-crash build range to 107–108 and logged the PR #244 out-of-scope items (`temp_override(screen=)`, Duplicate-only workspace menu → Category A; Launcher workspace never freed → Category C, accepted). Added the post-1.0 user-workspaces plan (below the 1.0.0 roadmap section) after the developer asked whether Duplicate should come back.
 
+**Phase 1 runtime audit — tooling (2026-10-16):**
+
+*Headless smoke test in CI (`6b6e7eb7`):* `build-windows.yml` now runs the packaged
+`Blended.exe --background` after the artifact upload, with `tests/python/blended_smoke_test.py`.
+It checks that startup completes, `bl_ui` and `bl_operators` import, `WM_OT_context_toggle` is
+registered, the window manager refines to `WindowManager` in RNA, a legacy `.blend`
+(`release/datafiles/startup.blend`, which carries upstream UI data) opens, and the file saves as
+`.blended` with the `BLENDED` magic and reopens. A failure fails the run, prints any
+`*crash.txt` from `%TEMP%`, and blocks the GitHub Release; the artifact is still uploaded. It
+targets failures like the build 101–108 startup crashes and the build 109 Python errors. Whether
+background startup reaches every one of those code paths is known only once it has run in CI.
+It cannot cover anything that needs a window: drawing, 3D views, gizmos, two windows. The
+build 109 crash itself (navigate gizmo in a 3D view) is in that group; its Python cause is not.
+
+*`wtf.md` moved out of `CLAUDE.md` (`50024f1b`):* the notes about the developer were 1,186 of
+CLAUDE.md's 2,300 lines and loaded into every session. They now live unchanged in `wtf.md` at the
+repository root, with a pointer section left in CLAUDE.md.
+
+**Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 tooling):** Turned the review the developer asked for into work: the CI smoke test, the `wtf.md` move, and a list of the runtime paths still not run on hardware (CLAUDE.md, "Open runtime checks"). Where user workspaces live stays the developer's decision (post-1.0 roadmap).
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

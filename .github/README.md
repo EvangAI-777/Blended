@@ -32,7 +32,7 @@ What's Different
 - **`.blended` project format** — magic bytes `"BLENDED"`, `.blended` extension, `FILE_TYPE_BLENDED` flag, platform integration (Windows registry, Linux MIME, macOS UTI). Import from `.blend` is one-way with a dropped-data manifest.
 - **Pre-5.0 rig compatibility** — `blended_rig_compat.py` restores `action.fcurves` for pre-Blender-5.0 Rigify rigs.
 - **Update notifications** — Background GitHub Releases check at startup with top-bar notification when an update is available.
-- **CI** — Windows x64 portable builds via GitHub Actions. Branch pushes: lite compile check. Tags: full release artifact.
+- **CI** — Windows x64 portable builds via GitHub Actions, on manual dispatch and `v*` tags (tags also publish a GitHub Release). Each build is smoke-tested headless: startup, opening a `.blend`, saving and reopening a `.blended`.
 
 Foundation Layers
 -----------------
