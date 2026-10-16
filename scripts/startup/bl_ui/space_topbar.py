@@ -661,27 +661,8 @@ class TOPBAR_MT_workspace_menu(Menu):
         layout = self.layout
 
         layout.operator("workspace.duplicate", text="Duplicate", icon='DUPLICATE')
-        if len(bpy.data.workspaces) <= 1:
-            return
-
-        layout.operator("workspace.delete", text="Delete", icon='REMOVE')
-
-        layout.separator()
-
-        layout.operator("workspace.reorder_to_front", text="Reorder to Front", icon='TRIA_LEFT_BAR')
-        layout.operator("workspace.reorder_to_back", text="Reorder to Back", icon='TRIA_RIGHT_BAR')
-
-        layout.separator()
-
-        # For key binding discoverability.
-        props = layout.operator("screen.workspace_cycle", text="Previous Workspace")
-        props.direction = 'PREV'
-        props = layout.operator("screen.workspace_cycle", text="Next Workspace")
-        props.direction = 'NEXT'
-
-        layout.separator()
-
-        layout.operator("workspace.delete_all_others")
+        # Delete, reorder and cycle need a workspace list, which `bpy.data.workspaces` was until
+        # ID_WS was removed. Workspaces are not listed anywhere now (Scar 1 debt).
 
 
 # Grease Pencil Object - Primitive curve

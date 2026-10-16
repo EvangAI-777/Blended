@@ -521,10 +521,9 @@ class OUTLINER_PT_filter(Panel):
         row.prop(space, "use_filter_object_empty", text="Empties")
 
         if (
-                bpy.data.curves or
                 (hasattr(bpy.data, "hair_curves") and bpy.data.hair_curves) or
                 (hasattr(bpy.data, "pointclouds") and bpy.data.pointclouds) or
-                bpy.data.volumes or
+                bpy.data.volumes
         ):
             row = sub.row()
             row.label(icon='BLANK1')
