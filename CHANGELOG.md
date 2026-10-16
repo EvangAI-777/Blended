@@ -104,6 +104,20 @@ Codex review of PR #244 found four more gaps, all fixed. Kept workspaces' scenes
 
 **Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 seventh findings):** Merged plan PR #243 and implemented plan steps 1–7 across `wm.cc`, `screen_edit.cc`/`ED_screen.hh`, `wm_files.cc` and `blendfile.cc`. Read each cited API before calling it; found and handled the deregistered-type gap in the remap plan; set up a local syntax-only compile to check the changed files. Four mandatory docs updated.
 
+**Phase 1 runtime audit — eighth findings (2026-10-15):**
+
+*Build 109 — first launch into Blended's own UI; startup crash verified fixed:*
+CI build 109 (run 38799211511, `main` @ `195b0970`, the PR #244 merge) went green. On hardware, Blended started and drew the launcher ("Blending?", with the Creative and Post mode lenses). This is the first time any build has reached its own UI. The startup crash that builds 107–108 hit is fixed, and Category D has a new row for it. File > Open was not reached: the session crashed when a 3D view first drew.
+
+*Build 109 crash — navigate gizmo with a missing Python operator; two Python-side root causes (fix implemented, awaiting build verification):*
+The crash log reads `0x88` in `WM_operator_properties_create_ptr` ← `WM_gizmo_operator_set` ← `WIDGETGROUP_navigate_setup`. The console log (~1,100 lines) traces back to two root causes:
+- `scripts/startup/bl_ui/space_outliner.py:528` had a trailing `or` before `)`, left from cutting removed ID types out of a filter condition. The `SyntaxError` stops `bl_ui`, then `bl_operators`, then every add-on that extends a UI class. So `WM_OT_context_toggle` was never registered, and the navigate gizmo passed its null operator type to `WM_gizmo_operator_set`. Fixed in `bafbe7e4`, along with three draw-time `AttributeError`s on removed `bpy.data` collections (`curves` in the outliner and dopesheet, `workspaces` in the topbar workspace menu). A repo-wide `py_compile` of `scripts/` finds no other syntax error.
+- Codex review of PR #245: with the topbar workspace menu drawing again, its Duplicate entry crashed. `ED_workspace_duplicate` dereferenced the null result of `BKE_id_copy`, which can't copy a workspace without `IDTypeInfo`. It now returns null and its callers handle it; `WORKSPACE_OT_duplicate` is disabled (poll message "Workspaces can't be duplicated"), and the menu shows "No workspace actions available".
+- Second Codex finding on PR #245: the Outliner "Others" filter toggle was hidden when a file's only other objects were curves, surfaces or text. Their data has no `bpy.data` collection to test, but `SO_FILTER_NO_OB_OTHERS` still filters them (`outliner_tree.cc`, the object-type `default` case). The toggle is now always shown, like the Dope Sheet `show_curves` toggle.
+- `ID_code_to_RNA_type` had no case for the deregistered UI types, so `context.window_manager` was a plain `ID` in Python. `keyconfig_set` failed (`'ID' object has no attribute 'keyconfigs'`), the default keymaps never loaded, and keymap-using add-ons failed to register. `context.screen` and `Window.workspace` were affected the same way. Fixed in `29617fdd`: a new `ID_WS_LEGACY` code is set on runtime workspaces, and `ID_SCR_LEGACY`/`ID_WM_LEGACY`/`ID_WS_LEGACY` map to `RNA_Screen`/`RNA_WindowManager`/`RNA_WorkSpace`.
+
+**Claude AI contributor (2026-10-15 — 1.0.0-dev Phase 1 eighth findings):** Merged PR #244 and dispatched build 109. Read the developer's launcher screenshot, console log and crash log; grouped the log's errors by root cause; traced the gizmo crash to the `bl_ui` syntax error through `bl_operators` and `WM_OT_context_toggle`; traced the keymap failures to RNA refinement of the window manager. Fixed both, plus three removed-`bpy.data` references found by a sweep of `scripts/`. Four mandatory docs updated. Codex Standard pass on the docs: corrected the startup-crash build range to 107–108 and logged the PR #244 out-of-scope items (`temp_override(screen=)`, Duplicate-only workspace menu → Category A; Launcher workspace never freed → Category C, accepted). Added the post-1.0 user-workspaces plan (below the 1.0.0 roadmap section) after the developer asked whether Duplicate should come back.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
@@ -1194,6 +1208,32 @@ WASM does not block Phase 2 shipping. Previous Emscripten build (deployed
 March 2026) was wiped in the rebase; Phase 2 is greenfield. Tech stack TBD.
 
 The release tag ships when both phases clear.
+
+---
+
+### Post-1.0 roadmap
+
+Minor versions (1.1.0+). Order not yet set.
+
+**User workspaces.** Let a user keep their own variant of a mode, such as "my
+Rig layout", and bring back the workspace actions that went with ID_WS
+(0.2.0). Today a workspace exists only on the window showing it: nothing lists
+workspaces, they are never saved, and they are never freed.
+
+1. **Decide where user workspaces live** (BLENDED.md §9 item 10). Workspaces are not
+   project data (§10 Bucket 4), so per-user storage (preferences/config) is the
+   likely home, not the `.blended` file. This is the open Scar 1 question —
+   "where does the workspace list live now that `bmain->workspaces` is gone?"
+2. **Give workspaces an owner** that lists and frees them. That closes the
+   accepted Category C leak (the startup Launcher workspace) and gives
+   `BKE_workspace_layout_find_global` a real implementation, which makes
+   `context.temp_override(screen=...)` work again (Category A).
+3. **Re-enable the actions:** Duplicate (a runtime copy — `BKE_workspace_add`,
+   then `ED_workspace_layout_duplicate` per layout, plus the tool refs and ID
+   properties — not `BKE_id_copy`, which needs `IDTypeInfo`), Delete, Reorder,
+   Cycle, and factory name translation (the 0.2.0 stubs). Restore
+   `WORKSPACE_OT_duplicate`'s poll and the `TOPBAR_MT_workspace_menu` entries
+   disabled in PR #245.
 
 ---
 

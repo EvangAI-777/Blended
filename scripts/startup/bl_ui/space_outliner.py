@@ -520,15 +520,11 @@ class OUTLINER_PT_filter(Panel):
         row.label(icon='EMPTY_DATA')
         row.prop(space, "use_filter_object_empty", text="Empties")
 
-        if (
-                bpy.data.curves or
-                (hasattr(bpy.data, "hair_curves") and bpy.data.hair_curves) or
-                (hasattr(bpy.data, "pointclouds") and bpy.data.pointclouds) or
-                bpy.data.volumes or
-        ):
-            row = sub.row()
-            row.label(icon='BLANK1')
-            row.prop(space, "use_filter_object_others", text="Others")
+        # Always shown: "Others" also covers curve, surface and text objects, whose data has no
+        # `bpy.data` collection since ID_CU_LEGACY was removed, so their presence can't be tested.
+        row = sub.row()
+        row.label(icon='BLANK1')
+        row.prop(space, "use_filter_object_others", text="Others")
 
 
 classes = (

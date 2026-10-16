@@ -118,6 +118,8 @@ WorkSpace *BKE_workspace_add(Main * /*bmain*/, const char *name)
 {
   WorkSpace *workspace = MEM_new<WorkSpace>(__func__);
   workspace->runtime = MEM_new<bke::WorkSpaceRuntime>(__func__);
+  /* No #IDTypeInfo (ID_WS is deregistered); the code only lets RNA refine to #RNA_WorkSpace. */
+  *reinterpret_cast<short *>(workspace->id.name) = ID_WS_LEGACY;
   BLI_strncpy(workspace->id.name + 2, name, sizeof(workspace->id.name) - 2);
   return workspace;
 }

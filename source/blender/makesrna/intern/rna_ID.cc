@@ -457,6 +457,15 @@ StructRNA *ID_code_to_RNA_type(short idcode)
       return RNA_Volume;
     case ID_WO:
       return RNA_World;
+
+    /* Deregistered UI types (runtime only, never in #Main's ID lists). Mapped so that RNA
+     * pointers to them, such as `context.window_manager`, refine to their own RNA type. */
+    case ID_SCR_LEGACY:
+      return RNA_Screen;
+    case ID_WM_LEGACY:
+      return RNA_WindowManager;
+    case ID_WS_LEGACY:
+      return RNA_WorkSpace;
   }
 
   return RNA_ID;

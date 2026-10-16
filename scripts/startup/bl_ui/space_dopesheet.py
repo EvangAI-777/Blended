@@ -112,8 +112,9 @@ class DopesheetFilterPopoverBase:
             flow.prop(dopesheet, "show_lights", text="Lights")
         if bpy.data.meshes:
             flow.prop(dopesheet, "show_meshes", text="Meshes")
-        if bpy.data.curves:
-            flow.prop(dopesheet, "show_curves", text="Curves")
+        # `bpy.data.curves` was removed with the legacy Curve type (ID_CU_LEGACY), but the
+        # `show_curves` filter still applies to curve and text objects from legacy files.
+        flow.prop(dopesheet, "show_curves", text="Curves")
         flow.prop(dopesheet, "show_lattices", text="Lattices")
         if hasattr(bpy.data, "hair_curves") and bpy.data.hair_curves:
             flow.prop(dopesheet, "show_hair_curves", text="Hair Curves")

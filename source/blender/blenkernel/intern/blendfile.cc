@@ -905,12 +905,12 @@ static void view3d_data_consistency_ensure(wmWindow *win, Scene *scene, ViewLaye
  * \{ */
 
 /**
- * Screens, workspaces (which have no ID code) and the window manager are the kept UI itself:
- * pointers to them stay as they are.
+ * Screens, workspaces and the window manager are the kept UI itself: pointers to them stay as
+ * they are.
  */
 static bool kept_ui_id_is_ui_data(const ID *id)
 {
-  return ELEM(GS(id->name), ID_SCR_LEGACY, ID_WM_LEGACY, 0);
+  return ELEM(GS(id->name), ID_SCR_LEGACY, ID_WM_LEGACY, ID_WS_LEGACY);
 }
 
 static void kept_ui_screens_move(Main *old_bmain, Main *new_bmain)

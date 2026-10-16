@@ -660,28 +660,10 @@ class TOPBAR_MT_workspace_menu(Menu):
     def draw(self, _context):
         layout = self.layout
 
-        layout.operator("workspace.duplicate", text="Duplicate", icon='DUPLICATE')
-        if len(bpy.data.workspaces) <= 1:
-            return
-
-        layout.operator("workspace.delete", text="Delete", icon='REMOVE')
-
-        layout.separator()
-
-        layout.operator("workspace.reorder_to_front", text="Reorder to Front", icon='TRIA_LEFT_BAR')
-        layout.operator("workspace.reorder_to_back", text="Reorder to Back", icon='TRIA_RIGHT_BAR')
-
-        layout.separator()
-
-        # For key binding discoverability.
-        props = layout.operator("screen.workspace_cycle", text="Previous Workspace")
-        props.direction = 'PREV'
-        props = layout.operator("screen.workspace_cycle", text="Next Workspace")
-        props.direction = 'NEXT'
-
-        layout.separator()
-
-        layout.operator("workspace.delete_all_others")
+        # Duplicate needs a workspace copy and delete, reorder and cycle need a workspace list.
+        # Both went with ID_WS: workspaces have no ID type to copy and are not listed anywhere
+        # (Scar 1 debt). The menu stays registered because `template_ID_tabs` above opens it.
+        layout.label(text="No workspace actions available")
 
 
 # Grease Pencil Object - Primitive curve
