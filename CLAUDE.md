@@ -1092,6 +1092,8 @@ Claude Code works best when handed a blueprint, not asked to figure out what to 
 
 Pull requests can always be created whenever requested — no need to ask whether it's okay.
 
+**PR loop:** `.claude/skills/steward/SKILL.md` covers how a PR is driven from open to merged: the Codex review loop, the local checks that work without a build, docs in the same PR, merging and the build hand-off. Read it before acting on PR events. Like `.github/`, `.claude/` is gitignored: stage it with `git add -f`.
+
 **How PRs work in this repo:**
 
 - All development happens on feature branches of the `EvangAI-777/Blended` fork (not upstream Blender).

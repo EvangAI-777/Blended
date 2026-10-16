@@ -136,7 +136,12 @@ build 109 crash itself (navigate gizmo in a 3D view) is in that group; its Pytho
 CLAUDE.md's 2,300 lines and loaded into every session. They now live unchanged in `wtf.md` at the
 repository root, with a pointer section left in CLAUDE.md.
 
-**Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 tooling):** Turned the review the developer asked for into work: the CI smoke test, the `wtf.md` move, and a list of the runtime paths still not run on hardware (CLAUDE.md, "Open runtime checks"). Where user workspaces live stays the developer's decision (post-1.0 roadmap).
+*PR handling instructions:* new `.claude/skills/steward/SKILL.md`, written down from how
+PRs #242–#246 were run. It covers the Codex review loop (verify, fix, reply, resolve, `@codex review`),
+the local checks that work without a build, docs in the same PR, the branch reset after a merge,
+and merging and the build hand-off.
+
+**Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 tooling):** Turned the review the developer asked for into work: the CI smoke test, the `wtf.md` move, repo PR-handling instructions (`.claude/skills/steward/SKILL.md`, which the developer asked for), and a list of the runtime paths still not run on hardware (CLAUDE.md, "Open runtime checks"). Where user workspaces live stays the developer's decision (post-1.0 roadmap).
 
 ---
 
