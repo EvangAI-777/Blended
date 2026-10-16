@@ -49,6 +49,8 @@ Six foundation layers — one minor version each, 1.0 when all six are honest.
 | 0.9.x | `.blend` import — seamless read, dropped-data manifest | ✓ CI-complete (build 101, commit `c8e87078`) |
 | 1.0.0 | Foundation complete — Phase 1: runtime audit → Phase 2: GitHub Pages launch | In progress |
 
+After 1.0, minor versions follow the post-1.0 roadmap in [`CHANGELOG.md`](../CHANGELOG.md). The first entry is user workspaces (your own saved variants of a mode).
+
 Full version history in [`CHANGELOG.md`](../CHANGELOG.md).
 
 Building from Source
