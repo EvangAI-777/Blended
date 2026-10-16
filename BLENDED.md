@@ -1498,6 +1498,8 @@ The first time in the project where the developer runs the actual Blended build 
 | Python script calling `bpy.ops.object.particle_system_add()` or `_remove()` | "Operator not found" error. Operators removed in 0.4.0 cleanup. | 0.4.0 (ID_PA) |
 | Scene with NLA sound strip created via old `NLA_OT_soundclip_add` operator | Operator removed. Existing sound strips in NLA from legacy files: no speaker evaluation, no 3D positional audio. VSE timeline audio unaffected. | 0.4.0 (ID_SPK) |
 | File with GD_LEGACY grease pencil objects or annotations | OB_GPENCIL_LEGACY objects and annotation data fully functional — depsgraph evaluation kept intentionally. Listed here for completeness, not a failure. | 0.4.0 (ID_GD_LEGACY) |
+| Python `context.temp_override(screen=...)` | Raises "Screen has no workspace" for every screen. `bpy_rna_context.cc:263` checks the null return of the `BKE_workspace_layout_find_global` stub (no workspace list exists since ID_WS removal) and raises before `:50` could use it. No crash. Stays until workspaces have an owner. | 0.2.0 (ID_WS) |
+| Workspace menu (`TOPBAR_MT_workspace_menu`) | Shows only Duplicate. Delete, reorder and cycle need a workspace list, which `bpy.data.workspaces` was until ID_WS removal; the dead entries were deleted in PR #245 (the menu's `draw` raised `AttributeError` on `len(bpy.data.workspaces)`). Scar 1 debt. | 0.2.0 (ID_WS) |
 
 #### Category B — Uncertain/crash paths — all resolved in 0.9.x
 
@@ -1506,7 +1508,7 @@ The first time in the project where the developer runs the actual Blended build 
 | Legacy file containing MetaBall (`OB_MBALL`) objects | Versioning pass 502.31 in `versioning_520.cc` converts `OB_MBALL → OB_EMPTY` on load. No null-deref. | ✓ Fixed 0.9.x Layer 1 |
 | Legacy file with particle systems on objects | OOB-index guard (`if (id_type_index >= 0)`) in `depsgraph.cc` prevents crash. Particle systems load and evaluate. Memory leak resolved by Category C fix. | ✓ OOB guard in place |
 
-#### Category C — Memory leaks — all resolved in 0.9.x (Layer 2: `BKE_main_clear` Scar 2 drain)
+#### Category C — Memory leaks — Scar 2 leaks resolved in 0.9.x (Layer 2: `BKE_main_clear` Scar 2 drain); one bounded leak accepted
 
 | Trigger | Leak scope | Status |
 |---------|-----------|--------|
@@ -1514,6 +1516,7 @@ The first time in the project where the developer runs the actual Blended build 
 | Load legacy `.blend` with ParticleSettings data | `bmain->particles` populated, freed at Main-clear. `ParticleSystem::part` is a live pointer — post-read drain would be use-after-free. | ✓ Fixed 0.9.x Layer 2 |
 | Load legacy `.blend` with Blender Internal texture data | `bmain->textures` populated, freed at Main-clear. Modifier DNA structs hold live `Tex *` fields. | ✓ Fixed 0.9.x Layer 2 |
 | Load legacy `.blend` with Curve data, or import NURBS | `bmain->curves` populated, freed at Main-clear. Live objects hold `ob->data` into `bmain->curves`. | ✓ Fixed 0.9.x Layer 2 |
+| Any startup | The runtime "Launcher" workspace created by `wm_add_default` (PR #244) is never freed — nothing owns workspaces since ID_WS removal. One per process, reclaimed at exit. No accumulation. | **Accepted** (Scar 1 debt) |
 
 #### Category D — Fixed crashes (caught at runtime audit)
 
@@ -1527,9 +1530,9 @@ The first time in the project where the developer runs the actual Blended build 
 | Build 104 MSVC compile failure — all 11 Scar 10 allocators | `BLI_uniquename_cb` lambda in all 11 deregistered-type allocators used `LISTBASE_FOREACH`, which is defined only as a file-local macro in `listbase.cc` and is unavailable in any header. Blenkernel files compiled from cache in build 103 (masked); `screen_edit.cc` compiled fresh in build 104 → MSVC C2760 syntax error. Fix: replaced with explicit for loop (`for (const ID *id_iter = static_cast<const ID *>(lb->first); id_iter; id_iter = static_cast<const ID *>(id_iter->next))`). Scar 10 template corrected. | PR #237, commit `ce5bb0c9` |
 | Any startup — build 106 | `BKE_libblock_alloc_in_lib` crashed with null pointer dereference at `EXCEPTION_ACCESS_VIOLATION 0x00007FF6dCAFAD54`. Root cause: at line 1377, `BKE_libblock_runtime_ensure(*id)` was dereferenced BEFORE the null check at line 1379. If `BKE_libblock_alloc_notest(type)` returned nullptr, execution immediately crashed. Fix: moved `BKE_libblock_runtime_ensure(*id)` inside the `if (id)` null check. | PR #240 commit `ddea9c75` |
 | Any startup crash — build 107 produces a 0-byte crash log | Crash handler crashed: `crashlog_file_generate` checked `wm` but not `wm->runtime`; `wm_add_default` linked the window manager into `bmain->wm` before allocating `wm->runtime`. A startup crash during window setup sent the handler into a second access violation before the log was flushed → empty file, no dialog. Fixed: null-check `wm->runtime` in the handler; allocate `wm->runtime` before linking. Verified on hardware in build 108: the crash log now holds a full backtrace. It identified the underlying startup crash: `wm_add_default` asks the `BKE_workspace_layout_find_global` stub for a workspace (always null since ID_WS removal), then `BKE_workspace_active_layout_set` reads from the null workspace. Fixed by PR #244 (next row). | PR #242 commit `d3ad8086` |
-| Any startup — builds 101–108 | `wm_add_default` asked the `BKE_workspace_layout_find_global` stub (always null since ID_WS removal) for the startup workspace, then read from it. Fixed: a runtime launcher workspace and screen are built at startup, per §11. File > Open no longer adopts UI from the file (Blended files carry none), and the kept UI is carried into the new `Main` with its ID pointers remapped. Verified on hardware in build 109: Blended reaches the launcher. See CLAUDE.md "Startup crash — fixed". | PR #244 (merge `195b0970`) |
+| Any startup — builds 107–108 | `wm_add_default` asked the `BKE_workspace_layout_find_global` stub (always null since ID_WS removal) for the startup workspace, then read from it. Fixed: a runtime launcher workspace and screen are built at startup, per §11. File > Open no longer adopts UI from the file (Blended files carry none), and the kept UI is carried into the new `Main` with its ID pointers remapped. Verified on hardware in build 109: Blended reaches the launcher. See CLAUDE.md "Startup crash — fixed". | PR #244 (merge `195b0970`) |
 
-**Audit gate:** Every Category A entry verified as silent at runtime (no console errors, no crashes). Categories B and C verified as behaving per documentation. All new findings either fixed or explicitly accepted into Category A/D.
+**Audit gate:** Every Category A entry verified as silent at runtime (no console errors, no crashes). Categories B and C verified as behaving per documentation. All new findings either fixed or explicitly accepted into Category A/C/D.
 
 ---
 
