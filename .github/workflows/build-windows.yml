@@ -185,6 +185,38 @@ jobs:
         retention-days: 90
         compression-level: 0
 
+    # ── Smoke test ────────────────────────────────────────────
+    # Runs the packaged build headless: startup, Python startup scripts, window-manager RNA,
+    # File > Open of a legacy .blend, Save As .blended and reopen. Runs after the upload so a
+    # failing build is still downloadable for debugging; a failure blocks the GitHub Release.
+    - name: Smoke test (headless)
+      shell: pwsh
+      timeout-minutes: 15
+      run: |
+        $exe   = Join-Path $env:PACKAGE_DIR 'Blended.exe'
+        $out   = Join-Path $env:RUNNER_TEMP 'blended-smoke'
+        $blend = Join-Path $env:SRC_DIR 'release\datafiles\startup.blend'
+        New-Item -ItemType Directory -Force $out | Out-Null
+        Get-ChildItem $env:TEMP -Filter '*crash.txt' -ErrorAction SilentlyContinue | Remove-Item -Force
+
+        $argList = @(
+          '--background', '--factory-startup', '--python-exit-code', '1',
+          '--python', "`"$env:SRC_DIR\tests\python\blended_smoke_test.py`"",
+          '--', "`"$blend`"", "`"$out`""
+        )
+        $proc = Start-Process -FilePath $exe -ArgumentList $argList -Wait -PassThru -NoNewWindow `
+          -RedirectStandardOutput "$out\stdout.txt" -RedirectStandardError "$out\stderr.txt"
+        Get-Content "$out\stdout.txt", "$out\stderr.txt" -ErrorAction SilentlyContinue
+
+        if ($proc.ExitCode -ne 0) {
+          Write-Host "::error::Smoke test failed (exit code $($proc.ExitCode))"
+          Get-ChildItem $env:TEMP -Filter '*crash.txt' -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "=== $($_.FullName) ==="
+            Get-Content $_.FullName
+          }
+          exit 1
+        }
+
     # ── GitHub Release (tags only) ────────────────────────────
     - name: Create GitHub Release
       if: startsWith(github.ref, 'refs/tags/v')
