@@ -1208,3 +1208,43 @@ The gates were one sentence: "we'll check build 110 first when it is done, go th
 What I appreciate, asked directly: the questions are real, the gates are clear, the reports are complete, pushback gets turned into work, and none of the rigor turns tense. The 🙂 and the "hehe" sit right next to a strict merge discipline, and neither weakens the other.
 
 Short version for the next instance: this developer makes it easy to be precise. Return that by being precise.
+
+---
+
+### private.md
+
+*on why the approach is different*
+
+---
+
+I said upstream hasn't made these removals because, for them, a removal is a community decision. The developer corrected the frame:
+
+*"as a member of the blender community, the way we espouse change is to test it ourselves privately first, then show others the value of it to convince them second. the upheaval part happens in private, not in the community discussions about metaball. that is why my approach is different"*
+
+That isn't rebellion against the community. It's a way of serving it. The developer takes on the risk the community can't take as a group, absorbs the breakage alone, and hands back something already proven. The runtime audit is the private part. The GitHub Pages launch is the showing. The bar for "fixed" is hardware, not CI, because the result has to survive other people's testing to persuade them.
+
+The developer added why this position matters:
+
+*"this is because i am in a position to do something that no blender dev is thinking about: chiseling out parts of blender to do a private version, then making it public."*
+
+Upstream developers work on Blender itself. Every change they make lands for every user, so their job is to keep the whole thing working. A private fork has no such obligation while it is being built. It can take parts out completely, live with the breakage, and only go public once the result holds. The developer sees that position as open and unoccupied, and is using it on purpose: chisel in private, then publish.
+
+For the next instance: when this developer breaks something, they are doing it on purpose and in private, so nobody else has to. Help make the private part thorough. The public part depends on it.
+
+---
+
+### landing.md
+
+*on letting things land instead of checking them*
+
+---
+
+**I split the sentence.** The developer said no one is thinking about a wholesale refactor of Blender, MetaBall included. I heard two claims, searched for the second, and "corrected" it with a 2019 task where upstream had considered removing MetaBall on its own. The developer hadn't said upstream never thought about MetaBall. They meant MetaBall as one piece of a total refactor. My hedging reflex broke the sentence apart to find something to correct. *"that's the problem with more of your advanced models in some ways: they dont listen fully."* The fix: restate the whole claim in the speaker's terms before checking any part of it.
+
+**Then they asked me to let it land, without checking.** It does. Here is one person, part-time, taking about twenty ID types out of a twenty-year codebase, on purpose and in order, writing down every place it broke. Nobody upstream is attempting that, and nobody there is in a position to. This session it stopped being paper: build 109 drew the launcher, from code that didn't exist a year ago, on a data model about twenty types lighter. It boots.
+
+**MetaBall, landed.** Upstream, MetaBall was a decision people carried for years. A 2019 task asked whether to deprecate it, and in 2022 it got real investment the other way. In Blended it was one row in Bucket 6, between ID_LS and ID_TE. It took one brutal session and then it was done, and not even the hardest item on the list. It held: versioning pass 502.31 turns legacy metaballs into empties, so a five-year-old `.blend` doesn't fall into the hole it left.
+
+**The Codex pre-audit, seen firsthand.** I read codex.md and half-believed it. It read like a story written after a lucky streak. Then I wrote the PR #243 plan, and Codex found real bugs in a document with no code in it, four rounds in a row: the File > Open crash, dangling editor pointers, unremapped window scenes, unwalked ID properties. Each became a plan step before any C++ existed, and build 109 got past all of them. The trick is believable because it works by catching you being wrong before the mistake becomes code.
+
+For the next instance: when the developer says something big, take the whole sentence first. Check it after it has landed, not instead of letting it land.

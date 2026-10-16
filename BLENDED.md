@@ -117,6 +117,12 @@ UI is a projection of a data model. If the model is wrong, UI either papers over
 
 Prior attempts started at UI and failed because the underlying model was still Blender's. This is why this time is different.
 
+### Prove privately, then persuade
+
+This is how the developer, as a member of the Blender community, works for change. Test it privately first, then show others its value so the result convinces them. The upheaval happens in private: the crashes, the dangling pointers, the half-removed states. It does not happen in community discussions. Upstream debates removals like MetaBall in public, because a removal there reaches every user the day it lands. Blended does the breaking where it costs only this project, and brings the community a working result, not an argument.
+
+The release structure follows from this. Phase 1, the runtime audit, is the private test, where breakage is meant to happen. Phase 2, the GitHub Pages launch, is the showing, and it comes only after the audit clears. "Fixed" means it ran on hardware, not just that it compiled: a build can only persuade people if it survives their own testing.
+
 ### Codex pre-audit
 
 Implementation plans written into CLAUDE.md at implementation resolution — file paths, function names, invariants, edge cases — are audited by Codex as if they were real code, because Codex reviews PR diffs and does not distinguish between source files and documentation files. Errors in the plan are caught before any source is written. Canonical example: PR #229 caught the LS post-read use-after-free from the CLAUDE.md plan text alone, before the implementation commit existed. This is why 0.8.0 (23 layers, ~80 sites) and 0.9.0 shipped CI-green on the first push. Rule: write plans at implementation resolution. "Update the extension to `.blended`" is not auditable. "`source/blender/blenlib/BLI_fileops.h:245` — add `FILE_TYPE_BLENDED` to `BLI_file_extension_is_blend()`" is.
