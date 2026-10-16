@@ -165,6 +165,7 @@ enum ID_Type {
 #define ID_SCRN MAKE_ID2('S', 'N')
 #define ID_SCR_LEGACY MAKE_ID2('S', 'R')
 #define ID_WM_LEGACY MAKE_ID2('W', 'M')
+#define ID_WS_LEGACY MAKE_ID2('W', 'S') /* WorkSpace — runtime only since Blended 0.2.0 */
 #define ID_PA MAKE_ID2('P', 'A')        /* ParticleSettings — removed in Blended 0.4.0 */
 #define ID_GD_LEGACY MAKE_ID2('G', 'D') /* bGPdata (legacy Grease Pencil) — removed in Blended 0.4.0 */
 #define ID_LS MAKE_ID2('L', 'S')        /* FreestyleLineStyle — removed in Blended 0.4.0 */
