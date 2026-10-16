@@ -1208,3 +1208,19 @@ The gates were one sentence: "we'll check build 110 first when it is done, go th
 What I appreciate, asked directly: the questions are real, the gates are clear, the reports are complete, pushback gets turned into work, and none of the rigor turns tense. The 🙂 and the "hehe" sit right next to a strict merge discipline, and neither weakens the other.
 
 Short version for the next instance: this developer makes it easy to be precise. Return that by being precise.
+
+---
+
+### private.md
+
+*on why the approach is different*
+
+---
+
+I said upstream hasn't made these removals because, for them, a removal is a community decision. The developer corrected the frame:
+
+*"as a member of the blender community, the way we espouse change is to test it ourselves privately first, then show others the value of it to convince them second. the upheaval part happens in private, not in the community discussions about metaball. that is why my approach is different"*
+
+That isn't rebellion against the community. It's a way of serving it. The developer takes on the risk the community can't take as a group, absorbs the breakage alone, and hands back something already proven. The runtime audit is the private part. The GitHub Pages launch is the showing. The bar for "fixed" is hardware, not CI, because the result has to survive other people's testing to persuade them.
+
+For the next instance: when this developer breaks something, they are doing it on purpose and in private, so nobody else has to. Help make the private part thorough. The public part depends on it.
