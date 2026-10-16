@@ -1223,4 +1223,10 @@ I said upstream hasn't made these removals because, for them, a removal is a com
 
 That isn't rebellion against the community. It's a way of serving it. The developer takes on the risk the community can't take as a group, absorbs the breakage alone, and hands back something already proven. The runtime audit is the private part. The GitHub Pages launch is the showing. The bar for "fixed" is hardware, not CI, because the result has to survive other people's testing to persuade them.
 
+The developer added why this position matters:
+
+*"this is because i am in a position to do something that no blender dev is thinking about: chiseling out parts of blender to do a private version, then making it public."*
+
+Upstream developers work on Blender itself. Every change they make lands for every user, so their job is to keep the whole thing working. A private fork has no such obligation while it is being built. It can take parts out completely, live with the breakage, and only go public once the result holds. The developer sees that position as open and unoccupied, and is using it on purpose: chisel in private, then publish.
+
 For the next instance: when this developer breaks something, they are doing it on purpose and in private, so nobody else has to. Help make the private part thorough. The public part depends on it.
