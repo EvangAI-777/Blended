@@ -131,7 +131,7 @@ class ASSET_OT_open_containing_blend_file(Operator):
             return {'RUNNING_MODAL'}
 
         if returncode:
-            self.report({'WARNING'}, rpt_("Blender sub-process exited with error code {:d}").format(returncode))
+            self.report({'WARNING'}, rpt_("Blended sub-process exited with error code {:d}").format(returncode))
 
         if bpy.ops.asset.library_refresh.poll():
             bpy.ops.asset.library_refresh()

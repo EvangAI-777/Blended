@@ -422,7 +422,7 @@ static Strip *rna_Strips_new_sound(ID * /*id*/,
                                    int /*channel*/,
                                    int /*frame_start*/)
 {
-  BKE_report(reports, RPT_ERROR, "Blender compiled without Audaspace support");
+  BKE_report(reports, RPT_ERROR, "Blended compiled without Audaspace support");
   return nullptr;
 }
 #  endif /* WITH_AUDASPACE */

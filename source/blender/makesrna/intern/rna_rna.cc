@@ -164,7 +164,7 @@ const EnumPropertyItem rna_enum_property_unit_items[] = {
 /* Descriptions for rna_enum_property_flag_items and rna_enum_property_flag_enum_items. */
 static constexpr auto PROP_READ_ONLY_DESCR = "When set, the property cannot be edited";
 static constexpr auto PROP_HIDDEN_DESCR =
-    "For operators: hide from places in the user interface where Blender would add the property "
+    "For operators: hide from places in the user interface where Blended would add the property "
     "automatically, like Adjust Last Operation. Also this property is not written to presets.";
 static constexpr auto PROP_SKIP_SAVE_DESCR =
     "For operators: the value of this property will not be remembered between invocations of the "

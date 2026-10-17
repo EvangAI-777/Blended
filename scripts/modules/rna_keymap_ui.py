@@ -546,7 +546,7 @@ def draw_keymaps(context, layout):
     # row.prop_search(wm.keyconfigs, "active", wm, "keyconfigs", text="Key Config")
     text = bpy.path.display_name(kc_active.name, has_ext=False)
     if not text:
-        text = "Blender (default)"
+        text = "Blended (default)"
 
     split = layout.split(factor=0.6)
 

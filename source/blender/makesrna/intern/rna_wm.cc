@@ -556,7 +556,7 @@ const EnumPropertyItem rna_enum_operator_type_flag_items[] = {
      0,
      "Undo",
      "Push an undo event when the operator returns `FINISHED` (needed for operator redo, "
-     "mandatory if the operator modifies Blender data)"},
+     "mandatory if the operator modifies Blended data)"},
     {OPTYPE_UNDO_GROUPED,
      "UNDO_GROUPED",
      0,

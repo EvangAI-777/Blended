@@ -4311,13 +4311,13 @@ static void rna_def_space_outliner(BlenderRNA *brna)
       {SO_LIBRARIES,
        "LIBRARIES",
        ICON_FILE_BLEND,
-       "Blender File",
+       "Blended File",
        "Display data of current file and linked libraries"},
       {SO_DATA_API,
        "DATA_API",
        ICON_RNA,
        "Data API",
-       "Display low level Blender data and its properties"},
+       "Display low level Blended data and its properties"},
       {SO_OVERRIDES_LIBRARY,
        "LIBRARY_OVERRIDES",
        ICON_LIBRARY_DATA_OVERRIDE,
@@ -8103,7 +8103,7 @@ static void rna_def_space_userpref(BlenderRNA *brna)
 
   srna = RNA_def_struct(brna, "SpacePreferences", "Space");
   RNA_def_struct_sdna(srna, "SpaceUserPref");
-  RNA_def_struct_ui_text(srna, "Space Preferences", "Blender preferences space data");
+  RNA_def_struct_ui_text(srna, "Space Preferences", "Blended preferences space data");
 
   rna_def_space_generic_show_region_toggles(srna, (1 << RGN_TYPE_UI));
 
