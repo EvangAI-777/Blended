@@ -38,7 +38,7 @@
 - [ ] Builds locally: `cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -C build_files/cmake/config/blended_release.cmake && cmake --build build --target install`
 - [ ] No new warnings introduced
 - [ ] Follows coding conventions (SPDX header, `snake_case`, 2-space indent for C/C++)
-- [ ] If touching branding/version files, checked `UPSTREAM_SYNC.md` conflict-prone list
+- [ ] If touching branding/version files, checked the `docs/upstream-sync.md` conflict-prone list and divergence register
 
 ### Doc/Content PRs
 - [ ] All links (internal and external) verified

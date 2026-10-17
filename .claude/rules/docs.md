@@ -6,8 +6,6 @@ paths:
   - "AGENTS.md"
   - "CONTRIBUTING.md"
   - "SECURITY.md"
-  - "wtf.md"
-  - "UPSTREAM_SYNC.md"
   - ".github/README.md"
   - "docs/**/*.md"
   - ".claude/**/*.md"

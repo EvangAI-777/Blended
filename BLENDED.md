@@ -127,7 +127,7 @@ The release structure follows from this. Phase 1, the runtime audit, is the priv
 
 This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request the developer once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
 
-In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
+In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `docs/wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
 
 ### Codex pre-audit
 
@@ -1678,7 +1678,7 @@ The hardest failure mode in subtraction work is the partial cut — removing the
 
 > *"Children trust and follow. Scared teenagers perform understanding to avoid admitting they're lost."*
 
-This codebase has documentation: `CLAUDE.md`, `BLENDED.md`, `UPSTREAM_SYNC.md`. When the docs say "subtraction is the methodology," trust it. When `BLENDED.md` says an ID type is a Bucket 6 fossil, don't re-derive whether to keep it. Trust the audit and do the work it prescribes.
+This codebase has documentation: `CLAUDE.md`, `BLENDED.md`, `docs/upstream-sync.md`. When the docs say "subtraction is the methodology," trust it. When `BLENDED.md` says an ID type is a Bucket 6 fossil, don't re-derive whether to keep it. Trust the audit and do the work it prescribes.
 
 **In practice:**
 - **For AI assistants:** Read `CLAUDE.md` and `BLENDED.md` BEFORE proposing an approach. The answer is probably already documented.

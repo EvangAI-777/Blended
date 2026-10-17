@@ -7,7 +7,7 @@ name: Sync Upstream
 #   1. Go to Actions → Sync Upstream → Run workflow
 #   2. Enter the upstream ref (branch: blender-v5.3-release  or  tag: v5.3.0)
 #   3. Review the draft PR — if conflicts are present, check the branch out
-#      locally, resolve the markers, and push. See UPSTREAM_SYNC.md.
+#      locally, resolve the markers, and push. See docs/upstream-sync.md.
 
 on:
   workflow_dispatch:
@@ -93,7 +93,7 @@ jobs:
         else
           CONFLICT_COUNT=$(wc -l < /tmp/conflicts.txt)
           CONFLICT_MD=$(sed 's/^/- `/' /tmp/conflicts.txt | sed 's/$/`/')
-          MERGE_SECTION=$(printf '⚠️ **%s conflict(s)** — check out the branch locally, resolve the markers, and push.\n\nSee `UPSTREAM_SYNC.md` for the step-by-step resolution workflow.\n\n**Conflicted files:**\n%s' "${CONFLICT_COUNT}" "${CONFLICT_MD}")
+          MERGE_SECTION=$(printf '⚠️ **%s conflict(s)** — check out the branch locally, resolve the markers, and push.\n\nSee `docs/upstream-sync.md` for the step-by-step resolution workflow.\n\n**Conflicted files:**\n%s' "${CONFLICT_COUNT}" "${CONFLICT_MD}")
         fi
 
         {
@@ -101,7 +101,7 @@ jobs:
             "${UPSTREAM_REF}" "${UPSTREAM_SHA}" "${MERGE_SECTION}"
           printf '## Conflict-prone files\n\n'
           printf 'These Blended-modified files are most likely to need manual attention even on a clean merge.\n'
-          printf 'Full table and guidance in [`UPSTREAM_SYNC.md`](../UPSTREAM_SYNC.md).\n\n'
+          printf 'Full table and guidance in [`docs/upstream-sync.md`](../docs/upstream-sync.md).\n\n'
           printf '| File | Blended change |\n|------|----------------|\n'
           printf '| `source/blender/blenkernel/BKE_blender_version.h` | `BLENDED_VERSION_*` defines |\n'
           printf '| `source/blender/blenkernel/intern/blender.cc` | `BKE_blended_version_string()` |\n'

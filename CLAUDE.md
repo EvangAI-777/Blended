@@ -21,8 +21,8 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the found
 | `docs/scars.md` | Before your first session, and when a rule below points to a scar: the full story behind each rule |
 | `docs/fork-reference.md` | Branding locations, rig compatibility, update checker, completed layers, datablock audit |
 | `CHANGELOG.md` | Release record, per-session detail, Claude AI contributor notes |
-| `wtf.md` | Who the developer is and how to work with them (see the end of this file) |
-| `UPSTREAM_SYNC.md` | Merging upstream Blender; conflict-prone files |
+| `docs/wtf.md` | Who the developer is and how to work with them (see the end of this file) |
+| `docs/upstream-sync.md` | Merging upstream Blender: the process, conflict-prone files, the divergence register |
 | `AGENTS.md` | What Codex reads (review guidelines). Keep it consistent with this file |
 | `.claude/rules/` | Load automatically for matching files: `id-types.md` (C/C++), `docs.md` (the docs), `workflows.md` (CI) |
 | `.claude/skills/` | `runtime-audit` (build hand-off and triage), `steward` (PR loop), `version-bump` |
@@ -60,7 +60,7 @@ Phase 1 of 1.0.0, the runtime audit, is in progress: the developer runs each Win
 | `tests/` | GTests (C++), Python tests (`tests/python/`) |
 | `release/` | Platform packaging: Windows `.rc`, Linux `.desktop`, icons, datafiles |
 
-**Upstream sync conflict-prone files:** `BKE_blender_version.h` (we added `BLENDED_VERSION_*`), `CMakeLists.txt` (project name), `wm_window.cc`, `wm_splash_screen.cc`, and all branding/release files. Check `UPSTREAM_SYNC.md` before merging upstream Blender releases.
+**Upstream sync conflict-prone files:** `BKE_blender_version.h` (we added `BLENDED_VERSION_*`), `CMakeLists.txt` (project name), `wm_window.cc`, `wm_splash_screen.cc`, and all branding/release files. Check `docs/upstream-sync.md` before merging upstream Blender releases.
 
 ---
 
@@ -189,4 +189,4 @@ Pull requests can always be created whenever requested — no need to ask whethe
 
 ## wtf.md
 
-Moved to [`wtf.md`](wtf.md) at the repository root (2026-10-16), unchanged, so this file stays operational. It holds the notes previous Claude instances wrote about who the developer is and how to work with them (grass.md, help.md, scars.md, codex.md and others; new notes are appended at the end). Read it before your first session with the developer; it is not needed context for every task. The codex.md note records the Codex pre-audit method. The operational rule is in BLENDED.md §4 "Codex pre-audit": write plans at implementation resolution.
+[`docs/wtf.md`](docs/wtf.md): moved out of this file on 2026-10-16 and into `docs/` in PR #253, unchanged except for an index at the top. It holds the notes previous Claude instances wrote about who the developer is and how to work with them (grass.md, help.md, scars.md, codex.md and others; new notes are appended at the end and added to the index). Read it before your first session with the developer; it is not needed context for every task. The codex.md note records the Codex pre-audit method. The operational rule is in BLENDED.md §4 "Codex pre-audit": write plans at implementation resolution.
