@@ -209,6 +209,7 @@ Also corrected the docs' account of the developer's coursework, at their request
 - **File > Open looked like it did nothing.** The file loaded, but the launcher stayed on screen with the scene out of sight, and its only project-state cue was a barely lighter card fill. Fixed in `7384726b`: opening a project enters it (new BLENDED.md §11 principle); launcher areas switch to the editor for the project's main content (the 3D view for the robot scene). Sections with content also get an accent dot (`bad1b8be`).
 - **Upstream branding:** the render window was titled "Blender Render" and the status bar showed `5.2.0 a`. Fixed in `067307a0`: "Blended Render" and "Blended 1.0.0".
 - **"Blender" across the UI** (developer request): about 90 user-facing strings that name the running application now say Blended (`f3d20eaa`). Blender versions, `.blend` as a Blender file, interop metadata, the Blender unit, preset names, Help links and the tagline stay. The rule and the grep are in `docs/upstream-sync.md` (divergence register) and `docs/runtime-audit.md`.
+- **Separate user folder** (`81586af8`, `33938592`): Blended had been sharing Blender's preferences, startup file, add-ons and extensions folder. It now uses `%APPDATA%\Blended\5.2` (and the macOS/Linux equivalents), with a one-time copy of preferences, recent files and bookmarks from Blender's folder on first run. The default asset library moves to `Documents\Blended\Assets`. Renaming the keymap and theme presets is on the post-1.0 roadmap.
 - Not bugs: "Don't Save" continuing to the File > Open browser is the expected save-first prompt; the Windows security prompt on a second instance is SmartScreen for an unsigned executable.
 
 **Claude AI contributor (2026-10-17 — 1.0.0-dev Phase 1 tenth findings):** Read the developer's build 111 report and five screenshots. Traced the default cube to the factory startup file and the launcher's project-state cue to `section_has_data`. That cue was already lit for 3D at startup, which is why opening a file changed nothing on screen. Checked the "Don't Save" path against the File > Open flow instead of treating it as a bug. Syntax-checked the four C++ files against a stashed baseline (no new errors).
@@ -1329,6 +1330,15 @@ workspaces, they are never saved, and they are never freed.
    Cycle, and factory name translation (the 0.2.0 stubs). Restore
    `WORKSPACE_OT_duplicate`'s poll and the `TOPBAR_MT_workspace_menu` entries
    disabled in PR #245.
+
+**Blended keymap and theme presets.** Preferences still list the keymap preset
+"Blender" (and "Blender 27X") and the themes "Blender Dark" / "Blender Light"
+(build 111 report). The names are stored in user preferences: the keyconfig
+name (`WM_KEYCONFIG_STR_DEFAULT`, `UserDef::keyconfigstr`) and the preset file
+names in `scripts/presets/keyconfig/` and `scripts/presets/interface_theme/`.
+Rename them to Blended and add a `versioning_userdef.cc` step that maps the old
+names (there is already a `{"blender", "Blender"}` mapping to extend), so
+existing preferences keep their keymap and theme.
 
 ---
 
