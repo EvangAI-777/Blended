@@ -25,7 +25,7 @@ body:
       description: Which mode, which operator, which file type (.blend or .blended). Steps if you have them.
       placeholder: |
         1. Started Blended, clicked Model in the launcher
-        2. File > Open a .blend from class work
+        2. File > Open a .blend file
         3. ...
     validations:
       required: true

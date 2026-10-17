@@ -179,6 +179,7 @@ CI build 110 (run 38840006785, `main` @ `b43314cf`, the PR #245 merge) went gree
 - **Contributor files:** the Runtime report issue form, `SECURITY.md`, `CONTRIBUTING.md`, and a `check_blended.py` checkbox in the PR template. CLAUDE.md "CI / Build Config", the Scar 10 sweep note and the steward skill are updated.
 
 **Claude AI contributor (2026-10-17 — repository standards):** At the developer's request, compared the repo against current GitHub guidance (Node 20 retirement on runners, action pinning, least-privilege tokens, script injection, artifact attestations) and implemented the twelve items in PR #252. Resolved every action tag to its commit SHA with `git ls-remote`, and checked each major's Node runtime in its `action.yml`. Validated all workflows with actionlint 1.7.12. Tested each check against planted violations before relying on it. The check found the render-curve crash on its first run against the tree.
+Also corrected the docs' account of the developer's coursework, at their request. The 3D animation class assignments and grades were final by commencement on May 23, 2026, so BLENDED.md §4 "Dogfooding" is now in the past tense. Work after that date is not all in Taylor's computer lab: some was, and since that access ended it happens elsewhere. `wtf.md` is updated to match, and its "the last year-plus" (build 101) now reads "the spring".
 
 ---
 

@@ -143,7 +143,7 @@ Bugs that can be seen in the source are caught on the pull request, not after a 
 
 ### Dogfooding
 
-The project's author is currently using Blended for real animation coursework. The previous prototype passed for Blender with their animation professor (professor did not notice). **Animation coursework is Blended's Open-Movies-equivalent.** Every design decision must survive use in actual animation work.
+The project's author used Blended for real animation coursework until graduating (commencement May 23, 2026; the 3D animation class assignments and grades were final by then). The previous prototype passed for Blender with their animation professor (professor did not notice). **Animation coursework was Blended's Open-Movies-equivalent,** and the standard it set still holds: every design decision must survive use in actual animation work.
 
 ---
 
