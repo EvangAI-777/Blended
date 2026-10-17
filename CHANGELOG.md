@@ -143,6 +143,20 @@ and merging and the build hand-off.
 
 **Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 tooling):** Turned the review the developer asked for into work: the CI smoke test, the `wtf.md` move, repo PR-handling instructions (`.claude/skills/steward/SKILL.md`, which the developer asked for), and a list of the runtime paths still not run on hardware (CLAUDE.md, "Open runtime checks"). Where user workspaces live stays the developer's decision (post-1.0 roadmap).
 
+**Phase 1 runtime audit — ninth findings (2026-10-16):**
+
+*Build 110 — build 109 fixes verified:*
+CI build 110 (run 38840006785, `main` @ `b43314cf`, the PR #245 merge) went green. On hardware, the launcher drew and the developer used more of the UI than in any build before. The log has no `SyntaxError`, no `'ID' object has no attribute 'keyconfigs'`, and none of the build 109 empty-keymap warnings except `Blended Launcher`. The bl_ui and window-manager RNA fixes hold.
+
+*Build 110 findings (fix implemented, awaiting build verification):*
+- **File > Open crash** (Open or Cancel, from the splash or the top bar). The crash log reads `0x70` in `library_foreach_ID_link` ← `BKE_libblock_relink_ex` ← `id_free` ← `BKE_workspace_layout_remove` ← `wm_window_close` ← `wm_handler_fileselect_do`. The file browser's temporary window closes before the operator runs, and closing it frees its screen through `BKE_id_free`, which needs the `IDTypeInfo` screens lost in 0.3.0. Closing Preferences or a render window takes the same path. Fixed in `360e0f18`: `id_free` frees screens through `id_free_runtime_screen` (`lib_id_delete.cc`) — screen data, `bmain->screens` unlink, ID data — with no relink, remap or namemap. New Category D row.
+- **Upstream splash over the launcher.** Fixed in `f2b53525`: `WM_init_splash` is a no-op; the launcher replaces the splash (BLENDED.md §11). Help > Splash Screen still opens it.
+- **Cycles failed to register**: `bpy.types.MetaBall` no longer exists (ID_MB, 0.4.0). Fixed in `538bc7c5`: the `MetaBall.cycles` register and unregister lines are removed.
+- **Empty `Blended Launcher` keymap.** The default Python keyconfig refills every keymap from `blender_default.py`, which wiped the items `launcher_keymap` adds in C (launcher click, wheel scroll, Ctrl+Alt+Home). Fixed in `8a7c05c1`: the items are defined in `blender_default.py` and `industry_compatible_data.py`, and the keymap is listed in `keymap_hierarchy.py`.
+- **"Library file, loading empty scene" on every load.** `setup_app_data` warned when the file had no current screen, which is every Blended load. Fixed in `57c3c0a4`: only a missing scene warns.
+
+**Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 ninth findings):** Read the developer's two-part build 110 report (splash and launcher screenshots, log, crash log, status-bar screenshot). Traced the File > Open crash from the backtrace to `id_free` on a deregistered screen, and found that it covers every temporary-window close, not only File > Open. Traced the status-bar warning to `setup_app_data` at startup rather than to File > Open. Fixed all five findings in PR #249. Four mandatory docs updated. The changed `.cc` files pass the local `g++ -fsyntax-only` check against a stashed baseline; the Python files pass `py_compile`. Not compiled on Windows or run.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

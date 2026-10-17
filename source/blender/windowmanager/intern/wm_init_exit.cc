@@ -389,18 +389,11 @@ void WM_init_splash_on_startup(bContext *C)
   WM_init_splash(C);
 }
 
-void WM_init_splash(bContext *C)
+void WM_init_splash(bContext * /*C*/)
 {
-  wmWindowManager *wm = CTX_wm_manager(C);
-  /* NOTE(@ideasman42): this should practically never happen. */
-  if (UNLIKELY(BLI_listbase_is_empty(&wm->windows))) {
-    return;
-  }
-
-  wmWindow *prevwin = CTX_wm_window(C);
-  CTX_wm_window_set(C, static_cast<wmWindow *>(wm->windows.first));
-  WM_operator_name_call(C, "WM_OT_splash", wm::OpCallContext::InvokeDefault, nullptr, nullptr);
-  CTX_wm_window_set(C, prevwin);
+  /* Blended: the launcher ("Blending?", BLENDED.md §11) is the startup view and replaces the
+   * splash screen, so the splash is never opened automatically. Help > Splash Screen still runs
+   * #WM_OT_splash directly. */
 }
 
 /** Load add-ons & app-templates once on startup. */

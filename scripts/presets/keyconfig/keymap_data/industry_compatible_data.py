@@ -188,6 +188,9 @@ def km_window(params):
     items.extend([
         ("wm.batch_rename", {"type": 'RET', "value": 'PRESS', "alt": True}, None),
 
+        # Blended: return to the launcher from any area.
+        ("launcher.open", {"type": 'HOME', "value": 'PRESS', "ctrl": True, "alt": True}, None),
+
         # File operations
         ("wm.read_homefile", {"type": 'N', "value": 'PRESS', "ctrl": True}, None),
         op_menu("TOPBAR_MT_file_open_recent", {"type": 'O', "value": 'PRESS', "shift": True, "ctrl": True}),
@@ -432,6 +435,28 @@ def km_user_interface(params):
         ("anim.keyingset_button_add", {"type": 'K', "value": 'PRESS'}, None),
         ("anim.keyingset_button_remove", {"type": 'K', "value": 'PRESS', "alt": True}, None),
         ("ui.view_item_select", {"type": 'LEFTMOUSE', "value": 'PRESS'}, None),
+    ])
+
+    return keymap
+
+
+# ------------------------------------------------------------------------------
+# Editor (Blended Launcher)
+
+def km_blended_launcher(_params):
+    items = []
+    keymap = (
+        "Blended Launcher",
+        {"space_type": 'BLENDED_LAUNCHER', "region_type": 'WINDOW'},
+        {"items": items},
+    )
+
+    items.extend([
+        ("launcher.activate_mode", {"type": 'LEFTMOUSE', "value": 'PRESS'}, None),
+        ("launcher.scroll", {"type": 'WHEELDOWNMOUSE', "value": 'PRESS'},
+         {"properties": [("delta", 1)]}),
+        ("launcher.scroll", {"type": 'WHEELUPMOUSE', "value": 'PRESS'},
+         {"properties": [("delta", -1)]}),
     ])
 
     return keymap
@@ -3797,6 +3822,7 @@ def generate_keymaps_impl(params=None):
         km_image(params),
         km_node_generic(params),
         km_node_editor(params),
+        km_blended_launcher(params),
         km_info(params),
         km_file_browser(params),
         km_file_browser_main(params),

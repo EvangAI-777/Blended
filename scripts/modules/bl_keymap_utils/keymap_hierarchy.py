@@ -194,6 +194,8 @@ _km_hierarchy = [
 
     ('Info', 'INFO', 'WINDOW', []),
 
+    ('Blended Launcher', 'BLENDED_LAUNCHER', 'WINDOW', []),
+
     ('Property Editor', 'PROPERTIES', 'WINDOW', []),  # align context menu
 
     ('Text', 'TEXT_EDITOR', 'WINDOW', [

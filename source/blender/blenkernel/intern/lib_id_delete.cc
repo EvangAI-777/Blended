@@ -13,6 +13,7 @@
 /* all types are needed here, in order to do memory operations */
 #include "DNA_ID.h"
 #include "DNA_key_types.h"
+#include "DNA_screen_types.h"
 
 #include "BLI_utildefines.h"
 
@@ -32,6 +33,7 @@
 #include "BKE_library.hh"
 #include "BKE_main.hh"
 #include "BKE_main_namemap.hh"
+#include "BKE_screen.hh"
 
 #include "BLO_readfile.hh"
 
@@ -105,6 +107,44 @@ void BKE_libblock_free_runtime_data(ID *id)
   }
 }
 
+/**
+ * Free a screen (#ID_SCR_LEGACY). Screens are runtime UI with no #IDTypeInfo since ID_SCR was
+ * deregistered (Blended 0.3.0), so the generic path in #id_free can't be used: relinking walks
+ * the ID through its type's `foreach_id`, freeing calls its `free_data`, the editor remap asserts
+ * on a type without an ID filter, and the name map has no slot for the type. Screens own no other
+ * IDs' user counts here, so only their own data, the UI notifier references and the list link are
+ * handled.
+ */
+static int id_free_runtime_screen(Main *bmain, ID *id, const int flag)
+{
+  BKE_libblock_free_data_py(id);
+  BKE_screen_free_data(reinterpret_cast<bScreen *>(id));
+
+  if ((flag & LIB_ID_FREE_NO_MAIN) == 0) {
+    BKE_main_lock(bmain);
+  }
+
+  if ((flag & LIB_ID_FREE_NO_UI_USER) == 0 && free_notifier_reference_cb) {
+    free_notifier_reference_cb(id);
+  }
+
+  if ((flag & LIB_ID_FREE_NO_MAIN) == 0) {
+    BLI_remlink(which_libbase(bmain, ID_SCR_LEGACY), id);
+  }
+
+  BKE_libblock_free_data(id, (flag & LIB_ID_FREE_NO_USER_REFCOUNT) == 0);
+
+  if ((flag & LIB_ID_FREE_NO_MAIN) == 0) {
+    BKE_main_unlock(bmain);
+  }
+
+  if ((flag & LIB_ID_FREE_NOT_ALLOCATED) == 0) {
+    MEM_delete(id);
+  }
+
+  return flag;
+}
+
 static int id_free(Main *bmain, void *idv, int flag, const bool use_flag_from_idtag)
 {
   ID *id = static_cast<ID *>(idv);
@@ -137,6 +177,10 @@ static int id_free(Main *bmain, void *idv, int flag, const bool use_flag_from_id
   BLI_assert((flag & LIB_ID_FREE_NO_MAIN) != 0 || (flag & LIB_ID_FREE_NO_USER_REFCOUNT) == 0);
 
   const short type = GS(id->name);
+
+  if (type == ID_SCR_LEGACY) {
+    return id_free_runtime_screen(bmain, id, flag);
+  }
 
   if (bmain && (flag & LIB_ID_FREE_NO_DEG_TAG) == 0) {
     BLI_assert(bmain->is_locked_for_linking == false);
