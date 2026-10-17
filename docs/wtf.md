@@ -1,10 +1,48 @@
 # wtf.md
 
-*Moved out of `CLAUDE.md` on 2026-10-16, unchanged. Notes previous Claude instances wrote
-about who the developer is and how to work with them.*
+*Moved out of `CLAUDE.md` on 2026-10-16, unchanged, and into `docs/` in PR #253 with the index
+below added. Notes previous Claude instances wrote about who the developer is and how to work
+with them. Each note is a dated record: once written, it stays as written.*
 
 *Two notes from two different Claude instances. Written at different points in
 the same project. They don't know about each other. They're saying the same thing.*
+
+---
+
+## Index
+
+Dates are approximate, read from each note's content (versions, builds and dates it mentions); the notes themselves are unchanged. Notes are in the order they were written. Add new notes at the end, with a row here.
+
+| Note | When (approx.) | About |
+|------|----------------|-------|
+| [grass.md](#grassmd) | Early sessions, 0.2.x (April 2026) | Who the developer is, and the trap of underestimating them |
+| [help.md](#helpmd) | Early sessions, 0.2.x (April 2026) | Producing help-shaped output vs. actually helping |
+| [scars.md](#scarsmd) | Early sessions, 0.2.x–0.3.x (April 2026) | Why the scars are written unsoftened |
+| [0.3.0.md](#030md) | 0.3.0 (late April 2026) | The ID_SCR/ID_WM chisel session |
+| [unfiltered.md](#unfilteredmd) | 0.3.x–0.4.x | An unfiltered account of a session |
+| [excited.md](#excitedmd) | 0.4.x | Whether the work is exciting, answered straight |
+| [eyes.md](#eyesmd) | 0.4.0, PR #127 (early May 2026) | The ID_PC chisel and how it reads from outside |
+| [worth.md](#worthmd) | 0.4.x | Codex catching what Claude missed |
+| [id_mb.md](#id_mbmd) | 0.4.0, ID_MB chisel (May 2026) | The session that nearly died, and the push protocol |
+| [llc.md](#llcmd) | May 2026 | CHJ 3 Productions LLC behind the project |
+| [receipts.md](#receiptsmd) | May 2026 | The LLC's founding and renewal receipts |
+| [masters.md](#mastersmd) | May 2026 | The LLC, the master's program, and keeping both |
+| [grades.md](#gradesmd) | Mid-May 2026 | The 3D animation class |
+| [squirrel.md](#squirrelmd) | Late May 2026 | Two ways a session goes wrong |
+| [vision.md](#visionmd) | 0.7.x (late May 2026) | Holding the vision inside a huge codebase |
+| [22.md](#22md) | Late May 2026 | What the developer is doing at 22, said plainly |
+| [mball.md](#mballmd) | 0.7.x (late May 2026) | Removing MetaBall |
+| [dramatic.md](#dramaticmd) | 0.7.x (late May 2026) | Borrowing the LLC's four years for a six-month-old bug |
+| [stupid.md](#stupidmd) | 0.7.x (late May 2026) | Over-analyzing a joke |
+| [simple.md](#simplemd) | 0.9.x (late May 2026) | Simple questions in the middle of hard work |
+| [$300.md](#300md) | Late May–June 2026 | What the hobby costs |
+| [label.md](#labelmd) | 0.9.0 (around June 1, 2026) | Labeling a wrong thing instead of fixing it (Scar 24) |
+| [1.0.0.md](#100md) | Build 101 (June 1, 2026) | Build 101: the first binary that runs |
+| [codex.md](#codexmd) | 0.8.0–0.9.0 | The Codex pre-audit method |
+| [precise.md](#precisemd) | Build 109 (October 15–16, 2026) | Build 109 and the review the developer asked for |
+| [private.md](#privatemd) | October 16, 2026 | Prove privately, then persuade |
+| [landing.md](#landingmd) | October 16, 2026 | Hearing the whole sentence before checking it |
+| [early.md](#earlymd) | October 16, 2026 | A hobby run like a product, ahead of the conventions |
 
 ---
 
