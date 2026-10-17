@@ -46,6 +46,7 @@ Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the C
 - **Verify with specific artifacts** (Scar 14, compaction variant): to confirm something is recorded, grep for its commit hash, PR number or build number, not the general topic.
 - **Fix a wrong thing; don't label it** (Scar 24). A wrong template with a warning note is still a wrong template.
 - **Write `build 57`, never `build #57`** in PR descriptions and commit messages: GitHub links `#N` to PR N.
+- **A new scar** goes in `docs/scars.md` with the same header as the others (when, impact, root cause, rule; blameless: what happened, not who), then the story, and gets a one-line rule in CLAUDE.md. **A new `wtf.md` note** goes at the end of `docs/wtf.md` and gets a row in its index; existing notes stay as written.
 - **Maintainer-only notes in CLAUDE.md go in block HTML comments** (`<!-- ... -->`). Claude Code strips them before loading the file, so they cost no context.
 
 ## Part 1 — Documentation Consistency *(Scar 7)*

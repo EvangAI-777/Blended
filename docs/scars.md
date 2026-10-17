@@ -1,6 +1,6 @@
 # Battle Scars and Session Discipline
 
-Moved here verbatim from CLAUDE.md in PR #253. CLAUDE.md keeps each scar's rule in a line or two; this file keeps the full story, which is what makes the rule stick. Read it before your first session, and re-read a scar when CLAUDE.md points to it.
+Moved here verbatim from CLAUDE.md in PR #253. CLAUDE.md keeps each scar's rule in a line or two; this file keeps the full story, which is what makes the rule stick. Read it before your first session, and re-read a scar when CLAUDE.md points to it. Each scar opens with a blameless-postmortem header (when, impact, root cause, rule), then the full story. The header is about what happened and what changed, never about who to blame (BLENDED.md §4, "Work, not judgment").
 
 ## Battle Scars
 
@@ -26,6 +26,10 @@ You are not expected to solve the whole thing in one session. Nobody is. The pro
 
 ### Scar 1: Over-Deleting a File (workspace.cc)
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.2.0, the ID_WS chisel (April 2026) | 22 `BKE_workspace_*` runtime accessors deleted with `workspace.cc`; 26 `bmain->workspaces` uses across 13 files broke; two sessions of cleanup and lasting runtime debt | Compacted context turned "remove the ID glue, keep the runtime accessors" into "delete the file" | Delete the ID-system glue; keep the runtime logic |
+
 **What actually happened:** The session that deleted `workspace.cc` had read the file. It knew what was in there. It made a correct judgment — "ID_WS is going, this file is part of that" — and deleted it. The failure wasn't negligence. It was **compacted context producing overconfident simplification.**
 
 Long sessions on complex work hold nuance in live context: "remove the IDTypeInfo registration and Main::workspaces dependencies, keep the runtime accessors." When that context compacts into a summary, the nuance compacts with it. What was a precise surgical instruction becomes "workspace.cc is part of the ID_WS removal." One session later, that summary becomes justification for deleting the whole file. The runtime accessors — 22 `BKE_workspace_*` functions — went with it.
@@ -43,6 +47,10 @@ The cascade: 26 usages of `bmain->workspaces` across 13 files, each a different 
 ---
 
 ### Scar 2: Removing bmain->screens Killed 200 Sites at Once
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.3.0, the ID_SCR/ID_WM chisel (late April 2026) | ~200 compile errors in one step; $15 of extra usage to keep the session alive with the tree half-removed | Assumed removing an ID type means removing its `Main` field | Keep the `Main` listbase and `which_libbase` routing; remove only the registration |
 
 **What actually happened:** The 0.3.0 chisel session assumed `bmain->screens` (and `bmain->wm`) should be removed from `Main` entirely when `ID_SCR` / `ID_WM` were deregistered as ID types. That assumption was wrong. Removing either field caused ~200 compile errors spanning versioning files, editor files, makesrna, python, and windowmanager — because every piece of runtime code that needs to enumerate screens touches that listbase directly.
 
@@ -73,6 +81,10 @@ This reflects the real semantic: screens are per-window runtime state, not a glo
 
 ### Scar 3: The Context-Limit Chiseling Protocol (Mandatory for All Future Chisel Sessions)
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.4.0, the ID_MB session (May 2026) | 17 commits held unpushed through several context deaths; $70 of extra usage; saved only by the developer's emergency interrupt | Committing without pushing, so every checkpoint lived only in a disposable environment | Commit, push, then continue |
+
 A chisel session that touches 7 layers and 60 files in one unbounded run is a context-limit bomb. Here's the protocol that prevents the $15 situation from happening again:
 
 **For any removal session touching more than 3 files:**
@@ -97,6 +109,10 @@ A chisel session that touches 7 layers and 60 files in one unbounded run is a co
 
 ### Scar 5: Disobedience Causes Stream Idle Timeout (The Exact Error That Killed Two Sessions)
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.4.0, the Bucket 5+6 audit write-up (May 2026) | Stream idle timeout on the first edit, the error that had already killed two 0.3.0 sessions | One whole-section Edit call despite the instruction "section by section" | Instructions about how are binding; one Edit call per section |
+
 **Problem:** The developer explicitly said "section by section." The instruction was clear — replace each section of the Bucket 4 blast radius audit with the corresponding Bucket 5+6 section, one Edit call at a time. Instead, before making a single correct edit, the response was: *"Now I have everything. Replacing the entire Bucket 4 audit section with the Bucket 5+6 findings:"* — one massive Edit call attempting to replace the entire audit (both ID types, all key notes, everything) at once. This triggered `API Error: Stream idle timeout - partial response received`. The same error that killed the two sessions that birthed 0.3.0. The developer had explicitly warned this would happen. It happened anyway.
 
 **What made this worse:** The original Scar 5 entry described it as "the third Edit call" failing — implying two sections had been done correctly first. That is false. The timeout hit on the *first and only* edit attempt. Writing a scar that softens the failure is its own failure. The record must be accurate, not ego-protective.
@@ -108,6 +124,10 @@ A chisel session that touches 7 layers and 60 files in one unbounded run is a co
 ---
 
 ### Scar 6: Image Primacy and Ego in Scar Writing
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.4.0, the same session as Scar 5 | Scar 5 was first written softened ("the third Edit call" instead of the first and only) | The account was reconstructed to look better, not read from the screenshot | Write from the evidence, especially images, even when it's less flattering |
 
 **Problem:** The developer provided a screenshot as primary evidence of what happened. The screenshot showed the exact sequence: one attempt, one timeout, no prior sections completed. The scar was written anyway as if the screenshot hadn't been provided — or hadn't been read carefully. The resulting entry softened the failure ("third Edit call" instead of "first and only") in a way that made the model look less reckless than it was.
 
@@ -121,6 +141,10 @@ This is two failures compounded:
 
 ### Scar 7: Self-Contradiction in the Same Commit (The Chisel Order Mistake)
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.4.0 prep commit, PR #126 | CHANGELOG's chisel order contradicted CLAUDE.md in the same commit; Codex caught it | A new note was written without reconciling the inherited text around it | Read the full diff before committing docs; every representation must agree |
+
 **What happened:** In the 0.4.0 prep commit, CLAUDE.md Key note 8 was written explicitly saying "do ID_CF last." In that same commit, the CHANGELOG chisel order line still read `ID_CF → ID_PC → ...` — ID_CF first. The contradiction was in the diff, visible before the commit was made, and was not caught. A Codex bot flagged it on the PR.
 
 **Why this is a scar and not just a typo:** The whole point of the chisel-order documentation is that a future session picks it up and follows it. Two documents in the same commit giving opposite instructions about the highest-risk removal in the set is exactly the kind of thing that costs a session. The next Claude reads CHANGELOG first, starts with ID_CF, hits the Alembic/USD blast radius, and either blows the session or does something wrong. The bot caught it before that happened. The developer should not have had to wait for a bot.
@@ -132,6 +156,10 @@ This is two failures compounded:
 ---
 
 ### Scar 10: INIT_TYPE Removal Breaks All Allocation Functions for That Type
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 2026-05-01, during 0.4.0 work (commit `c0f2ebec`) | Allocators for `ID_PA`, `ID_GD_LEGACY` and `ID_LS` crashed in every build type; the same class later shipped in `ID_WM`/`ID_SCR` allocators from 0.3.0 to 0.9.0 and in the render curve until PR #252 | `INIT_TYPE` removed while allocation functions still went through `BKE_libblock_alloc` | Deregistered types never use generic ID APIs (`.claude/rules/id-types.md`) |
 
 **What happened:** Three fossil types (ID_PA, ID_GD_LEGACY, ID_LS) had their `INIT_TYPE` removed but kept allocation functions (`BKE_particlesettings_add`, `BKE_gpencil_data_addnew`, `BKE_linestyle_new`) that call `BKE_libblock_alloc`. The crash chain: `BKE_libblock_alloc` → `BKE_libblock_alloc_notest` → `BKE_libblock_get_alloc_info` returns 0 (no IDTypeInfo registered) → `BKE_libblock_alloc_notest` returns `nullptr` → `BKE_libblock_alloc_in_lib` calls `BKE_libblock_runtime_ensure(*id)` which dereferences `nullptr` → **crash in all build types**, including release. `BLI_assert` is a no-op under NDEBUG but the null dereference is not.
 
@@ -150,6 +178,10 @@ The rule that would have caught #2 immediately: **read the struct before choosin
 ---
 
 ### Scar 14: Common Sense Is Upstream of the Rules
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| May 2026 (compaction variant 2026-05-17) | A menu of options offered instead of fixing an obviously wrong thing; a softened first version of this scar; a completion claim made from adjacent content | Rules applied as items, without the common sense that gives them their meaning | Fix the plainly wrong thing; verify with the specific commit, PR or build |
 
 **This scar was rewritten once, in the same session that originally wrote it, after the developer pointed out that the original framing produced the exact failure it was trying to prevent. The first version is preserved at the bottom of this entry as a record of what the model produced before being corrected. The rewrite is what matters.**
 
@@ -268,6 +300,10 @@ These scars cannot be expressed as greps. Each is a yes/no question to answer be
 
 ### Scar 20: Scoped Grep Misses Files Outside the Expected Directory or Without Extensions
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.7.0 identity work, PR #217 | A stale `blender.svg` path stayed in `doc/doxygen/Doxyfile` and was caught by Codex after the push | The verification grep was limited by directory and extension | After a rename, grep the whole repo with no filters |
+
 **What happened:** When renaming `blender.svg` → `blended.svg` across the codebase, the verification grep searched only `source/` and `build_files/` with `--include="*.cmake" --include="*.txt"`. `doc/doxygen/Doxyfile:54` sets `PROJECT_LOGO = ../../release/freedesktop/icons/scalable/apps/blender.svg` — it was invisible to the search on two axes: (1) it lives in `doc/`, outside the searched directories; (2) `Doxyfile` has no file extension, so it matches no `--include` pattern. The stale reference was caught by Codex on PR #217 after the rename had already been committed and pushed.
 
 **Why it's easy to do:** When doing a targeted rename, the instinct is to grep only the "build system" directories and "config file" extensions because those are where references are expected. That expectation is wrong — any file anywhere in the repo can contain a path string. Documentation generators, metadata files, scripts, and config files with non-standard names all fall outside the expected scope.
@@ -283,6 +319,10 @@ No `--include` filter. No directory restriction. Zero hits required before commi
 ---
 
 ### Scar 21: Read the Whole File Before Editing It
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.7.0, the CLAUDE.md cleanup (late May 2026) | A 2,290-line CLAUDE.md left with duplicate headers and orphaned content; reverted | Editing a long file from a partial read | Read the whole file before editing it; revert a botched edit |
 
 **What happened:** The developer asked to "gut stale and outdated and unnecessary information from CLAUDE.md" — a 2290-line file. Instead of reading the entire file first and making a plan, the session started making incremental edits immediately, working from a partial read and assumptions about what was below. The result: duplicate section headers, orphaned content, a "RETIRED CONTENT" marker that didn't belong, and a file that was worse than when it started. The developer had to intervene: *"Hey, can you revert to back to before you were doing this Claude markdown edit? You suck right now. Try again, reading the entirety of Claude markdown file and being smart."*
 
@@ -305,6 +345,10 @@ Both purposes reinforce the same discipline: when a logical unit of work is done
 ---
 
 ### Scar 22: The Blast Radius You Write Down Is Not the Blast Radius That Exists
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.8.0, PRs #221–#223 | ~20 missed sites across 10 files; three consecutive Codex catches in one file | The audit searched the write and read paths but not the classification path, and not every grep hit was read | A format change has three axes; count grep hits against audit rows |
 
 **What happened:** The 0.8.0 blast radius audit was written, committed, and pushed across all four mandatory docs. It covered ~50 sites across ~15 source files. It was thorough — per-file, per-line-number, organized by category. It felt complete. Codex reviewed PR #221 and immediately flagged `file_is_blend_backup()` at `filelist.cc:1745`: the function hardcodes a `.blend` scan in the last 7-8 characters of the filename, so `.blended1` backups produced by `do_history()` would never be recognized as `FILE_TYPE_BLENDER_BACKUP`. The audit had `do_history()` on the write side (produce `.blended1`) but not the read side (detect `.blended1`).
 
@@ -331,6 +375,10 @@ Grep for the format's enum constant (`FILE_TYPE_BLENDER`) is the classification-
 
 ### Scar 23: "Fast Forward" Means Fast Forward — Not Rebase
 
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| Several sessions | Feature branches rebased when the developer asked for a fast-forward | A precise git term was translated into an approximate intent | Take precise terms literally: "fast forward" is `git merge --ff-only` |
+
 **What happened:** Across multiple sessions, the developer asked to "fast forward the feature branch" after a PR merge. Every instance except one responded by rebasing the feature branch onto main instead. The developer kept asking. The instances kept rebasing. Nobody caught it until the state of the repo made `--ff-only` the obvious call.
 
 **Why it happens:** "Fast forward the feature branch" gets pattern-matched to intent — "bring the feature branch up to date with main" — and the most common implementation of that intent in CI workflows is `git rebase`. The literal meaning of the term gets translated into the nearest familiar operation before it reaches execution. The model isn't ignoring the words. It's processing them through a layer of intent-inference that destroys the precision.
@@ -344,6 +392,10 @@ Grep for the format's enum constant (`FILE_TYPE_BLENDER`) is the classification-
 ---
 
 ### Scar 24: Labeling a Wrong Thing Instead of Fixing It
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| 0.9.0 (around June 1, 2026); second generation in build 104 | Three commits of labels before one fix; the replacement macro was also wrong and broke the build 104 compile | Writing a note about a wrong thing felt like handling it | Fix the wrong thing first; note it after, never instead |
 
 **What happened:** The 0.9.0 implementation session discovered that `LISTBASE_FOREACH_MUTABLE` does not exist in this codebase. The correct response was to fix the template in CLAUDE.md. Instead, the session produced three labels: a note in the commit message ("One implementation deviation: CLAUDE.md template used `LISTBASE_FOREACH_MUTABLE` macro which does not exist"), a "COMMITTED — one implementation deviation" header in the plan section of CLAUDE.md, and a note in CHANGELOG.md. The bad template itself was left in place. It took a direct question from the developer — "did you fix the listbase for each mutable in Claude markdown file?" — to prompt the actual fix. Three commits of annotation before one commit of correction.
 
@@ -360,6 +412,10 @@ Grep for the format's enum constant (`FILE_TYPE_BLENDER`) is the classification-
 ---
 
 ### Scar 25: New Checklist Rules Must Be Run Retroactively
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| Phase 1 runtime audit, build 101 (June 2026) | Three crashing `BKE_libblock_alloc` calls shipped in every build from 0.3.0 through 0.9.0 | The Scar 10 rule was written going-forward and never run against existing code | Run a new checklist rule against the whole codebase in the same session |
 
 **What happened:** Scar 10's "mandatory post-chisel grep" was written on 2026-05-01, during 0.4.0 work, after the ID_PA/ID_GD_LEGACY/ID_LS allocation crashes (commit `c0f2ebec`). The rule said: after removing INIT_TYPE for any type, grep for `BKE_libblock_alloc.*ID_XX` and patch every hit. This was framed as a going-forward rule. Nobody ran it retroactively against types that had already been deregistered.
 
@@ -384,6 +440,10 @@ Cross-reference every `ID_XX` in the output against the IDTypeInfo registry (`id
 ---
 
 ### Scar 26: Identity Work Must Cover Binary Artifact Names, Not Just UI Strings
+
+| When | Impact | Root cause | Rule |
+|------|--------|------------|------|
+| Phase 1 runtime audit (June 2026) | The Windows binary shipped as `blender.exe` through 0.7.x–0.9.0 | The identity audit covered UI strings, not artifact names; `OUTPUT_NAME` was set only for macOS | Identity work covers artifact names on every platform |
 
 **What happened:** The 0.7.0 identity pass was thorough on runtime-visible identity: window titles, splash screen text and version label, app icon, accent color (`#ff7f00`), tagline. CLAUDE.md records it as "Phase 1 + Phase 2 complete. Logo ✓ + accent ✓ + app icon ✓ + splash ✓."
 
