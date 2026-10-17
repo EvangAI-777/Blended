@@ -39,8 +39,8 @@ void BKE_appdir_exit();
  * `Blender Foundation/Blender/X.X` on Windows, `Blender/X.X` on macOS, `blender/X.X` on Linux).
  * On the first run, when the Blended user folder doesn't exist yet, copy the preferences, recent
  * files and bookmarks from the Blender user folder of the same version. The startup file is not
- * copied: Blended doesn't read one (BLENDED.md §5). Skipped when the user folder is overridden
- * (`BLENDER_USER_RESOURCES`) or the install is portable.
+ * copied: Blended doesn't read one (BLENDED.md §5). Skipped when the user or config folder is
+ * overridden (`BLENDER_USER_RESOURCES`, `BLENDER_USER_CONFIG`) or the install is portable.
  */
 void BKE_appdir_user_dir_migrate_from_blender();
 

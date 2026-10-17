@@ -848,6 +848,7 @@ void BKE_appdir_user_dir_migrate_from_blender()
 {
   char path_test[FILE_MAX];
   if (test_env_path(path_test, "BLENDER_USER_RESOURCES", false) ||
+      test_env_path(path_test, "BLENDER_USER_CONFIG", false) ||
       get_path_local_ex(path_test, sizeof(path_test), "portable", nullptr, 0, true))
   {
     return;
