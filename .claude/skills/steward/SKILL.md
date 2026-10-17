@@ -24,7 +24,7 @@ context; this file covers only the PR loop.
 
 1. **Verify every finding against the code before acting.** Trace a real caller or input to the
    failure. Codex has been right most of the time on this repo (PR #243/#244/#245), but not always:
-   for example, operator properties can't hold data-block pointers (CLAUDE.md, startup crash
+   for example, operator properties can't hold data-block pointers (`docs/runtime-audit.md`, startup crash
    step 10).
 2. **Real → fix it in this PR.** Badges (P1/P2) are not optionality labels. A P2 that is a real bug
    gets fixed like a P1.
@@ -36,7 +36,8 @@ context; this file covers only the PR loop.
 
 ## Before every push
 
-Run the Codex Standard checklist in CLAUDE.md (both parts). The local checks that work in this
+Run the Codex Standard: CLAUDE.md "Before every commit" and, for docs, the Part 1 checklist in
+`.claude/rules/docs.md`. The local checks that work in this
 container:
 
 - **Everything:** `python3 tools/check_blended.py` (the same checks the PR runs, about 15 seconds).
@@ -55,8 +56,7 @@ State plainly in the PR what could not be checked locally.
 
 Any fix or finding that changes behavior updates the four mandatory docs (CLAUDE.md, CHANGELOG.md,
 BLENDED.md, `.github/README.md`) in the same PR. That covers Category tables, the open-findings
-section, status lines and the CHANGELOG contributor note. `.github/` is gitignored, and so is
-`.claude/`. Stage both with `git add -f`.
+section, status lines and the CHANGELOG contributor note.
 
 ## PR description
 
@@ -70,8 +70,7 @@ section, status lines and the CHANGELOG contributor note. `.github/` is gitignor
 - Work on the session's designated branch. After its PR merges, restart the branch from
   `origin/main` (`git checkout -B <branch> origin/main`). A force push is fine only while the branch
   holds nothing but already-merged history.
-- Before committing to an existing branch, check it hasn't already merged (CLAUDE.md, "The
-  Orphaned-Commit Trap").
+- Before committing to an existing branch, check it hasn't already merged (CLAUDE.md, "The orphaned-commit trap").
 
 ## Merge and build
 
@@ -81,5 +80,5 @@ section, status lines and the CHANGELOG contributor note. `.github/` is gitignor
   developer asked for a build, dispatch `build-windows.yml` on `main` with
   `inputs: {"build_type": "Release"}` and schedule one check on the result about 110 minutes out.
   A build takes 1.5–2 hours.
-- A finished build goes to the developer for the hardware run (CLAUDE.md, "1.0.0-dev Runtime Audit
-  Protocol"). Their report starts the next triage loop.
+- A finished build goes to the developer for the hardware run: the `runtime-audit` skill. Their
+  report starts the next triage loop.

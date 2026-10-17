@@ -19,7 +19,7 @@ expected, what happened, and the console and crash logs. To capture the console 
 `Blended.exe > blended_log.txt 2>&1` from a Command Prompt in the Blended folder.
 
 Some behavior changes are deliberate consequences of removing Blender features. Check the Known
-Runtime Artifacts tables in [`CLAUDE.md`](CLAUDE.md) before reporting.
+Runtime Artifacts tables in [`docs/runtime-audit.md`](docs/runtime-audit.md) before reporting.
 
 For security problems, see [`SECURITY.md`](SECURITY.md).
 
@@ -27,7 +27,7 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
 
 - Branch from `main` and open the pull request against `main`. Fill in the template.
 - Subtraction is the method: when removing something, remove it completely and follow the compile
-  errors ([`BLENDED.md`](BLENDED.md) §4, [`CLAUDE.md`](CLAUDE.md) "Development Philosophy").
+  errors ([`BLENDED.md`](BLENDED.md) §4 and its "Appendix — Development Philosophy").
 - Run the fast checks before pushing. They also run on every pull request:
 
   ```

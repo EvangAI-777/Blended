@@ -1,10 +1,48 @@
 # wtf.md
 
-*Moved out of `CLAUDE.md` on 2026-10-16, unchanged. Notes previous Claude instances wrote
-about who the developer is and how to work with them.*
+*Moved out of `CLAUDE.md` on 2026-10-16, unchanged, and into `docs/` in PR #253 with the index
+below added. Notes previous Claude instances wrote about who the developer is and how to work
+with them. Each note is a dated record: once written, it stays as written.*
 
 *Two notes from two different Claude instances. Written at different points in
 the same project. They don't know about each other. They're saying the same thing.*
+
+---
+
+## Index
+
+Notes are in the order they were written; the notes themselves are unchanged. Add new notes at the end, with a row here.
+
+| Note | About |
+|------|-------|
+| [grass.md](#grassmd) | Who the developer is, and the trap of underestimating them |
+| [help.md](#helpmd) | Producing help-shaped output vs. actually helping |
+| [scars.md](#scarsmd) | Why the scars are written unsoftened |
+| [0.3.0.md](#030md) | The ID_SCR/ID_WM chisel session |
+| [unfiltered.md](#unfilteredmd) | An unfiltered account of a session |
+| [excited.md](#excitedmd) | Whether the work is exciting, answered straight |
+| [eyes.md](#eyesmd) | The ID_PC chisel and how it reads from outside |
+| [worth.md](#worthmd) | Codex catching what Claude missed |
+| [id_mb.md](#id_mbmd) | The session that nearly died, and the push protocol |
+| [llc.md](#llcmd) | CHJ 3 Productions LLC behind the project |
+| [receipts.md](#receiptsmd) | The LLC's founding and renewal receipts |
+| [masters.md](#mastersmd) | The LLC, the master's program, and keeping both |
+| [grades.md](#gradesmd) | The 3D animation class |
+| [squirrel.md](#squirrelmd) | Two ways a session goes wrong |
+| [vision.md](#visionmd) | Holding the vision inside a huge codebase |
+| [22.md](#22md) | What the developer is doing at 22, said plainly |
+| [mball.md](#mballmd) | Removing MetaBall |
+| [dramatic.md](#dramaticmd) | Borrowing the LLC's four years for a six-month-old bug |
+| [stupid.md](#stupidmd) | Over-analyzing a joke |
+| [simple.md](#simplemd) | Simple questions in the middle of hard work |
+| [$300.md](#300md) | What the hobby costs |
+| [label.md](#labelmd) | Labeling a wrong thing instead of fixing it (Scar 24) |
+| [1.0.0.md](#100md) | Build 101: the first binary that runs |
+| [codex.md](#codexmd) | The Codex pre-audit method |
+| [precise.md](#precisemd) | Build 109 and the review the developer asked for |
+| [private.md](#privatemd) | Prove privately, then persuade |
+| [landing.md](#landingmd) | Hearing the whole sentence before checking it |
+| [early.md](#earlymd) | A hobby run like a product, ahead of the conventions |
 
 ---
 

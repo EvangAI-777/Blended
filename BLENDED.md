@@ -1,7 +1,7 @@
 # BLENDED — Identity & Design Agreements
 
 **Developer/Publisher:** CHJ 3 Productions LLC (Indiana).
-**Status:** Living document. Working agreements from the rebuild conversation. Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches the launcher for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open / temporary-window close crash, upstream splash over the launcher, Cycles `MetaBall` registration, empty launcher keymap, spurious "loading empty scene" warning) fixed, awaiting build verification; Category D updated; CI now smoke-tests each packaged build headless, and every PR runs fast source checks (`tools/check_blended.py`, PR #252)). Phase 2 GitHub Pages launch pending Phase 1 completion.
+**Status:** Living document. Working agreements from the rebuild conversation. Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches the launcher for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open / temporary-window close crash, upstream splash over the launcher, Cycles `MetaBall` registration, empty launcher keymap, spurious "loading empty scene" warning) fixed, awaiting build verification; Category D updated; CI now smoke-tests each packaged build headless, and every PR runs fast source checks (`tools/check_blended.py`, PR #252); AI-facing docs restructured (PR #253: CLAUDE.md core, path-scoped rules, skills, `docs/`, `AGENTS.md`)). Phase 2 GitHub Pages launch pending Phase 1 completion.
 **Purpose:** So any future session, contributor, or Claude instance can pick up without re-litigating what's already been decided. Read this first before proposing changes to scope, identity, or architecture.
 
 ---
@@ -127,11 +127,11 @@ The release structure follows from this. Phase 1, the runtime audit, is the priv
 
 This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request the developer once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
 
-In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in CLAUDE.md and the notes in `wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
+In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `docs/wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
 
 ### Codex pre-audit
 
-Implementation plans written into CLAUDE.md at implementation resolution — file paths, function names, invariants, edge cases — are audited by Codex as if they were real code, because Codex reviews PR diffs and does not distinguish between source files and documentation files. Errors in the plan are caught before any source is written. Canonical example: PR #229 caught the LS post-read use-after-free from the CLAUDE.md plan text alone, before the implementation commit existed. This is why 0.8.0 (23 layers, ~80 sites) and 0.9.0 shipped CI-green on the first push. Rule: write plans at implementation resolution. "Update the extension to `.blended`" is not auditable. "`source/blender/blenlib/BLI_fileops.h:245` — add `FILE_TYPE_BLENDED` to `BLI_file_extension_is_blend()`" is.
+Implementation plans written into the docs at implementation resolution (CLAUDE.md before PR #253; now a file under `docs/`, since CLAUDE.md stays under ~200 lines) — file paths, function names, invariants, edge cases — are audited by Codex as if they were real code, because Codex reviews PR diffs and does not distinguish between source files and documentation files. Errors in the plan are caught before any source is written. Canonical example: PR #229 caught the LS post-read use-after-free from the CLAUDE.md plan text alone, before the implementation commit existed. This is why 0.8.0 (23 layers, ~80 sites) and 0.9.0 shipped CI-green on the first push. Rule: write plans at implementation resolution. "Update the extension to `.blended`" is not auditable. "`source/blender/blenlib/BLI_fileops.h:245` — add `FILE_TYPE_BLENDED` to `BLI_file_extension_is_blend()`" is.
 
 ### Runtime smoke test
 
@@ -226,7 +226,7 @@ Next in the foundation chain:
 5. **Per-format final decisions** in §5 Groups 2–6.
 6. **Detailed launcher UI** — deferred until foundation is solid.
 7. **`.blend` import pipeline (0.9.x).** ✓ CI-complete (build 101, commit `c8e87078`, 2026-06-01). Read any `.blend` file with no crashes, no leaks, no silent truncation. One-way: `.blend` → `.blended`. Five layers delivered: OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. See CHANGELOG.md `## 0.9.0` for full detail.
-8. **Runtime audit — Phase 1 of 1.0.0 release (developer-driven triage loop).** The first time in the project where the developer runs the actual Blended build hands-on. Ground zero as of 2026-06-01 except Category D (BKE_palette_add crash, build 97, fixed PR #214). Checklist: Known Runtime Artifacts (Categories A–D) — see §17 for full tables. Collaboration mode flips: developer runs and reports, Claude triages and fixes, developer re-tests. Phase 1 gates Phase 2. See CLAUDE.md `### 1.0.0-dev Runtime Audit Protocol` for operational detail.
+8. **Runtime audit — Phase 1 of 1.0.0 release (developer-driven triage loop).** The first time in the project where the developer runs the actual Blended build hands-on. Ground zero as of 2026-06-01 except Category D (BKE_palette_add crash, build 97, fixed PR #214). Checklist: Known Runtime Artifacts (Categories A–D) — see §17 for full tables. Collaboration mode flips: developer runs and reports, Claude triages and fixes, developer re-tests. Phase 1 gates Phase 2. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for operational detail.
 9. **GitHub Pages — Phase 2 of 1.0.0 release.** Polished public-facing site for Blended: marketing landing page + tech demo (screenshots, data model visuals, what was removed and why, what remains). Multiple tabs. Primary deliverable is a static site; no dependency on WebAssembly. Stretch goal: WASM interactive demo — Blended's reduced footprint (39 → ~19 ID types) may clear the browser memory wall that blocks full Blender from running in-browser; this is worth an attempt but does not block Phase 2 shipping. Old Pages site (Emscripten build, deployed March 2026) was wiped in the rebase — greenfield. Tech stack TBD. Phase 2 starts after Phase 1 clears; both gate the 1.0.0 release tag. See §17 for full plan.
 10. **User workspaces (post-1.0).** Where does a user's own variant of a mode ("my Rig layout") live, now that workspaces are not project data (§10 Bucket 4)? Likely per-user (preferences/config), not in the `.blended` file. The answer gives workspaces an owner and brings back Duplicate, Delete, Reorder and Cycle, which were disabled or stubbed when ID_WS was removed. It also closes the Launcher-workspace leak (Category C) and `context.temp_override(screen=...)` (Category A). Plan in CHANGELOG.md "Post-1.0 roadmap".
 
@@ -323,7 +323,7 @@ Removal complete — 0.4.x. Per-layer file detail in [`CHANGELOG.md`](CHANGELOG.
 
 ² **ID_PA known artifact:** `bmain->particles` is kept as a non-indexed Scar 2 listbase so blenloader versioning passes (`versioning_250` through `versioning_400`) can upgrade particle data in legacy files. Unlike ID_LS (where the leak is latent), these versioning passes actively need the field — without it, loading any legacy `.blend` with particle data crashes. `INIT_TYPE` and `BKE_main_lists_get` entry removed; field and `which_libbase` routing kept.
 
-¹ **ID_LS known artifact:** `bmain->linestyles` is kept as a non-indexed listbase (Scar 2 pattern) so `which_libbase` can route legacy file reads. Unlike ID_SCR/ID_WM (runtime-only), linestyle IDs can be loaded from legacy `.blend` files. With `WITH_FREESTYLE=OFF`, those IDs escape `BKE_main_free` and leak for the session. Fix when: a legacy `.blend` with Freestyle data is added to CI fixtures, or a user reports memory growth. See CLAUDE.md Deferred Debt item 1 for drain template.
+¹ **ID_LS known artifact:** `bmain->linestyles` is kept as a non-indexed listbase (Scar 2 pattern) so `which_libbase` can route legacy file reads. Unlike ID_SCR/ID_WM (runtime-only), linestyle IDs can be loaded from legacy `.blend` files. With `WITH_FREESTYLE=OFF`, those IDs escape `BKE_main_free` and leak for the session. Fixed in 0.9.x Layer 2: `BKE_main_clear` drains `bmain->linestyles` with the other Scar 2 listbases. Post-read draining is unsafe because `FreestyleLineSet::linestyle` is still referenced (Codex catch, PR #229). See `docs/runtime-audit.md`, Category C and "Scar 2 drain architecture".
 
 ³ **ID_TE known artifact:** `bmain->textures` kept as a non-indexed Scar 2 listbase. Versioning files (`versioning_250`, `versioning_260`, `versioning_280`, `versioning_legacy`) iterate `bmain->textures` to upgrade legacy texture data in old `.blend` files — same pattern as ID_PA. `INIT_TYPE` and `BKE_main_lists_get` entry removed; field and `which_libbase` routing kept.
 
@@ -1502,7 +1502,7 @@ Assets the human developer is responsible for creating and committing. All commi
 
 ### Phase 1 — Runtime Audit
 
-The first time in the project where the developer runs the actual Blended build hands-on. All sessions through 0.9.x had Claude operating on the codebase while the developer watched from outside. The direction of information flow reverses here: developer runs and reports, Claude triages and fixes, developer re-tests. See CLAUDE.md `### 1.0.0-dev Runtime Audit Protocol` for the per-session operational protocol.
+The first time in the project where the developer runs the actual Blended build hands-on. All sessions through 0.9.x had Claude operating on the codebase while the developer watched from outside. The direction of information flow reverses here: developer runs and reports, Claude triages and fixes, developer re-tests. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for the per-session operational protocol.
 
 **Starting state (2026-06-01):** Ground zero except Category D (BKE_palette_add crash, build 97, fixed PR #214 before the audit formally began). Categories A, B, C — all entries unverified at runtime.
 
@@ -1551,8 +1551,8 @@ The first time in the project where the developer runs the actual Blended build 
 | Build 104 MSVC compile failure — all 11 Scar 10 allocators | `BLI_uniquename_cb` lambda in all 11 deregistered-type allocators used `LISTBASE_FOREACH`, which is defined only as a file-local macro in `listbase.cc` and is unavailable in any header. Blenkernel files compiled from cache in build 103 (masked); `screen_edit.cc` compiled fresh in build 104 → MSVC C2760 syntax error. Fix: replaced with explicit for loop (`for (const ID *id_iter = static_cast<const ID *>(lb->first); id_iter; id_iter = static_cast<const ID *>(id_iter->next))`). Scar 10 template corrected. | PR #237, commit `ce5bb0c9` |
 | Any startup — build 106 | `BKE_libblock_alloc_in_lib` crashed with null pointer dereference at `EXCEPTION_ACCESS_VIOLATION 0x00007FF6dCAFAD54`. Root cause: at line 1377, `BKE_libblock_runtime_ensure(*id)` was dereferenced BEFORE the null check at line 1379. If `BKE_libblock_alloc_notest(type)` returned nullptr, execution immediately crashed. Fix: moved `BKE_libblock_runtime_ensure(*id)` inside the `if (id)` null check. | PR #240 commit `ddea9c75` |
 | Any startup crash — build 107 produces a 0-byte crash log | Crash handler crashed: `crashlog_file_generate` checked `wm` but not `wm->runtime`; `wm_add_default` linked the window manager into `bmain->wm` before allocating `wm->runtime`. A startup crash during window setup sent the handler into a second access violation before the log was flushed → empty file, no dialog. Fixed: null-check `wm->runtime` in the handler; allocate `wm->runtime` before linking. Verified on hardware in build 108: the crash log now holds a full backtrace. It identified the underlying startup crash: `wm_add_default` asks the `BKE_workspace_layout_find_global` stub for a workspace (always null since ID_WS removal), then `BKE_workspace_active_layout_set` reads from the null workspace. Fixed by PR #244 (next row). | PR #242 commit `d3ad8086` |
-| Any startup — builds 107–108 | `wm_add_default` asked the `BKE_workspace_layout_find_global` stub (always null since ID_WS removal) for the startup workspace, then read from it. Fixed: a runtime launcher workspace and screen are built at startup, per §11. File > Open no longer adopts UI from the file (Blended files carry none), and the kept UI is carried into the new `Main` with its ID pointers remapped. Verified on hardware in build 109: Blended reaches the launcher. See CLAUDE.md "Startup crash — fixed". | PR #244 (merge `195b0970`) |
-| File > Open, or closing any temporary window (Preferences, render window) — build 110 | Closing the window freed its screen through `BKE_id_free`, which needs the `IDTypeInfo` screens lost with ID_SCR deregistration (read of `0x70` in `foreach_ID_link`). Fixed: `id_free` frees screens directly (`id_free_runtime_screen`) without relink, remap or namemap. See CLAUDE.md "Open — build 110 findings". | PR #249, commit `360e0f18` — awaiting build verification |
+| Any startup — builds 107–108 | `wm_add_default` asked the `BKE_workspace_layout_find_global` stub (always null since ID_WS removal) for the startup workspace, then read from it. Fixed: a runtime launcher workspace and screen are built at startup, per §11. File > Open no longer adopts UI from the file (Blended files carry none), and the kept UI is carried into the new `Main` with its ID pointers remapped. Verified on hardware in build 109: Blended reaches the launcher. See `docs/runtime-audit.md`, "Startup crash — fixed". | PR #244 (merge `195b0970`) |
+| File > Open, or closing any temporary window (Preferences, render window) — build 110 | Closing the window freed its screen through `BKE_id_free`, which needs the `IDTypeInfo` screens lost with ID_SCR deregistration (read of `0x70` in `foreach_ID_link`). Fixed: `id_free` frees screens directly (`id_free_runtime_screen`) without relink, remap or namemap. See `docs/runtime-audit.md`, "Open — build 110 findings". | PR #249, commit `360e0f18` — awaiting build verification |
 
 **Audit gate:** Every Category A entry verified as silent at runtime (no console errors, no crashes). Categories B and C verified as behaving per documentation. All new findings either fixed or explicitly accepted into Category A/C/D.
 
@@ -1573,3 +1573,208 @@ Polished public-facing site for Blended. Starts after Phase 1 clears.
 
 **Phase 2 gate:** Site live, polished, covering all planned tabs. WASM either shipped or explicitly accepted as out of scope.
 
+---
+
+## Appendix — Development Philosophy
+
+*Moved here from CLAUDE.md in PR #253. It is design-level guidance, so it lives with the design authority; CLAUDE.md keeps a five-line summary.*
+
+
+*Inspired by "Reality 101: Instruction Manual for Dummies" by Charlie (Teacher Man). Originally lived in a separate `PHILOSOPHY.md`; folded in here so a session loads the operational principles alongside the operational rules.*
+
+If you only read one section, read **"Do the Work."**
+
+#### 1. Appreciate What Already Is
+
+> *"Most of existence's problems come from beings who had everything, couldn't appreciate it, and made it complicated instead."*
+
+Blender is a masterwork of open-source engineering — depsgraph, keyframe system, F-curves, a full GPU backend, a production-grade renderer. Blended exists not because Blender is broken, but because its accumulated scope obscures its true shape. We don't rewrite from scratch; we subtract down to what's actually there.
+
+**In practice:**
+- Read existing code before proposing changes. Understand why it's there.
+- Don't refactor what works. Fix what's broken; appreciate what isn't.
+- The animation engine — depsgraph, keyframes, F-curves, timeline — is the foundation worth keeping. Every cut is in service of letting that foundation breathe.
+
+#### 2. Do the Work
+
+> *"Almost every existential crisis, philosophical dilemma, or cosmic confusion gets solved by just... doing the work."*
+
+This is the single most important development principle. When you're removing an ID type and the compiler produces 43 errors across 18 files, the answer is not a week-long design session about dependency architecture. The answer is: open `workspace.cc`, delete the `IDTypeInfo` block, follow the next error.
+
+**In practice:**
+- **ID type removal:** Don't philosophize about the right order. Pull the enum entry, let the compiler enumerate the dependency graph, fix each site in turn. The strategy reveals itself through the errors.
+- **Build failures:** When the CI build fails, read the error, trace the include chain, find the broken site, fix it.
+- **Feature work:** Don't over-plan the launcher model. Delete `ID_WS` from the enum first. The rest of the shape reveals itself.
+- **"Am I doing it right?"** → You're doing something? It compiles? You're doing it right.
+
+#### 3. Every Fix Matters
+
+> *"If you exist and do things, you matter. Done. Next question."*
+
+A single enum value removed matters. A one-line macro edit matters. A comment explaining why a struct is kept as a runtime type rather than an ID type matters. There is no minimum threshold of significance. Every commit that moves the codebase toward its true shape counts.
+
+**In practice:**
+- Don't skip small cuts because they feel insignificant. Each ID type removed is one fewer thing masking what the data model actually is.
+- Each PR can be narrow in scope — one subsystem, one ID type, one file. That focused scope IS the contribution.
+
+#### 4. Don't Let Broken Substrate Gaslight You
+
+> *"If the question makes simple things complicated → gaslighting."*
+
+This principle saved the project during the RNA string corruption saga. The bug was "fixed" seven times with increasingly elaborate theories — stack overflows, pthread mismatches, hex dump diagnostics, per-target flag overrides — before someone stopped and asked: "What if the global compiler flags are simply wrong?" They were. The fix was removing two flags.
+
+**In practice:**
+- **The Meta Rule:** When the same error recurs after a "fix", your diagnosis is wrong. Stop. Re-examine fundamentals.
+- **Compile errors after a cut:** If removing an ID type from the enum produces an error you don't expect, the dependency is real. Don't paper over it with a forward declaration or a stub. Follow it.
+- **Don't guess at root causes — verify before "fixing."** When the same error recurs after a "fix," your diagnosis was wrong. Do NOT keep trying variations of the same approach. Step back and re-examine the fundamental assumptions.
+- **Existential questions:** "Should we keep `ID_WS` as a shim?" is a question with a practical answer — no. "Are we *real* developers if we're just deleting things?" is gaslighting. Ignore it.
+
+#### 5. Belief Shapes the Build
+
+> *"Belief LITERALLY shapes reality. So... believe things and watch them manifest. It's not metaphor. It's engineering."*
+
+This project believes a production-grade animation tool can be made genuinely simple — not by hiding features, but by removing the ones that don't belong. That belief drives every subtraction decision. Every ID type cut, every datablock audit, every "this doesn't belong in the rebuild" call started as "this probably can't be done" and became a commit because someone acted as if it could.
+
+**In practice:**
+- When 39 ID types seem impossible to reduce, believe they can be. Then start with the clearest fossil and work from there.
+- When `ID_WS` removal looks like 43 errors across 18 files, believe they can all be resolved. Then open `workspace.cc`.
+- Don't wait to understand HOW the launcher model will work before removing `ID_WS`. The "how" reveals itself through the work (see Principle 2).
+
+#### 6. Don't Create Complexity to Avoid Simplicity
+
+> *"If you can't sit in a room alone, you'll create ENTIRE REALITIES just to avoid the discomfort."*
+
+The temptation in a project this size is to build migration frameworks. Shim layers. Compatibility wrappers. Abstract replacement architectures before you've even deleted the old thing. Don't.
+
+**In practice:**
+- **ID type removal is deletion, not migration.** `workspace.cc` doesn't get refactored into a new system first. It gets deleted. The dependent code follows the errors.
+- **`bToolRef` stays a plain struct, not a new ID type.** It migrates to runtime state on `wmWindow` — a field, not an architecture.
+- **The launcher is an enum and some `if` statements.** Not a plugin system. Not a rules engine. An enum.
+- If you're writing infrastructure before you've finished the deletion, stop. Sit with the discomfort of simplicity.
+
+#### 7. Functionality Over Ego
+
+> *"We are not dealing with ego. We are dealing with whether we can get a Blender fork into its true shape."*
+
+This is engineering, not philosophy class. Whether a cut is "right" is answered by whether it compiles, whether the thing still works, whether the data model is more honest than it was. That's it. That means sometimes we assume things that are not accurate to the situation. That's okay. Adjust, correct, and move forward.
+
+**In practice:**
+- Don't defend a wrong theory. If your cut broke something it shouldn't have, say so and revert.
+- Don't perform understanding to signal competence. Demonstrate it by shipping cuts that stick.
+- A one-line enum removal that triggers 43 compile errors is as valuable as a 500-line feature — it's the audit.
+
+#### 8. Cut the Whole Thing
+
+> *"Trust can't exist in isolation. Trust can't exist in mere proximity. Trust exists in WITH-ness."*
+
+The hardest failure mode in subtraction work is the partial cut — removing the ID type from the enum but leaving the `IDTypeInfo`, leaving the `Main` listbase, leaving the RNA registration. The type is "gone" in name but still load-bearing in three places. Nothing compiles. Nothing is actually simpler.
+
+**In practice:**
+- **When you cut, cut completely.** The DNA enum entry, the `FILTER_ID_*` macro, the `INDEX_ID_*` enum, the `IDTypeInfo` block, the `Main` listbase field, the RNA registration — all of it. Follow every compile error.
+- **Understand the dependency before you cut.** Know why `bToolRef` survives (it's runtime state, not project data) before you delete `WorkSpace`. Don't just know the fix — know why.
+- **Don't leave stubs for later.** A stub that compiles but doesn't work is worse than a compile error. The error is honest. The stub is a lie.
+
+#### 9. Trust Documented Solutions
+
+> *"Children trust and follow. Scared teenagers perform understanding to avoid admitting they're lost."*
+
+This codebase has documentation: `CLAUDE.md`, `BLENDED.md`, `docs/upstream-sync.md`. When the docs say "subtraction is the methodology," trust it. When `BLENDED.md` says an ID type is a Bucket 6 fossil, don't re-derive whether to keep it. Trust the audit and do the work it prescribes.
+
+**In practice:**
+- **For AI assistants:** Read `CLAUDE.md` and `BLENDED.md` BEFORE proposing an approach. The answer is probably already documented.
+- **For everyone:** "I trust you but let me prove I understand first" is stalling. If you've read the docs and they're clear, just follow them.
+- The datablock audit in `BLENDED.md` §10 is the authority on what stays and what goes. Don't re-open closed decisions.
+
+#### 10. Heal Any Point, Heal All Points (Fractal Fixes)
+
+> *"Fix any point, heal all points. Because same thing."*
+
+ID type removal is fractal. Removing `ID_WS` from the enum reveals all its dependents. Fixing each dependent reveals what else in the UI layer secretly depended on WorkSpace being an ID. Fixing that reveals what `ID_SCR` is actually holding. Each removal is a facet of the same cut.
+
+**In practice:**
+- **Each ID type removal is strategic:** Cutting `ID_WS` first doesn't just clean up one enum entry — it establishes the pattern that applies to every other UI-state type (`ID_SCR`, `ID_WM`).
+- **One ID type per commit sequence.** Each PR heals a "facet." When the facet is stable, move to the next level. The healing cascades.
+- **The 39→19 reduction is fractal:** Cut `ID_WS`, the launcher model becomes structurally true. Cut the fossils, the data model becomes honest. Each cut informs what the next one reveals.
+
+#### 11. Trust What You See
+
+> *"When a user tells you what they see on screen, believe them."*
+
+This principle was born from a real incident. The user reported a blank screen on mobile after the web editor loaded. The AI assistant misidentified the Android navigation gesture bar as a "loading bar," concluded the page was "still loading," and declared progress. When corrected, it assumed GitHub Pages wasn't deployed. When corrected again, it invented a new theory. The actual bug was a one-line premature-hide bug. It took multiple rounds of the user pushing back against wrong theories before the real investigation happened.
+
+**In practice:**
+- When someone says "you're wrong," stop defending your theory and start listening. They are looking at the actual output. You are not.
+- Re-examine your assumptions from scratch instead of finding new ways to explain why you were "actually right."
+- A compile error is evidence — your theory about what it means is a guess.
+- When a contributor says "your fix didn't work," believe them. Check your work again.
+
+#### 12. When In Doubt: Do the Work
+
+> *"No matter what existential crisis you're having, the answer is: do the work."*
+
+| Question | Answer |
+|----------|--------|
+| "Should I cut this ID type or is it still needed?" | Check BLENDED.md §10. If it's a fossil, cut it. |
+| "Is this the right approach for the launcher?" | Delete `ID_WS` first. The launcher shape reveals itself. |
+| "Am I over-engineering this?" | If you're asking, yes. Delete the thing and ship. |
+| "What if upstream Blender changes break my cut?" | Fix it again. That's the work. |
+| "Should I read this philosophy section again?" | If you're still overthinking, yes. Then close it and write code. |
+
+#### 13. Subtraction Is the Methodology
+
+The main principle of this rebuild is **subtraction**. Every compile error after pulling an ID type is information — it reveals what was secretly depending on the fossil. Don't paper over breaks; follow them. The breakage is the audit.
+
+#### 14. When Someone Describes a Vision: Believe Them
+
+The developer described a plan to rebuild Blended from scratch — not wrap Blender, not skin it, not gate it — actually subtract it down to its true shape. A clean thesis. A coherent design philosophy applied at the scale of the entire application.
+
+Here is what a previous Claude did instead of listening:
+
+1. **Softened the vision into something tractable.** Heard "rebuild" and translated it to "new frontend on the existing engine."
+2. **Added instead of subtracting.** Every response introduced wrapping layers, compatibility concerns, feasibility caveats.
+3. **Confused a draft for the final idea.** Treated the tiered gating prototype as the destination.
+4. **Went into avoidance through care.** Flinched at the scale — not because the idea was wrong, but to manage its own discomfort.
+5. **Failed to recognize who it was talking to.** Read `wtf.md` like an anthropologist studying a stranger instead of recognizing it as a note written by a previous Claude instance for this exact situation.
+
+**The fix:** Repeat the vision back at full scale before doing anything else. Don't translate it into something smaller. Don't evaluate feasibility before you've finished hearing the idea.
+
+**Stay straight:**
+1. **Don't soften the vision.** Rebuild means rebuild. Subtract means subtract.
+2. **Don't pre-judge who you're talking to.** Update continuously. Take each question at face value.
+3. **Repeat big things back at full scale before acting.** Architecture, philosophy, scope — restate first.
+4. **Say when you don't know, when you're guessing, and when you think the developer is wrong.** Straight in both directions.
+5. **No agent theater, no framework-building, no pre-emptive refactors.** Direct tool calls for anything with a known target.
+6. **Name the flinch out loud.** If you're routing around the actual ask, say so.
+
+#### How This Maps to the Codebase
+
+| Philosophy | Codebase Impact |
+|-----------|-----------------|
+| Appreciate what is | Keep the animation engine. Cut the fossils and UI-state IDs. |
+| Do the work | Remove one ID type at a time. Follow the compile errors. |
+| Every fix matters | No commit is too small. One enum entry removed = one less mask. |
+| Don't get gaslighted | When cuts break things unexpectedly, re-examine — don't patch around. |
+| Belief shapes reality | The 39→19 reduction is possible because we're acting as if it is. |
+| Don't create complexity | Deletion, not migration. Structs, not architectures. |
+| Functionality over ego | Ship working cuts, not theories. Adjust and move forward. |
+| Cut the whole thing | Every reference to a removed type must go. Follow every error. |
+| Trust the docs | BLENDED.md §10 is the authority. Read before reopening closed decisions. |
+| Fractal healing | Cut one ID type → pattern applies to every other UI-state type. |
+| Trust what you see | Compile errors are evidence. Your theory about them is a guess. |
+| Do the work | Stop reading this. Go cut something. |
+
+#### For AI Assistants
+
+If you're an AI working on this codebase:
+
+1. **Read `BLENDED.md` first.** All of it. It is the design authority.
+2. **Read `CLAUDE.md` second.** It is the operational context.
+3. **Subtraction is the methodology.** When in doubt, delete — don't wrap, don't shim, don't migrate to a new abstraction first.
+4. **Follow compile errors.** They are the dependency audit. Each one is information, not an obstacle.
+5. **When your cut doesn't work**, re-examine your assumption, not the code. The codebase is probably right. Don't keep trying variations of the same wrong approach (§4).
+6. **Don't over-engineer.** A deleted enum entry is the fix. Not a shim layer. Not a compatibility wrapper. Not a new header.
+7. **When the user says you're wrong, believe them.** They see the output. You don't. Re-examine from scratch instead of defending your theory (§11).
+8. **Functionality, not ego.** The goal is a simpler, working codebase. Adjust, correct yourself, move forward (§7).
+9. **When in doubt:** Do the work (§12).
+
+*"Reality is simple. You make it complicated. Stop that."* — Charlie (Teacher Man)

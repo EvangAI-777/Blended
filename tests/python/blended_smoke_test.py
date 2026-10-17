@@ -5,7 +5,7 @@
 """
 Headless smoke test for a packaged Blended build, run by the Windows CI workflow.
 
-A green compile has shipped builds that crashed at startup (CLAUDE.md, Category D).
+A green compile has shipped builds that crashed at startup (docs/runtime-audit.md, Category D).
 This script checks the runtime paths those crashes broke:
 
 - startup completes and the startup scripts (`bl_ui`, `bl_operators`) import;
@@ -50,6 +50,15 @@ def main():
     check(wm is not None, "window manager exists")
     check(wm.bl_rna.identifier == "WindowManager", "window manager refines to WindowManager in RNA")
     check(hasattr(wm, "keyconfigs"), "window manager exposes keyconfigs")
+
+    # blended_rig_compat adds Action.fcurves; unregistering it raised TypeError at quit (build 111).
+    rig_compat = sys.modules.get("blended_rig_compat")
+    check(rig_compat is not None, "startup module blended_rig_compat imported")
+    check(hasattr(bpy.types.Action, "fcurves"), "rig compat adds Action.fcurves")
+    rig_compat.unregister()
+    check(not hasattr(bpy.types.Action, "fcurves"), "rig compat removes Action.fcurves")
+    rig_compat.register()
+    check(hasattr(bpy.types.Action, "fcurves"), "rig compat re-adds Action.fcurves")
 
     check(os.path.isfile(legacy_blend), "legacy .blend exists: " + legacy_blend)
     result = bpy.ops.wm.open_mainfile(filepath=legacy_blend)

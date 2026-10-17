@@ -3,7 +3,7 @@
 Blended is a fork of [Blender](https://www.blender.org/). This document describes
 how to manually merge upstream Blender changes into Blended.
 
-> *"Appreciate what already is."* — Development Philosophy §1, [`CLAUDE.md`](CLAUDE.md)
+> *"Appreciate what already is."* — Development Philosophy §1, [`BLENDED.md`](../BLENDED.md) appendix
 >
 > Upstream Blender is the foundation we build on. Syncing is an act of
 > appreciation — integrating the work of hundreds of contributors while
@@ -92,6 +92,27 @@ For each, keep the Blended additions and integrate new upstream changes around t
 | `BLENDED.md` | Blended-only file |
 | `CLAUDE.md` | Blended-only file |
 | `CHANGELOG.md` | Blended-only file |
+| `.gitignore` | Negations after upstream's `.*` rule that track `.github/`, `.claude/skills/` and `.claude/rules/` |
+| Everything in the Divergence Register below | See the register |
+
+## Divergence Register
+
+Every place Blended deliberately differs from upstream Blender, one row per change: what it is, the main files, why (the `BLENDED.md` section that decides it), and when it could be dropped. Use it to triage each upstream merge: a conflict in a listed file is expected and resolved in Blended's favor; a conflict anywhere else is new and needs a look. Most rows say "never": the subtraction is the point. When a PR adds or removes a divergence, it updates this table.
+
+| Change | Main files | Why | Drop when |
+|--------|-----------|-----|-----------|
+| Product identity and versioning | `BKE_blender_version.h`, `blender.cc`, `CMakeLists.txt` (`project`), `source/creator/CMakeLists.txt` (`OUTPUT_NAME Blended`, `Blended.exe`), `wm_window.cc`, `wm_splash_screen.cc`, `release/windows/icons/winblender.rc`, `release/freedesktop/blender.desktop` | §16 product identity | Never |
+| Launcher instead of the splash | `editors/space_blended_launcher/`, `rna_space.cc` (`SPACE_BLENDED_LAUNCHER`), `wm_init_exit.cc` (`WM_init_splash` is a no-op), launcher keymap in `blender_default.py` / `industry_compatible_data.py` / `keymap_hierarchy.py` | §11–12 launcher and mode lenses | Never |
+| UI-state ID types removed (`ID_WS`, `ID_SCR`, `ID_WM`) | `workspace.cc`, `screen.cc`, `wm.cc` (`wm_add_default` builds the runtime Launcher UI), `wm_files.cc`, `blendfile.cc` (`kept_ui_*` remap), `screen_edit.cc`, `lib_id_delete.cc` (`id_free_runtime_screen`), `rna_ID.cc` (legacy codes → RNA types), `DNA_ID_enums.h`, `main.cc` (`which_libbase`), workspace operators and menus | §10 Bucket 4 | Never; the post-1.0 user-workspaces plan changes the workspace part |
+| Fossil and deprecated ID types removed (`ID_CU_LEGACY`, `ID_GD_LEGACY`, `ID_CF`, `ID_PC`, `ID_SPK`, `ID_PA`, `ID_LS`, `ID_MB`, `ID_TE`) | `idtype.cc`, `main.cc` (kept listbases, `BKE_main_clear` drain), `DNA_ID_enums.h`, the Scar 10 allocators (`particle.cc`, `gpencil_legacy.cc`, `linestyle.cc`, `curve.cc`), `geometry_component_curves.cc`, depsgraph, outliner, animation channels, RNA, `intern/cycles/blender/addon/properties.py` | §10 Buckets 5–6 | Never |
+| Runtime types folded down (`ID_LP`, `ID_PAL`, `ID_LT`, `ID_MSK`, `ID_VF`, `ID_BR`) | `lightprobe.cc`, `paint.cc`, `lattice.cc`, mask, vfont and `brush.cc`, plus their permanent homes (Light type flag, Brush embed, `LatticeModifierData`, compositor node tree, `OB_FONT` filepath) | §10 Bucket 3 | Never |
+| `.blended` native format | `BLENDED` magic in read/write, `FILE_TYPE_BLENDED`, file browser filter/draw/sort, `wm_files*.cc`, `wm_operator_props.cc` (`filter_blended`), platform registration (Windows, Linux MIME, macOS UTI) | §5 file format | Never |
+| `.blend` import | `versioning_520.cc` (502.23 `OB_SPEAKER` → `OB_EMPTY`, 502.31 `OB_MBALL` → `OB_EMPTY`), dropped-data manifest Text block | §5, 0.9.0 | Never |
+| Python UI for removed types | `scripts/startup/bl_ui/` (outliner, dope sheet, topbar workspace menu), `bl_operators` | §10 | Never; review on every sync |
+| Blended-only scripts | `scripts/startup/blended_rig_compat.py`, `scripts/startup/blended_update_check.py` | Rigify on pre-5.0 rigs; release updates | Rig compat: when Rigify stops reading `action.fcurves` |
+| Release build configuration | `build_files/cmake/config/blended_release.cmake` (GPU binaries and Freestyle off) | Build size; Freestyle removed (`ID_LS`) | Never |
+| Repository and tooling | `.github/`, `.claude/`, `docs/`, `tools/check_blended.py`, `tests/python/blended_smoke_test.py`, `AGENTS.md`, `CLAUDE.md`, `BLENDED.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `SECURITY.md`, `.gitignore` (negations for `.github/`, `.claude/`) | Blended's own process | Never |
+| Upstream repository tooling removed | `.gitea/`, `.github/FUNDING.yml`, `.well-known/funding-manifest-urls` | Upstream identity and Gitea-only tooling (PR #252) | Never. **An upstream merge brings them back: delete them again.** |
 
 ## After Syncing: Version Bump Checklist
 

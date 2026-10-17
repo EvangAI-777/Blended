@@ -70,7 +70,8 @@ _patched = False
 
 def register():
     global _patched
-    if not _patched:
+    # Step aside if upstream ever re-adds Action.fcurves as an RNA property.
+    if not _patched and 'fcurves' not in bpy.types.Action.bl_rna.properties:
         # Blender's RNA metaclass setattro allows plain Python descriptors to
         # be set on bpy.types.* when the attribute is not an existing RNA
         # property. On attribute lookup, pyrna_struct_getattro falls through to
@@ -83,12 +84,10 @@ def register():
 def unregister():
     global _patched
     if _patched:
-        # del bpy.types.Action.fcurves would raise TypeError because Blender's
-        # metaclass __delattr__ only handles RNA properties, not plain Python
-        # descriptors. Use type.__delattr__ to go through the base type
-        # machinery instead.
-        try:
-            type.__delattr__(bpy.types.Action, 'fcurves')
-        except AttributeError:
-            pass
+        # The RNA metaclass __delattr__ frees a runtime RNA property of that
+        # name if there is one; Action has no RNA fcurves, so it falls through
+        # to the standard type deletion. type.__delattr__ can't be used here:
+        # Python refuses to apply it to a metaclass that defines its own
+        # __setattr__ (TypeError at quit, build 111 log).
+        del bpy.types.Action.fcurves
         _patched = False
