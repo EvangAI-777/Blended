@@ -422,6 +422,34 @@ Curve *BKE_curve_add(Main *bmain, const char *name, int type)
   return cu;
 }
 
+Curve *BKE_curve_new_nomain()
+{
+  /* Same as #BKE_id_new_nomain: tagged no-Main and no user refcount, default data only.
+   * #BKE_id_new_nomain can't be used: it allocates through the #IDTypeInfo, which
+   * #ID_CU_LEGACY no longer has (Scar 10). */
+  Curve *cu = MEM_new<Curve>(__func__);
+  BKE_libblock_runtime_ensure(cu->id);
+  cu->id.tag |= ID_TAG_NO_MAIN | ID_TAG_NO_USER_REFCOUNT;
+  *(reinterpret_cast<short *>(cu->id.name)) = ID_CU_LEGACY;
+  BLI_strncpy(cu->id.name + 2, DATA_("Curve"), sizeof(cu->id.name) - 2);
+  BKE_lib_libblock_session_uid_ensure(&cu->id);
+
+  curve_init_data(&cu->id);
+
+  return cu;
+}
+
+void BKE_curve_free_nomain(Curve *cu)
+{
+  BLI_assert(cu->id.tag & ID_TAG_NO_MAIN);
+  /* What #BKE_id_free does for a no-Main ID, with the curve's own free callback in place of the
+   * #IDTypeInfo one. */
+  BKE_libblock_free_data_py(&cu->id);
+  curve_free_data(&cu->id);
+  BKE_libblock_free_data(&cu->id, false);
+  MEM_delete(cu);
+}
+
 ListBaseT<Nurb> *BKE_curve_editNurbs_get(Curve *cu)
 {
   if (cu->editnurb) {

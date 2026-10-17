@@ -101,6 +101,13 @@ enum eNurbHandleTest_Mode {
 void BKE_curve_editfont_free(Curve *cu);
 void BKE_curve_init(Curve *cu, short curve_type);
 Curve *BKE_curve_add(Main *bmain, const char *name, int type);
+/**
+ * Allocate a legacy curve outside of any #Main (the equivalent of #BKE_id_new_nomain, which
+ * can't allocate #ID_CU_LEGACY since it has no #IDTypeInfo). Free it with
+ * #BKE_curve_free_nomain, not #BKE_id_free.
+ */
+Curve *BKE_curve_new_nomain();
+void BKE_curve_free_nomain(Curve *cu);
 void BKE_curve_type_test(Object *ob, bool dimension_update);
 void BKE_curve_dimension_update(Curve *cu);
 
