@@ -50,6 +50,8 @@ def main():
     check(wm is not None, "window manager exists")
     check(wm.bl_rna.identifier == "WindowManager", "window manager refines to WindowManager in RNA")
     check(hasattr(wm, "keyconfigs"), "window manager exposes keyconfigs")
+    # The General startup is an empty project: nothing behind the launcher (build 111).
+    check(len(bpy.data.objects) == 0, "factory startup has no objects (got {})".format(len(bpy.data.objects)))
 
     # blended_rig_compat adds Action.fcurves; unregistering it raised TypeError at quit (build 111).
     rig_compat = sys.modules.get("blended_rig_compat")
