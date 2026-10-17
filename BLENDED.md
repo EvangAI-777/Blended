@@ -123,6 +123,12 @@ This is how the developer, as a member of the Blender community, works for chang
 
 The release structure follows from this. Phase 1, the runtime audit, is the private test, where breakage is meant to happen. Phase 2, the GitHub Pages launch, is the showing, and it comes only after the audit clears. "Fixed" means it ran on hardware, not just that it compiled: a build can only persuade people if it survives their own testing.
 
+### Work, not judgment
+
+This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request the developer once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
+
+In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in CLAUDE.md and the notes in `wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
+
 ### Codex pre-audit
 
 Implementation plans written into CLAUDE.md at implementation resolution — file paths, function names, invariants, edge cases — are audited by Codex as if they were real code, because Codex reviews PR diffs and does not distinguish between source files and documentation files. Errors in the plan are caught before any source is written. Canonical example: PR #229 caught the LS post-read use-after-free from the CLAUDE.md plan text alone, before the implementation commit existed. This is why 0.8.0 (23 layers, ~80 sites) and 0.9.0 shipped CI-green on the first push. Rule: write plans at implementation resolution. "Update the extension to `.blended`" is not auditable. "`source/blender/blenlib/BLI_fileops.h:245` — add `FILE_TYPE_BLENDED` to `BLI_file_extension_is_blend()`" is.

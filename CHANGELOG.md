@@ -157,6 +157,8 @@ CI build 110 (run 38840006785, `main` @ `b43314cf`, the PR #245 merge) went gree
 
 **Claude AI contributor (2026-10-16 — 1.0.0-dev Phase 1 ninth findings):** Read the developer's two-part build 110 report (splash and launcher screenshots, log, crash log, status-bar screenshot). Traced the File > Open crash from the backtrace to `id_free` on a deregistered screen, and found that it covers every temporary-window close, not only File > Open. Traced the status-bar warning to `setup_app_data` at startup rather than to File > Open. Fixed all five findings in PR #249. Four mandatory docs updated. The changed `.cc` files pass the local `g++ -fsyntax-only` check against a stashed baseline; the Python files pass `py_compile`. Not compiled on Windows or run.
 
+**Claude AI contributor (2026-10-17 — 1.0.0-dev docs):** Corrected the project timeline in CLAUDE.md and `wtf.md` (PR #250). Scar 25 said "two years"; Scar 10 was written on 2026-05-01, two days after ID_WM/ID_SCR were deregistered, and the six foundation layers took about five weeks. Codex caught two wrong dates in the first correction. Added "Work, not judgment" to BLENDED.md §4 at the developer's request, with matching lines in CLAUDE.md (Pull Request Instructions) and `.github/README.md`. The repo is about work ethic and quality, not personal judgments. The reference point is a maintainer elsewhere closing one of the developer's PRs with "are you proud of yourself".
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
