@@ -1167,8 +1167,13 @@ static void setup_app_data(bContext *C,
   }
   /* May happen with library files, loading undo-data should never have a null `curscene`
    * (but may have a null `curscreen`). */
-  else if (ELEM(nullptr, bfd->curscreen, bfd->curscene)) {
+  else if (bfd->curscene == nullptr) {
     BKE_report(reports->reports, RPT_WARNING, "Library file, loading empty scene");
+    mode = LOAD_UI_OFF;
+  }
+  /* Blended: files never carry screens (ID_SCR is deregistered), so a null `curscreen` is the
+   * normal case. The current UI is kept without a warning. */
+  else if (bfd->curscreen == nullptr) {
     mode = LOAD_UI_OFF;
   }
   else if (G.fileflags & G_FILE_NO_UI) {
