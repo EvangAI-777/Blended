@@ -1,0 +1,13 @@
+# Keeps the commit-SHA pins in .github/workflows current. Dependabot opens a PR per update,
+# with the new SHA and the version in the trailing comment.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"

@@ -24,11 +24,15 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    env:
+      # Passed through the environment, never expanded into scripts: `${{ }}` in a `run:` block
+      # is pasted into the shell source before it runs (script injection).
+      UPSTREAM_REF: ${{ inputs.upstream_ref }}
 
     steps:
     # ── Checkout ──────────────────────────────────────────────
     - name: Checkout Blended main
-      uses: actions/checkout@v4
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       with:
         fetch-depth: 0   # full history so git can find the merge base
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -41,22 +45,24 @@ jobs:
     # ── Fetch upstream ────────────────────────────────────────
     - name: Fetch upstream ref
       run: |
+        # Reject anything that isn't a valid ref name (spaces, '..', control characters, ...).
+        git check-ref-format --allow-onelevel "$UPSTREAM_REF"
         git remote add upstream https://projects.blender.org/blender/blender.git
         # No --depth: we need the common ancestor to merge cleanly.
-        git fetch upstream "${{ inputs.upstream_ref }}" --no-tags
+        git fetch upstream "$UPSTREAM_REF" --no-tags
         echo "UPSTREAM_SHA=$(git rev-parse FETCH_HEAD)" >> "$GITHUB_ENV"
 
     # ── Create sync branch ────────────────────────────────────
     - name: Create sync branch
       run: |
-        BRANCH="sync/${{ inputs.upstream_ref }}"
+        BRANCH="sync/$UPSTREAM_REF"
         git checkout -b "$BRANCH"
         echo "SYNC_BRANCH=$BRANCH" >> "$GITHUB_ENV"
 
     # ── Attempt merge ─────────────────────────────────────────
     - name: Merge upstream
       run: |
-        if git merge FETCH_HEAD --no-ff -m "Merge upstream ${{ inputs.upstream_ref }}"; then
+        if git merge FETCH_HEAD --no-ff -m "Merge upstream $UPSTREAM_REF"; then
           echo "MERGE_STATUS=clean" >> "$GITHUB_ENV"
           # Empty file so later steps can safely cat it
           touch /tmp/conflicts.txt
@@ -70,7 +76,7 @@ jobs:
           git add -A
           CONFLICT_COUNT=$(wc -l < /tmp/conflicts.txt)
           printf 'WIP: upstream %s — %s conflicts need resolution\n\n%s\n' \
-            "${{ inputs.upstream_ref }}" "$CONFLICT_COUNT" "$(cat /tmp/conflicts.txt)" \
+            "$UPSTREAM_REF" "$CONFLICT_COUNT" "$(cat /tmp/conflicts.txt)" \
             > /tmp/commit_msg.txt
           git commit -F /tmp/commit_msg.txt
         fi
@@ -82,8 +88,6 @@ jobs:
     # ── Build PR body and open draft PR ──────────────────────
     - name: Build PR body
       run: |
-        UPSTREAM_REF="${{ inputs.upstream_ref }}"
-
         if [ "$MERGE_STATUS" = "clean" ]; then
           MERGE_SECTION="Merge applied cleanly. Review the diff, run a build, and merge when ready."
         else
@@ -121,7 +125,7 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         gh pr create \
-          --title "sync: upstream ${{ inputs.upstream_ref }}" \
+          --title "sync: upstream $UPSTREAM_REF" \
           --body-file /tmp/pr_body.md \
           --draft \
           --head "$SYNC_BRANCH" \
