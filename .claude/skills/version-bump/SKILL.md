@@ -42,7 +42,7 @@ The 0.4.0 CI-complete milestone (build 70) shipped without bumping the version h
 
 4. **`BLENDED.md`** — update the **Status** line at the top of the file to match.
 
-5. **`.github/README.md`** — update the version/status sentence under the repo description. Stage with `git add -f .github/README.md` (it is in `.gitignore`).
+5. **`.github/README.md`** — update the version/status sentence under the repo description.
 
 **Quick checklist (run after any CI-green milestone or new dev-cycle start):**
 ```
@@ -50,7 +50,7 @@ The 0.4.0 CI-complete milestone (build 70) shipped without bumping the version h
 □ CLAUDE.md — "Current version" line updated; roadmap table row updated
 □ CHANGELOG.md — version bump note + CI-complete note added; grep all sections for stale version refs
 □ BLENDED.md — Status line updated; grep all sections for stale version refs
-□ .github/README.md — version/status sentence updated (git add -f)
+□ .github/README.md — version/status sentence updated
 □ All five changes in one commit, pushed to the working branch
 ```
 **Note:** The four mandatory docs each contain multiple sections that reference version state — roadmap tables, mid-document planning blocks, subsection headers. A headline-only pass misses them. `grep -n "0\\.X" <file>` (replace X with the version) before staging each doc.

@@ -1,5 +1,12 @@
 # generic files to ignore
 .*
+# Blended: track the repo configuration that lives in dot-directories (GitHub workflows and
+# templates; Claude Code skills and path-scoped rules). Local Claude Code state stays ignored.
+!.github/
+!.claude/
+.claude/*
+!.claude/skills/
+!.claude/rules/
 
 # python temp paths
 __pycache__/

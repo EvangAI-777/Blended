@@ -525,7 +525,7 @@ Pull requests can always be created whenever requested — no need to ask whethe
 
 **Work, not judgment (BLENDED.md §4).** This repo is about work ethic and quality, not personal judgments. Review comments, replies and commit messages talk about the code and the record, never about the person who wrote it. That covers Codex, the developer, any outside contributor, and you. A finding is checked against the code and then fixed or answered. A mistake is corrected and written down, not defended. The baseline for what this project refuses is a maintainer elsewhere closing one of the developer's PRs with "are you proud of yourself".
 
-**PR loop:** `.claude/skills/steward/SKILL.md` covers how a PR is driven from open to merged: the Codex review loop, the local checks that work without a build, docs in the same PR, merging and the build hand-off. Read it before acting on PR events. Like `.github/`, `.claude/` is gitignored: stage it with `git add -f`.
+**PR loop:** `.claude/skills/steward/SKILL.md` covers how a PR is driven from open to merged: the Codex review loop, the local checks that work without a build, docs in the same PR, merging and the build hand-off. Read it before acting on PR events. (Historical: `.github/` and `.claude/` were gitignored by upstream's `.*` rule until PR #253, so they needed `git add -f`. They no longer do.)
 
 **How PRs work in this repo:**
 

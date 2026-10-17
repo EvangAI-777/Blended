@@ -55,8 +55,7 @@ State plainly in the PR what could not be checked locally.
 
 Any fix or finding that changes behavior updates the four mandatory docs (CLAUDE.md, CHANGELOG.md,
 BLENDED.md, `.github/README.md`) in the same PR. That covers Category tables, the open-findings
-section, status lines and the CHANGELOG contributor note. `.github/` is gitignored, and so is
-`.claude/`. Stage both with `git add -f`.
+section, status lines and the CHANGELOG contributor note.
 
 ## PR description
 
