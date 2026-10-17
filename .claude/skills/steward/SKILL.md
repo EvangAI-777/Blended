@@ -70,8 +70,7 @@ section, status lines and the CHANGELOG contributor note.
 - Work on the session's designated branch. After its PR merges, restart the branch from
   `origin/main` (`git checkout -B <branch> origin/main`). A force push is fine only while the branch
   holds nothing but already-merged history.
-- Before committing to an existing branch, check it hasn't already merged (CLAUDE.md, "The
-  Orphaned-Commit Trap").
+- Before committing to an existing branch, check it hasn't already merged (CLAUDE.md, "The orphaned-commit trap").
 
 ## Merge and build
 

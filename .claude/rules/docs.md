@@ -30,6 +30,7 @@ Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the C
 | Rules that matter only for some files | `.claude/rules/*.md` with `paths:` |
 | Multi-step procedures | `.claude/skills/*/SKILL.md` |
 | Reference detail and history | `docs/` (`runtime-audit.md`, `scars.md`, `fork-reference.md`) |
+| Implementation plans for Codex pre-audit (BLENDED.md §4) | a file under `docs/`, written at implementation resolution, pushed before the code |
 | One-liner status for humans landing on GitHub | `.github/README.md` — "What's Different" section |
 
 **Claude AI contributor notes go in CHANGELOG, not the README.** The README Contributors section is two sentences linking to CHANGELOG. All per-session implementation detail — what was built, what was removed, what scars were applied — belongs in the CHANGELOG *Unreleased* entry for that version, alongside the code progress rows. The README is a landing page.
