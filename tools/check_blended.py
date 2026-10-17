@@ -7,7 +7,7 @@
 Fast source checks for Blended, run on every pull request (`.github/workflows/checks.yml`).
 
 Each check targets a class of bug that once shipped in a Windows build and was only found on
-hardware (CLAUDE.md, Category D). None of them needs a build:
+hardware (docs/runtime-audit.md, Category D). None of them needs a build:
 
 - Python syntax in the shipped scripts. A single `SyntaxError` in `bl_ui` crashed build 109.
 - Allocation of a deregistered ID type through `BKE_libblock_alloc` / `BKE_id_new`. Without

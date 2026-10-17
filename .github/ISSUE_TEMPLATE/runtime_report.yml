@@ -8,7 +8,7 @@ body:
       value: |
         Thanks for testing Blended. The more specific the report, the faster the triage:
         "adding a lattice modifier to an object in a file loaded from disk crashes" is easier to
-        work with than "it crashed". Check the Known Runtime Artifacts in `CLAUDE.md` first:
+        work with than "it crashed". Check the Known Runtime Artifacts in `docs/runtime-audit.md` first:
         some behavior changes are expected.
   - type: input
     id: build

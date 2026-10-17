@@ -5,7 +5,7 @@
 """
 Headless smoke test for a packaged Blended build, run by the Windows CI workflow.
 
-A green compile has shipped builds that crashed at startup (CLAUDE.md, Category D).
+A green compile has shipped builds that crashed at startup (docs/runtime-audit.md, Category D).
 This script checks the runtime paths those crashes broke:
 
 - startup completes and the startup scripts (`bl_ui`, `bl_operators`) import;
