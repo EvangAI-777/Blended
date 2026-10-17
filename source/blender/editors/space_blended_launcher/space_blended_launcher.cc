@@ -28,6 +28,7 @@
 
 #include "BLF_api.hh"
 
+#include "DNA_node_types.h"
 #include "DNA_object_types.h"
 #include "DNA_scene_types.h"
 #include "DNA_sequence_types.h"
@@ -319,7 +320,12 @@ static bool section_has_data(const Main *bmain, const char *section_label)
     return bmain->images.first != nullptr;
   }
   if (STREQ(section_label, "Compositing")) {
-    return bmain->nodetrees.first != nullptr;
+    for (const bNodeTree &ntree : bmain->nodetrees) {
+      if (ntree.type == NTREE_COMPOSIT) {
+        return true;
+      }
+    }
+    return false;
   }
   if (STREQ(section_label, "Audio")) {
     return bmain->sounds.first != nullptr;
@@ -330,9 +336,10 @@ static bool section_has_data(const Main *bmain, const char *section_label)
   return false;
 }
 
-/* The editor a project opens in: the first Creative section with content, any objects in the 3D
- * view, sequencer strips in the sequencer, then the first Post section with content. Finalizing
- * is skipped because it counts any object, which the 3D view already covers. */
+/* The editor a project opens in: the first Creative section with content, any objects or
+ * non-compositor node groups in the 3D view, sequencer strips in the sequencer, then the first
+ * Post section with content. Finalizing is skipped because it counts any object, which the 3D
+ * view already covers. */
 static int project_target_space(const Main *bmain)
 {
   for (int si = 0; g_creative.sections[si].label != nullptr; si++) {
@@ -343,6 +350,12 @@ static int project_target_space(const Main *bmain)
   }
   if (bmain->objects.first != nullptr) {
     return SPACE_VIEW3D;
+  }
+  /* Geometry, shader and texture node groups are 3D content (VFX, materials), not compositing. */
+  for (const bNodeTree &ntree : bmain->nodetrees) {
+    if (ntree.type != NTREE_COMPOSIT) {
+      return SPACE_VIEW3D;
+    }
   }
   /* A timeline (video editing) project: strips in any scene's sequencer. */
   for (const Scene &scene : bmain->scenes) {
