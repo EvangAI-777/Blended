@@ -50,6 +50,12 @@ def main():
     check(wm is not None, "window manager exists")
     check(wm.bl_rna.identifier == "WindowManager", "window manager refines to WindowManager in RNA")
     check(hasattr(wm, "keyconfigs"), "window manager exposes keyconfigs")
+    # Blended keeps its own user and cache folders, apart from Blender's (build 111 finding 5).
+    user_dir = os.path.normpath(bpy.utils.resource_path('USER'))
+    check(os.path.basename(os.path.dirname(user_dir)).lower() == "blended",
+          "user folder is Blended's: " + user_dir)
+    check("blender foundation" not in user_dir.lower(), "user folder is not under Blender Foundation")
+    check("blended" in os.path.normpath(bpy.app.cachedir).lower(), "cache folder is Blended's: " + bpy.app.cachedir)
     # The General startup is an empty project: nothing behind the launcher (build 111).
     check(len(bpy.data.objects) == 0, "factory startup has no objects (got {})".format(len(bpy.data.objects)))
 

@@ -34,7 +34,7 @@ The Known Runtime Artifacts table in this file (Categories A, B, C) is the start
 - Closing Preferences and the render window: no crash (build 110 finding 1).
 - Cycles in the render engine list with no traceback (build 110 finding 3); no "loading empty scene" in the status bar (finding 5).
 - A mesh object with a Geometry Nodes modifier that outputs curves (Mesh to Curve) draws in the viewport and renders (render-curve fix `2895a4d8`).
-- First run of build 112: `%APPDATA%\Blended\5.2\config` exists with the preferences copied from the Blender folder, and nothing new is written under `Blender Foundation` (build 111 finding 5).
+- First run of build 112: the preferences were copied from the Blender folder into `%APPDATA%\Blended\5.2\config` (build 111 finding 5). The smoke test checks the folder names headless; the copy needs an existing Blender folder, so only a hardware run shows it.
 - Build 111 findings (below): empty startup, File > Open entering the project's editor, the launcher's content dot, the render window title and the status-bar version; no `blended_rig_compat` Traceback at quit.
 
 **Gate condition for the release tag:**
