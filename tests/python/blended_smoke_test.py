@@ -51,6 +51,15 @@ def main():
     check(wm.bl_rna.identifier == "WindowManager", "window manager refines to WindowManager in RNA")
     check(hasattr(wm, "keyconfigs"), "window manager exposes keyconfigs")
 
+    # blended_rig_compat adds Action.fcurves; unregistering it raised TypeError at quit (build 111).
+    rig_compat = sys.modules.get("blended_rig_compat")
+    check(rig_compat is not None, "startup module blended_rig_compat imported")
+    check(hasattr(bpy.types.Action, "fcurves"), "rig compat adds Action.fcurves")
+    rig_compat.unregister()
+    check(not hasattr(bpy.types.Action, "fcurves"), "rig compat removes Action.fcurves")
+    rig_compat.register()
+    check(hasattr(bpy.types.Action, "fcurves"), "rig compat re-adds Action.fcurves")
+
     check(os.path.isfile(legacy_blend), "legacy .blend exists: " + legacy_blend)
     result = bpy.ops.wm.open_mainfile(filepath=legacy_blend)
     check(result == {'FINISHED'}, "opened legacy .blend")

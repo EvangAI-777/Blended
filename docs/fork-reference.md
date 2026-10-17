@@ -19,8 +19,8 @@ Reference detail moved verbatim from CLAUDE.md in PR #253: where Blended's brand
 - `scripts/startup/blended_rig_compat.py` — adds `action.fcurves` as a Python property on `bpy.types.Action`
 - Returns `_FCurvesCompat` proxy flattening FCurves from all channelbags across all layers/strips
 - Restores iteration, `len()`, indexed access, `find()` — the subset Rigify `ActionCurveTable` uses
-- `register()` uses `bpy.types.Action.fcurves = property(...)` only if not already present
-- `unregister()` uses `type.__delattr__(bpy.types.Action, 'fcurves')` — Blender's metaclass `__delattr__` only handles RNA props, not plain Python descriptors
+- `register()` uses `bpy.types.Action.fcurves = property(...)`, only if Action has no RNA `fcurves` (`bl_rna.properties`)
+- `unregister()` uses `del bpy.types.Action.fcurves`: the RNA metaclass frees a runtime RNA property of that name if one exists, otherwise falls through to the standard type deletion. `type.__delattr__` raises `TypeError` on this metaclass (build 111 log, fixed in PR #253)
 
 ### Update Checker
 - `scripts/startup/blended_update_check.py` — background thread on `load_post` handler
