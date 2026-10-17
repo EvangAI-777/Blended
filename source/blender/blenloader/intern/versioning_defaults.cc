@@ -674,6 +674,21 @@ void BLO_update_defaults_startup_blend(Main *bmain, const char *app_template)
     }
   }
 
+  /* Blended: the General startup is an empty project. Nothing sits behind the launcher, and every
+   * mode opens on the same empty scene (BLENDED.md §11). Remove the factory cube, camera and light
+   * together with their data. General is a null template, or an empty name from
+   * File > New > General. Other templates keep their starter content. */
+  if (!app_template || app_template[0] == '\0') {
+    BKE_main_id_tag_all(bmain, ID_TAG_DOIT, false);
+    for (Object &object : bmain->objects) {
+      object.id.tag |= ID_TAG_DOIT;
+      if (object.data) {
+        static_cast<ID *>(object.data)->tag |= ID_TAG_DOIT;
+      }
+    }
+    BKE_id_multi_tagged_delete(bmain);
+  }
+
   /* For builtin templates only. */
   if (!blo_is_builtin_template(app_template)) {
     return;
@@ -887,20 +902,6 @@ void BLO_update_defaults_startup_blend(Main *bmain, const char *app_template)
       scene.grease_pencil_settings.aa_samples = 8;
       scene.grease_pencil_settings.motion_blur_steps = 8;
     }
-  }
-
-  /* Blended: the General startup is an empty project. Nothing sits behind the launcher, and every
-   * mode opens on the same empty scene (BLENDED.md §11). Remove the factory cube, camera and light
-   * together with their data. Other templates keep their starter content. */
-  if (!app_template) {
-    BKE_main_id_tag_all(bmain, ID_TAG_DOIT, false);
-    for (Object &object : bmain->objects) {
-      object.id.tag |= ID_TAG_DOIT;
-      if (object.data) {
-        static_cast<ID *>(object.data)->tag |= ID_TAG_DOIT;
-      }
-    }
-    BKE_id_multi_tagged_delete(bmain);
   }
 }
 
