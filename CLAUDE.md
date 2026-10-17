@@ -1,16 +1,37 @@
 # CLAUDE.md — Blended Project Context
 
-Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the foundation up.
+<!-- Maintainer note (stripped before Claude reads this file): keep CLAUDE.md under ~200 lines.
+     Always-true rules only. File-specific rules go in .claude/rules/ (paths:), procedures in
+     .claude/skills/, reference and history in docs/. Restructured in PR #253. -->
 
-**Read `BLENDED.md` first.** It is the design authority — identity, architecture, datablock audit, pipeline specs, locked decisions, open questions, and guardrails. This file is operational context for Claude sessions: what's been built, what the patterns are, what not to repeat.
+Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the foundation up, by subtraction.
+
+**Read `BLENDED.md` first.** It is the design authority: identity, architecture, the datablock audit, locked decisions, open questions and guardrails. This file is the operational context for Claude sessions.
 
 **Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches its own UI (the launcher) for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open crash when the file browser closes, upstream splash over the launcher, Cycles `MetaBall` registration error, empty launcher keymap, spurious "loading empty scene" warning) fixed, awaiting build verification. Category D table updated. CI now smoke-tests each packaged build headless (`tests/python/blended_smoke_test.py`), and every PR runs fast source checks (`tools/check_blended.py`; PR #252, which also hardened the workflows and fixed a latent render-curve crash the check found). Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
 
 ---
 
-## Runtime Audit (Phase 1)
+## Where things live
 
-The runtime audit reference lives in [`docs/runtime-audit.md`](docs/runtime-audit.md): the audit protocol, the open runtime checks, the Known Runtime Artifacts (Categories A–D: expected changes, resolved crash paths, leaks, fixed crashes) and the build-by-build findings. **Check it before assuming a new bug.** When a build report comes in, use the `runtime-audit` skill.
+| Path | Read it when |
+|------|--------------|
+| `BLENDED.md` | Always first. Design authority; its appendix holds the Development Philosophy |
+| `docs/runtime-audit.md` | Before calling anything a new bug: the audit protocol, open runtime checks, Categories A–D, build findings |
+| `docs/scars.md` | Before your first session, and when a rule below points to a scar: the full story behind each rule |
+| `docs/fork-reference.md` | Branding locations, rig compatibility, update checker, completed layers, datablock audit |
+| `CHANGELOG.md` | Release record, per-session detail, Claude AI contributor notes |
+| `wtf.md` | Who the developer is and how to work with them (see the end of this file) |
+| `UPSTREAM_SYNC.md` | Merging upstream Blender; conflict-prone files |
+| `AGENTS.md` | What Codex reads (review guidelines). Keep it consistent with this file |
+| `.claude/rules/` | Load automatically for matching files: `id-types.md` (C/C++), `docs.md` (the docs), `workflows.md` (CI) |
+| `.claude/skills/` | `runtime-audit` (build hand-off and triage), `steward` (PR loop), `version-bump` |
+
+---
+
+## Status and roadmap
+
+Phase 1 of 1.0.0, the runtime audit, is in progress: the developer runs each Windows build on hardware and reports; Claude triages, fixes and documents; the next build verifies. Use the `runtime-audit` skill when a build finishes or a report comes in. Phase 2 (GitHub Pages) starts after the audit checklist clears; the release tag needs both.
 
 ### Foundation Layer Roadmap
 
@@ -83,7 +104,7 @@ make check_mypy     # Python type checking
 
 ---
 
-## Fork-Specific Patterns (What Makes Blended Different)
+## Fork-Specific Patterns
 
 ### Branding, rig compatibility, update checker
 
@@ -103,46 +124,46 @@ Publisher: **CHJ 3 Productions LLC** (Indiana); upstream code keeps its Blender 
 
 39 → ~19 ID types; all buckets closed. Per-type detail: [`docs/fork-reference.md`](docs/fork-reference.md) and BLENDED.md §10.
 
-## Battle Scars, Philosophy, Session Discipline
+---
 
-Moved out of this file verbatim in PR #253:
-- The full scars (Scars 1–26, the note for the next version of you, the full Codex Standard), session discipline and the full PR instructions: [`docs/scars.md`](docs/scars.md).
-- The Development Philosophy: [`BLENDED.md`](BLENDED.md), "Appendix — Development Philosophy".
+## Rules that hold in every session
+
+Each comes from a real failure. The full story is in `docs/scars.md`; read it when the rule alone doesn't settle a case.
+
+- **Commit and push after every logical unit** (Scar 3). Never hold unpushed commits: a dead session loses them. One layer, one commit, one push.
+- **Don't over-delete** (Scar 1). A file with ID-system glue and runtime logic loses only the glue.
+- **Deregistered ID types never go through generic ID APIs** (Scars 2, 10, 25). The list, the allocation template and the kept-listbase rule are in `.claude/rules/id-types.md`; `tools/check_blended.py` enforces the allocation part.
+- **Read a whole file before editing it** if it's longer than ~200 lines (Scar 21). Revert a botched edit instead of fixing forward.
+- **Instructions about how are as binding as instructions about what** (Scar 5). "Section by section" means one Edit call per section.
+- **Write from evidence** (Scar 6). Screenshots, logs and crash logs are the ground truth; don't soften a failure.
+- **Read the full diff before committing docs** (Scar 7); every list, version and date must agree across files (`.claude/rules/docs.md`).
+- **Don't produce a menu about something plainly wrong; fix it** (Scar 14). Verify that something exists by grepping the specific commit, PR or build number, not the topic.
+- **After a rename, grep the whole repo with no filters** (Scar 20): `grep -rn "old_name" . --exclude-dir=.git`.
+- **A format change has three axes** (Scar 22): what writes it, what reads it, what classifies files by type flag. When a grep returns several hits in a file, read every one.
+- **Take precise git terms literally** (Scar 23): "fast forward" is `git merge --ff-only`, never a rebase.
+- **Fix a wrong thing; don't label it** (Scar 24).
+- **Run a new checklist rule against the whole codebase in the same session** (Scar 25).
+- **Identity work covers artifact names** (Scar 26): check `OUTPUT_NAME` per platform, not just UI strings.
+- **Verify includes for every new or rewritten `.cc`**: grep the `#include` list for each API you call (`MEM_guardedalloc.h` for `MEM_new`).
+
+### Before every commit (the Codex Standard)
+
+Ask: would Codex catch this? Catch it first. Run `python3 tools/check_blended.py`; for docs, the Part 1 checklist in `.claude/rules/docs.md`; then answer the rules above as yes/no questions. The full checklist is in `docs/scars.md`.
+
+### Session discipline
+
+- **Three or more steps means a todo list**, one item per step, marked done the moment it's done. The Codex Standard check is an item before every commit.
+- Be specific (file, function, line); prefer direct grep and reads over agents for known targets; commit before starting anything risky. Details and emergency mode: `docs/scars.md`, "Working with Claude Code Efficiently".
+
+### Philosophy in five lines
+
+Subtraction is the method: delete, follow the compile errors, and treat the breakage as the audit. Do the work instead of designing around it. Cut the whole thing; a stub that compiles but lies is worse than an error. When the developer says you're wrong or describes what they see, believe them and re-examine from scratch. Functionality over ego. The full text: `BLENDED.md`, "Appendix — Development Philosophy".
 
 ---
 
-## Key Documentation
+## Documentation
 
-| Document | Purpose |
-|----------|---------|
-| `BLENDED.md` | **Read first.** Design authority — identity, architecture, locked decisions |
-| `CLAUDE.md` | This file — operational context for Claude sessions |
-| `CHANGELOG.md` | Release record + versioned roadmap + Unreleased section for in-flight work; Claude AI contributor detail |
-| `.github/README.md` | GitHub landing page — one-liner status per active item; use `git add -f` to stage (in `.gitignore`) |
-| `wtf.md` | Who the developer is and how to work with them (moved out of `CLAUDE.md` on 2026-10-16) |
-| `UPSTREAM_SYNC.md` | How to merge upstream Blender, conflict-prone files |
-
-**Document responsibility pattern** — for any structural change:
-
-| What | Where it goes |
-|------|--------------|
-| Design rationale (*why* something is removed/changed) | `BLENDED.md` — the locked decision |
-| Code progress (per-layer status, file lists) | `CHANGELOG.md` — *Unreleased* section |
-| Claude AI contributor notes (what was built, per-session detail) | `CHANGELOG.md` — *Unreleased* section, same place as code progress |
-| Operational grep pattern / session instructions | `CLAUDE.md` — this file |
-| One-liner status for humans landing on GitHub | `.github/README.md` — "What's Different" section |
-
-**Claude AI contributor notes go in CHANGELOG, not the README.** The README Contributors section is two sentences linking to CHANGELOG. All per-session implementation detail — what was built, what was removed, what scars were applied — belongs in the CHANGELOG *Unreleased* entry for that version, alongside the code progress rows. The README is a landing page.
-
-**After every milestone or structural change, all four documents must be updated before the session ends.** The four are: `CLAUDE.md`, `CHANGELOG.md`, `BLENDED.md`, `.github/README.md`. Specific targets per document:
-- **CLAUDE.md** — current version line updated, roadmap table row updated
-- **CHANGELOG.md** — milestone note added; Claude AI contributor detail added to *Unreleased* section
-- **BLENDED.md** — Status line updated; relevant sections updated
-- **`.github/README.md`** — version/status sentence updated
-
-**Note:** `.github/` is in `.gitignore` on this repo. Use `git add -f .github/README.md` when staging README updates — normal `git add` silently skips it.
-
-**Meta-rule:** CLAUDE.md is the place for operational gotchas like this, not the chat. If you discover something worth knowing for the next session, write it here before the session ends.
+**After every milestone or structural change, update all four mandatory docs before the session ends:** `CLAUDE.md` (current-version line, roadmap row), `CHANGELOG.md` (milestone note, Claude AI contributor note), `BLENDED.md` (status line, affected sections), `.github/README.md` (status sentence). Where each kind of content goes, and how to edit the docs, is in `.claude/rules/docs.md`. If you learn something the next session needs, write it into the right doc before the session ends, not just into the chat.
 
 ---
 
@@ -150,9 +171,9 @@ Moved out of this file verbatim in PR #253:
 
 Pull requests can always be created whenever requested — no need to ask whether it's okay.
 
-**Work, not judgment (BLENDED.md §4).** This repo is about work ethic and quality, not personal judgments. Review comments, replies and commit messages talk about the code and the record, never about the person who wrote it. That covers Codex, the developer, any outside contributor, and you. A finding is checked against the code and then fixed or answered. A mistake is corrected and written down, not defended. The baseline for what this project refuses is a maintainer elsewhere closing one of the developer's PRs with "are you proud of yourself".
+**Work, not judgment (BLENDED.md §4).** This repo is about work ethic and quality, not personal judgments. Review comments, replies and commit messages talk about the code and the record, never about the person who wrote it. That covers Codex, the developer, any outside contributor, and you. A finding is checked against the code and then fixed or answered. A mistake is corrected and written down, not defended.
 
-**PR loop:** `.claude/skills/steward/SKILL.md` covers how a PR is driven from open to merged: the Codex review loop, the local checks that work without a build, docs in the same PR, merging and the build hand-off. Read it before acting on PR events. Like `.github/`, `.claude/` is gitignored: stage it with `git add -f`.
+**PR loop:** the `steward` skill (`.claude/skills/steward/SKILL.md`) covers driving a PR from open to merged: the Codex review loop, the local checks, docs in the same PR, merging and the build hand-off.
 
 **How PRs work in this repo:**
 
@@ -161,23 +182,8 @@ Pull requests can always be created whenever requested — no need to ask whethe
 - The `head` is the feature branch; the `base` is `main`.
 - Never target upstream `blender/blender` or any other repository.
 - **If there is already an open PR on a feature branch, keep committing to that same branch.** All commits on an open branch are included in the PR automatically — the developer reviews and merges PRs themselves, so batching related work into one PR is preferred over opening multiple small ones. This also preserves continuity in the git log: one merge commit per logical unit of work rather than a fragmented trail of micro-PRs.
-
-### The Orphaned-Commit Trap
-
-**What happens:** A PR is opened, then additional commits are pushed to the same feature branch *after* the PR has already been merged. Those commits never land in `main` — they exist only on the old branch, which is now stale.
-
-**Real example (PR #111, April 2026):** The workspace_edit.cc syntax fix was committed and pushed. PR #111 was opened and merged. Then the CLAUDE.md PR-instructions update was committed and pushed to the *same branch* — but the PR was already closed, so the commit went nowhere. It had to be cherry-picked onto a fresh branch and opened as PR #112.
-
-**How to avoid it:** Before committing or pushing anything to an existing feature branch, fetch main and check whether the branch has already landed:
-```bash
-git fetch origin main
-git log --oneline origin/main -3   # does your branch tip appear here already?
-```
-If the branch has already been merged, start a new branch from `origin/main` **before writing any commits**. Never push follow-on commits to a merged branch expecting them to reach `main`.
-
-### PR Description Style
-
-**Do not use `#` before CI build numbers in PR descriptions.** GitHub auto-links any `#N` as a reference to PR or issue N. `build #57` becomes a link to PR #57, not to the CI run. Write `build 57` — no hashtag.
+- **The orphaned-commit trap:** before committing to an existing branch, `git fetch origin main` and check whether the branch already merged. If it did, restart it from `origin/main` before writing any commits. (Story: `docs/scars.md`.)
+- **Write `build 57`, never `build #57`**: GitHub links `#N` to PR N.
 
 ---
 

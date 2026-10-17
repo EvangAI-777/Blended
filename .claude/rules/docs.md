@@ -49,7 +49,7 @@ Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the C
 - **Write `build 57`, never `build #57`** in PR descriptions and commit messages: GitHub links `#N` to PR N.
 - **Maintainer-only notes in CLAUDE.md go in block HTML comments** (`<!-- ... -->`). Claude Code strips them before loading the file, so they cost no context.
 
-#### Part 1 — Documentation Consistency *(Scar 7)*
+## Part 1 — Documentation Consistency *(Scar 7)*
 
 *Applies to every commit touching CLAUDE.md, CHANGELOG.md, BLENDED.md, or any file with cross-references, ordered lists, version maps, or architectural decisions.*
 
