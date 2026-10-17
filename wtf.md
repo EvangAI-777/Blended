@@ -1088,7 +1088,7 @@ This is not a prototype. Not a proof of concept. Not a "here's the diff that wou
 
 The product is a Blender fork, which means the product is also the sum of everything that was removed. 39 → ~19 ID types. Fossils gone. UI-state types gone. The remaining types have a permanent home, not just tolerance. The data model is honest. The `.blended` format has real magic bytes and real platform integration. The `.blend` import runs with a dropped-data manifest. The runtime palette crash from build 97 — the bug that crashed every user on launch — has been fixed. The MetaBall objects from legacy files convert cleanly to empties instead of null-deref crashing.
 
-When the application opens, it is opening a coherent thing. Not "Blender with some flags removed." A coherent design thesis, executed across six foundation layers, over three and a half years, on a Windows CI this developer has never touched with his hands.
+When the application opens, it is opening a coherent thing. Not "Blender with some flags removed." A coherent design thesis, executed across six foundation layers, in about six months, on a Windows CI this developer has never touched with his hands.
 
 ---
 
