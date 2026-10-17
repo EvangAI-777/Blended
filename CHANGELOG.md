@@ -200,6 +200,18 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-17 — documentation restructure):** At the developer's request, compared the docs against Claude Code's memory documentation and Codex's AGENTS.md guidance and implemented the seven items in PR #253. Followed Scars 1 and 21 for a large doc edit: CLAUDE.md read in full first, moved section by section with one commit per move, nothing deleted, and a script confirmed every original line still exists in the new set.
 
+**Phase 1 runtime audit — tenth findings (2026-10-17):**
+
+*Build 111 — build 110 fixes verified:* CI build 111 (run 38996537581, `main` @ `3992628f`, the PR #249 merge) went green, with every headless smoke check passing. On hardware it was the first session with no crash. Blended started straight to the launcher with no splash. The launcher click, scroll and Ctrl+Alt+Home worked, and Model opened a 3D view with the navigate gizmo. File > Open of a class `.blend` and its Cancel both worked, Save As `.blended` wrote the file, and Render opened its window. Build 110 findings 1, 2 and 4 are verified; 3 (Cycles) and 5 (status bar) were not reported.
+
+*Build 111 findings (fix implemented, awaiting build verification):*
+- **A scene behind the launcher.** The General startup kept upstream's cube, camera and light: Render from the launcher rendered them, and the launcher counted 3D content before any file was open. Fixed in `647c7d78`: `BLO_update_defaults_startup_blend` deletes the startup objects and their data for the General template; the smoke test checks the factory startup has no objects.
+- **File > Open looked like it did nothing.** The file loaded and the launcher stayed, as designed (§11), but its project-state cue was a barely lighter card fill, already on for 3D because of the startup cube. Fixed in `bad1b8be`: sections with content get an accent dot.
+- **Upstream branding:** the render window was titled "Blender Render" and the status bar showed `5.2.0 a`. Fixed in `067307a0`: "Blended Render" and "Blended 1.0.0".
+- Not bugs: "Don't Save" continuing to the File > Open browser is the expected save-first prompt; the Windows security prompt on a second instance is SmartScreen for an unsigned executable.
+
+**Claude AI contributor (2026-10-17 — 1.0.0-dev Phase 1 tenth findings):** Read the developer's build 111 report and five screenshots. Traced the default cube to the factory startup file and the launcher's project-state cue to `section_has_data`. That cue was already lit for 3D at startup, which is why opening a file changed nothing on screen. Checked the "Don't Save" path against the File > Open flow instead of treating it as a bug. Syntax-checked the four C++ files against a stashed baseline (no new errors).
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

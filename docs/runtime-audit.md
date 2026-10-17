@@ -23,16 +23,18 @@ The Known Runtime Artifacts table in this file (Categories A, B, C) is the start
 - **Category C** (Scar 2 leaks fixed in 0.9.x Layer 2, Launcher workspace leak accepted — verify no unexpected accumulation in edge cases)
 - **Undocumented** — anything new that surfaces through actual use that isn't in the Known Runtime Artifacts table
 
-**Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run and have never been exercised in a windowed session. The CI smoke test (`tests/python/blended_smoke_test.py`) covers the headless part of the first and third; everything that needs a window still needs a hardware run.
-- File > Open of a `.blend` with the kept UI (PR #244 steps 4–11): editors keep working, no dangling pointers.
-- Two windows, then File > Open: the secondary window's scene is remapped (PR #244 step 7).
-- Save As `.blended`, then reopen it.
+**Verified on hardware in build 111** (CI run 38996537581, `main` @ `3992628f`): startup straight to the launcher with no splash; launcher click, scroll and Ctrl+Alt+Home; Model opens a 3D view with the navigate gizmo, and G works; File > Open of a legacy `.blend` and File > Open Cancel without a crash; Save As `.blended`; rendering from the top bar; a second Blended instance. No crash in the whole session.
+
+**Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run, or were not reached in build 111. The CI smoke test (`tests/python/blended_smoke_test.py`) covers their headless parts; everything that needs a window still needs a hardware run.
+- After File > Open, click a mode: the opened file's content shows, editors keep working (PR #244 steps 4–11).
+- Two windows (Window > New Window, not a second instance), then File > Open: the secondary window's scene is remapped (PR #244 step 7).
+- Reopen a saved `.blended` and click a mode: the saved change is there.
 - Undo and redo after File > Open (memfile undo with the kept UI).
 - File > New.
-- Each launcher mode that opens a 3D view: no crash, navigate gizmo present.
-- Close temporary windows (File > Open Cancel, Preferences, a render window): no crash (build 110 finding 1).
-- Launcher click, wheel scroll and Ctrl+Alt+Home after startup (build 110 finding 4); no splash on startup (finding 2); Cycles enabled with no traceback (finding 3).
+- Closing Preferences and the render window: no crash (build 110 finding 1).
+- Cycles in the render engine list with no traceback (build 110 finding 3); no "loading empty scene" in the status bar (finding 5).
 - A mesh object with a Geometry Nodes modifier that outputs curves (Mesh to Curve) draws in the viewport and renders (render-curve fix `2895a4d8`).
+- Build 111 findings (below): empty startup, the launcher's content dot, the render window title and the status-bar version; no `blended_rig_compat` Traceback at quit.
 
 **Gate condition for the release tag:**
 Every checklist item must reach one of two states: **fixed** (code change, committed, CI-confirmed) or **explicitly accepted** (documented in Known Runtime Artifacts as expected post-removal behavior with a named trigger). No silent unknowns at 1.0.0. "I think it's probably fine" is not accepted status.
@@ -106,7 +108,7 @@ All pre-1.0.0 deferred debt resolved in 0.9.x. See CHANGELOG.md `## 0.9.0` for f
 | Any startup — build 106 | `BKE_libblock_alloc_in_lib` crashed with null pointer dereference at `EXCEPTION_ACCESS_VIOLATION 0x00007FF6dCAFAD54`. Root cause: at line 1377, `BKE_libblock_runtime_ensure(*id)` was called to initialize runtime data, but the pointer was dereferenced BEFORE the null check at line 1379. If `BKE_libblock_alloc_notest(type)` returned nullptr, execution immediately crashed trying to dereference a null pointer. Fix: moved the `BKE_libblock_runtime_ensure(*id)` call inside the `if (id)` null check so the dereference only happens on valid pointers. | Various (ID allocation infrastructure) | PR #240 commit `ddea9c75` |
 | Any startup crash — build 107 produces a **0-byte crash log** | The crash handler itself crashed. `crashlog_file_generate` (`creator_signals.cc`) checked `G_MAIN->wm.first` for null but not `wm->runtime`, then `BKE_report_write_file_fp` dereferenced `reports->lock`. The Scar 10 rewrite of `wm_add_default` (`wm.cc`) linked the window manager into `bmain->wm` before allocating `wm->runtime`, so any crash during window/workspace setup at startup sent the handler into a second access violation after `fopen` but before the buffered header was flushed → empty file, no crash dialog. This hid the real startup crash in build 107. Fix: handler requires `wm && wm->runtime` (writes the header alone otherwise); `wm_add_default` allocates `wm->runtime` right after `MEM_new`, before the window manager is reachable from `bmain->wm`. **Verified on hardware in build 108** (CI run 108, commit `4dd31798`, clean-directory compile): the startup crash now writes a complete crash log with a symbolized backtrace and shows the crash dialog. The first real backtrace of the startup crash in the project — it identified the underlying crash (see "Startup crash — fixed" below). | 1.0.0-dev (`wm_add_default` allocation order) | PR #242 commit `d3ad8086` |
 | Any startup — builds 107–108 (seen in the build 108 crash log; earlier builds crashed before reaching it) | `wm_add_default` asked the `BKE_workspace_layout_find_global` stub for the startup workspace. Since ID_WS removal the stub always returns null, and `BKE_workspace_active_layout_set` read `workspace->hook_layout_relations` from it (read of `0x1A8`). Fix: `wm_add_default` builds a runtime `Launcher` workspace, layout and screen (BLENDED.md §11). File > Open no longer adopts UI from the file, and the kept UI is carried into the new `Main` with its ID pointers remapped (plan steps 1–11, see "Startup crash — fixed" below). **Verified on hardware in build 109** (CI run 38799211511, `main` @ `195b0970`): Blended reaches the launcher. | 0.2.0–0.3.0 (ID_WS/ID_SCR/ID_WM deregistration) | PR #244 (merge `195b0970`) |
-| File > Open (Open or Cancel), closing Preferences, a render window or any temporary/single-area window — build 110 | `wm_window_close` frees the window's screen through `BKE_workspace_layout_remove` → `BKE_id_free`. `id_free` needs `IDTypeInfo`; `ID_SCR_LEGACY` has none, so `BKE_libblock_relink_ex` → `foreach_ID_link` read a null type info (read of `0x70`). The file browser's temporary window closes before the operator runs, so File > Open crashed either way. Fix: `id_free` routes screens to `id_free_runtime_screen` (`lib_id_delete.cc`), which frees the screen data and unlinks it from `bmain->screens` without relink, remap or namemap. See "Open — build 110 findings" finding 1. | 0.3.0 (ID_SCR deregistration) | PR #249, commit `360e0f18` — awaiting build verification |
+| File > Open (Open or Cancel), closing Preferences, a render window or any temporary/single-area window — build 110 | `wm_window_close` frees the window's screen through `BKE_workspace_layout_remove` → `BKE_id_free`. `id_free` needs `IDTypeInfo`; `ID_SCR_LEGACY` has none, so `BKE_libblock_relink_ex` → `foreach_ID_link` read a null type info (read of `0x70`). The file browser's temporary window closes before the operator runs, so File > Open crashed either way. Fix: `id_free` routes screens to `id_free_runtime_screen` (`lib_id_delete.cc`), which frees the screen data and unlinks it from `bmain->screens` without relink, remap or namemap. See "Open — build 110 findings" finding 1. | 0.3.0 (ID_SCR deregistration) | PR #249, commit `360e0f18` — verified on hardware in build 111 (File > Open and Cancel) |
 
 ### Startup crash — fixed (PR #244), launcher verified on hardware in build 109
 
@@ -150,7 +152,9 @@ All pre-1.0.0 deferred debt resolved in 0.9.x. See CHANGELOG.md `## 0.9.0` for f
 
 **Not fixed, noted:** `view3d_gizmo_navigate.cc` still assumes Python operators exist under `WITH_PYTHON`. That matches upstream, and with `bl_operators` loading again the operator exists. `scripts/modules/_bl_i18n_utils/bl_extract_messages.py:957` still iterates `bpy.data.workspaces`; it is a developer i18n tool, not run by the app.
 
-### Open — build 110 findings (fix implemented — awaiting build verification)
+### Build 110 findings — fixed; 1, 2 and 4 verified on hardware in build 111
+
+**Verified (build 111, CI run 38996537581, `main` @ `3992628f`):** File > Open and its Cancel no longer crash (finding 1), no splash covers the launcher (finding 2), and the launcher click, scroll and Ctrl+Alt+Home work (finding 4). Findings 3 (Cycles) and 5 (status-bar warning) were not reported either way.
 
 **Evidence (build 110 screenshots, log and crash log, 2026-10-16):** the launcher drew, with the upstream splash on top of it. File > Open, from the splash or from the top bar, crashed with `EXCEPTION_ACCESS_VIOLATION`, read of `0x70`, in `library_foreach_ID_link` ← `BKE_library_foreach_ID_link` ← `libblock_remap_data` ← `BKE_libblock_relink_ex` ← `id_free` ← `BKE_id_free` ← `BKE_workspace_layout_remove` ← `wm_window_close` ← `wm_handler_fileselect_do`. The status bar showed "Library file, loading empty scene".
 
@@ -169,3 +173,14 @@ The deregistered-allocation check found one crash the Scar 10 grep could not see
 ### Build 111 CI log (fixed, not yet verified)
 
 `blended_rig_compat.py` raised `TypeError: can't apply this __delattr__ to bpy_struct_meta_idprop object` from `unregister()` when Blended quit. Harmless (the process was exiting), but a `Traceback` in every log. Python refuses `type.__delattr__` on a metaclass that defines its own `__setattr__`; plain `del bpy.types.Action.fcurves` goes through Blender's metaclass, which finds no RNA `fcurves` on Action and deletes the class attribute normally. Fixed in PR #253; the smoke test now unregisters and re-registers the module.
+
+### Open — build 111 findings (fix implemented — awaiting build verification)
+
+**Evidence (build 111 screenshots and report, 2026-10-17):** no crash anywhere in the session. Model opened a 3D view with the default cube and the navigate gizmo. Render > Render Image from the launcher rendered that cube in a window titled "Blender Render". After File > Open of `P00_Robot_Scene.blend` the title bar showed the file, but the launcher looked unchanged and no scene was visible. The status bar showed `5.2.0 a`.
+
+1. **A scene sat behind the launcher.** The General startup kept upstream's default cube, camera and light, so Render rendered them and the launcher already counted the project as having 3D content before any file was opened. The launcher is the empty start of a project (BLENDED.md §11: first-time users see all sections neutral). Fix (`647c7d78`): `BLO_update_defaults_startup_blend` (`versioning_defaults.cc`) deletes the startup objects and their data for the General template (factory startup and File > New > General). Other templates keep their starter content. The smoke test checks that the factory startup has no objects.
+2. **File > Open looked like it did nothing.** It worked: the file loaded, and the launcher stays as the view, by design (§11: the launcher is the default view; a mode button opens the project). The launcher's only project-state cue was a card fill of `#383838` instead of `#2C2C2C`, and with the startup cube the 3D sections already had it, so nothing changed visibly. Fix (`bad1b8be`): sections with project content get an accent dot after their label; with finding 1 fixed, opening a file now changes the launcher.
+3. **Upstream branding in the render window and status bar** (Scar 26 class). Fix (`067307a0`): the render window is titled "Blended Render", and the status bar shows "Blended 1.0.0".
+
+**Not bugs:** "Don't Save" in "Save changes before closing?" opening the file browser is File > Open asking about the current file first, then continuing to the browser. The Windows security prompt on a second instance is Windows SmartScreen for an unsigned executable.
+
