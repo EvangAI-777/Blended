@@ -26,15 +26,15 @@ The Known Runtime Artifacts table in this file (Categories A, B, C) is the start
 **Verified on hardware in build 111** (CI run 38996537581, `main` @ `3992628f`): startup straight to the launcher with no splash; launcher click, scroll and Ctrl+Alt+Home; Model opens a 3D view with the navigate gizmo, and G works; File > Open of a legacy `.blend` and File > Open Cancel without a crash; Save As `.blended`; rendering from the top bar; a second Blended instance. No crash in the whole session.
 
 **Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run, or were not reached in build 111. The CI smoke test (`tests/python/blended_smoke_test.py`) covers their headless parts; everything that needs a window still needs a hardware run.
-- After File > Open, click a mode: the opened file's content shows, editors keep working (PR #244 steps 4–11).
+- After File > Open, the launcher switches to the opened file's editor (the 3D view for a scene) and editors keep working (PR #244 steps 4–11, build 111 finding 2).
 - Two windows (Window > New Window, not a second instance), then File > Open: the secondary window's scene is remapped (PR #244 step 7).
-- Reopen a saved `.blended` and click a mode: the saved change is there.
+- Reopen a saved `.blended`: it opens in its editor with the saved change.
 - Undo and redo after File > Open (memfile undo with the kept UI).
 - File > New.
 - Closing Preferences and the render window: no crash (build 110 finding 1).
 - Cycles in the render engine list with no traceback (build 110 finding 3); no "loading empty scene" in the status bar (finding 5).
 - A mesh object with a Geometry Nodes modifier that outputs curves (Mesh to Curve) draws in the viewport and renders (render-curve fix `2895a4d8`).
-- Build 111 findings (below): empty startup, the launcher's content dot, the render window title and the status-bar version; no `blended_rig_compat` Traceback at quit.
+- Build 111 findings (below): empty startup, File > Open entering the project's editor, the launcher's content dot, the render window title and the status-bar version; no `blended_rig_compat` Traceback at quit.
 
 **Gate condition for the release tag:**
 Every checklist item must reach one of two states: **fixed** (code change, committed, CI-confirmed) or **explicitly accepted** (documented in Known Runtime Artifacts as expected post-removal behavior with a named trigger). No silent unknowns at 1.0.0. "I think it's probably fine" is not accepted status.
@@ -179,7 +179,7 @@ The deregistered-allocation check found one crash the Scar 10 grep could not see
 **Evidence (build 111 screenshots and report, 2026-10-17):** no crash anywhere in the session. Model opened a 3D view with the default cube and the navigate gizmo. Render > Render Image from the launcher rendered that cube in a window titled "Blender Render". After File > Open of `P00_Robot_Scene.blend` the title bar showed the file, but the launcher looked unchanged and no scene was visible. The status bar showed `5.2.0 a`.
 
 1. **A scene sat behind the launcher.** The General startup kept upstream's default cube, camera and light, so Render rendered them and the launcher already counted the project as having 3D content before any file was opened. The launcher is the empty start of a project (BLENDED.md §11: first-time users see all sections neutral). Fix (`647c7d78`): `BLO_update_defaults_startup_blend` (`versioning_defaults.cc`) deletes the startup objects and their data for the General template (factory startup and File > New > General). Other templates keep their starter content. The smoke test checks that the factory startup has no objects.
-2. **File > Open looked like it did nothing.** It worked: the file loaded, and the launcher stays as the view, by design (§11: the launcher is the default view; a mode button opens the project). The launcher's only project-state cue was a card fill of `#383838` instead of `#2C2C2C`, and with the startup cube the 3D sections already had it, so nothing changed visibly. Fix (`bad1b8be`): sections with project content get an accent dot after their label; with finding 1 fixed, opening a file now changes the launcher.
+2. **File > Open looked like it did nothing.** The file loaded (the title bar showed it), but the launcher stayed on screen, so it looked broken. Its only project-state cue was a card fill of `#383838` instead of `#2C2C2C`, already on for 3D because of the startup cube. Fix: opening a project enters it (BLENDED.md §11, new principle). `wm_file_read_post` (`wm_files.cc`) calls `ED_launcher_enter_project` after a successful open, not for the startup file or File > New. Every launcher area switches to the editor for the project's main content (`7384726b`). Sections with content also get an accent dot for when the user goes back to the launcher (`bad1b8be`).
 3. **Upstream branding in the render window and status bar** (Scar 26 class). Fix (`067307a0`): the render window is titled "Blended Render", and the status bar shows "Blended 1.0.0".
 
 **Not bugs:** "Don't Save" in "Save changes before closing?" opening the file browser is File > Open asking about the current file first, then continuing to the browser. The Windows security prompt on a second instance is Windows SmartScreen for an unsigned executable.

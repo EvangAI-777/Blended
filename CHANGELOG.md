@@ -206,7 +206,7 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 *Build 111 findings (fix implemented, awaiting build verification):*
 - **A scene behind the launcher.** The General startup kept upstream's cube, camera and light: Render from the launcher rendered them, and the launcher counted 3D content before any file was open. Fixed in `647c7d78`: `BLO_update_defaults_startup_blend` deletes the startup objects and their data for the General template; the smoke test checks the factory startup has no objects.
-- **File > Open looked like it did nothing.** The file loaded and the launcher stayed, as designed (§11), but its project-state cue was a barely lighter card fill, already on for 3D because of the startup cube. Fixed in `bad1b8be`: sections with content get an accent dot.
+- **File > Open looked like it did nothing.** The file loaded, but the launcher stayed on screen with the scene out of sight, and its only project-state cue was a barely lighter card fill. Fixed in `7384726b`: opening a project enters it (new BLENDED.md §11 principle); launcher areas switch to the editor for the project's main content (the 3D view for the robot scene). Sections with content also get an accent dot (`bad1b8be`).
 - **Upstream branding:** the render window was titled "Blender Render" and the status bar showed `5.2.0 a`. Fixed in `067307a0`: "Blended Render" and "Blended 1.0.0".
 - Not bugs: "Don't Save" continuing to the File > Open browser is the expected save-first prompt; the Windows security prompt on a second instance is SmartScreen for an unsigned executable.
 
