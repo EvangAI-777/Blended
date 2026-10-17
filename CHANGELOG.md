@@ -191,7 +191,11 @@ Also corrected the docs' account of the developer's coursework, at their request
 - **Skills:** `runtime-audit` (build hand-off and triage loop, from builds 108–111) and `version-bump` (the bump procedure, verbatim).
 - **`AGENTS.md`** for Codex, which doesn't read CLAUDE.md: project context and review guidelines drawn from shipped bugs.
 - **`.gitignore`:** upstream's `.*` rule ignored `.github/` and `.claude/`, so every new file there needed `git add -f`. They are now tracked normally (local Claude Code state stays ignored), and the `git add -f` instructions are gone.
-- References to the moved sections repointed in BLENDED.md, UPSTREAM_SYNC.md, CONTRIBUTING.md, the issue form, the steward skill and the check/smoke-test docstrings.
+- References to the moved sections repointed in BLENDED.md, UPSTREAM_SYNC.md, CONTRIBUTING.md, the issue form, the steward skill and the check/smoke-test docstrings. A sweep of all 73 remaining mentions of CLAUDE.md found five more live instructions describing the old file; they were fixed.
+- **`UPSTREAM_SYNC.md` → `docs/upstream-sync.md` and `wtf.md` → `docs/wtf.md`** (`git mv`). This keeps the repo root to the files GitHub and tools look for there.
+- **Divergence register** in `docs/upstream-sync.md`: one row per deliberate difference from upstream, giving the files, the BLENDED.md section behind it, and when it could be dropped. It warns that an upstream merge brings back `.gitea/` and the Blender funding files.
+- **`docs/wtf.md` index:** each note's name, approximate date and topic. The notes themselves are unchanged and stay as written.
+- **Blameless-postmortem header on every scar** (when, impact, root cause, rule) above the unchanged story.
 
 **Claude AI contributor (2026-10-17 — documentation restructure):** At the developer's request, compared the docs against Claude Code's memory documentation and Codex's AGENTS.md guidance and implemented the seven items in PR #253. Followed Scars 1 and 21 for a large doc edit: CLAUDE.md read in full first, moved section by section with one commit per move, nothing deleted, and a script confirmed every original line still exists in the new set.
 

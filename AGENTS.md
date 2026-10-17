@@ -24,6 +24,7 @@ behavior (Categories A–D). Check it before reporting expected behavior as a bu
 | `CHANGELOG.md` | Release record and per-session detail |
 | `docs/runtime-audit.md` | Runtime audit protocol, known behavior, build findings |
 | `docs/scars.md` | Past failures and the rules they produced |
+| `docs/upstream-sync.md` | Merging upstream Blender; the divergence register |
 | `.claude/rules/` | File-scoped rules (C++ ID types, docs, CI) |
 | `tools/check_blended.py` | Fast source checks, run on every PR |
 
