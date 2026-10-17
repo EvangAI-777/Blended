@@ -29,6 +29,8 @@
 #include "BLF_api.hh"
 
 #include "DNA_object_types.h"
+#include "DNA_scene_types.h"
+#include "DNA_sequence_types.h"
 #include "DNA_space_types.h"
 #include "DNA_userdef_types.h"
 #include "DNA_windowmanager_types.h"
@@ -329,8 +331,8 @@ static bool section_has_data(const Main *bmain, const char *section_label)
 }
 
 /* The editor a project opens in: the first Creative section with content, any objects in the 3D
- * view, then the first Post section with content. Finalizing is skipped because it counts any
- * object, which the 3D view already covers. */
+ * view, sequencer strips in the sequencer, then the first Post section with content. Finalizing
+ * is skipped because it counts any object, which the 3D view already covers. */
 static int project_target_space(const Main *bmain)
 {
   for (int si = 0; g_creative.sections[si].label != nullptr; si++) {
@@ -341,6 +343,12 @@ static int project_target_space(const Main *bmain)
   }
   if (bmain->objects.first != nullptr) {
     return SPACE_VIEW3D;
+  }
+  /* A timeline (video editing) project: strips in any scene's sequencer. */
+  for (const Scene &scene : bmain->scenes) {
+    if (scene.ed && scene.ed->seqbase.first != nullptr) {
+      return SPACE_SEQ;
+    }
   }
   for (int si = 0; g_post.sections[si].label != nullptr; si++) {
     const LauncherSection &sec = g_post.sections[si];
