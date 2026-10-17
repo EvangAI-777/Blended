@@ -112,6 +112,7 @@
 #include "ED_outliner.hh"
 #include "ED_render.hh"
 #include "ED_screen.hh"
+#include "ED_space_api.hh"
 #include "ED_undo.hh"
 #include "ED_util.hh"
 #include "ED_view3d.hh"
@@ -756,6 +757,12 @@ static void wm_file_read_post(bContext *C,
     }
 
     ED_editors_init(C);
+
+    /* Blended: opening a project enters it. Launcher areas switch to the editor for the file's
+     * content (BLENDED.md §11). The startup file and File > New keep the launcher. */
+    if (!is_startup_file && params->success && !G.background) {
+      ED_launcher_enter_project(C);
+    }
 
     /* Add-ons are disabled when loading the startup file, so the Render Layer node in compositor
      * node trees might be wrong due to missing render engines that are available as add-ons, like

@@ -328,6 +328,29 @@ static bool section_has_data(const Main *bmain, const char *section_label)
   return false;
 }
 
+/* The editor a project opens in: the first Creative section with content, any objects in the 3D
+ * view, then the first Post section with content. Finalizing is skipped because it counts any
+ * object, which the 3D view already covers. */
+static int project_target_space(const Main *bmain)
+{
+  for (int si = 0; g_creative.sections[si].label != nullptr; si++) {
+    const LauncherSection &sec = g_creative.sections[si];
+    if (section_has_data(bmain, sec.label)) {
+      return sec.modes[0].target_space;
+    }
+  }
+  if (bmain->objects.first != nullptr) {
+    return SPACE_VIEW3D;
+  }
+  for (int si = 0; g_post.sections[si].label != nullptr; si++) {
+    const LauncherSection &sec = g_post.sections[si];
+    if (!STREQ(sec.label, "Finalizing") && section_has_data(bmain, sec.label)) {
+      return sec.modes[0].target_space;
+    }
+  }
+  return SPACE_EMPTY;
+}
+
 /** \} */
 
 /* -------------------------------------------------------------------- */
@@ -595,6 +618,32 @@ static void LAUNCHER_OT_activate_mode(wmOperatorType *ot)
   ot->invoke = activate_mode_invoke;
   ot->poll = activate_mode_poll;
   ot->flag = OPTYPE_INTERNAL;
+}
+
+void ED_launcher_enter_project(bContext *C)
+{
+  const int target = project_target_space(CTX_data_main(C));
+  if (target == SPACE_EMPTY) {
+    return;
+  }
+  wmWindowManager *wm = CTX_wm_manager(C);
+  wmWindow *win_prev = CTX_wm_window(C);
+  for (wmWindow &win : wm->windows) {
+    bScreen *screen = WM_window_get_active_screen(&win);
+    if (screen == nullptr || WM_window_is_temp_screen(&win)) {
+      continue;
+    }
+    for (ScrArea &area : screen->areabase) {
+      if (area.spacetype != SPACE_BLENDED_LAUNCHER) {
+        continue;
+      }
+      /* #ED_area_newspace works on the context's window and screen. */
+      CTX_wm_window_set(C, &win);
+      CTX_wm_area_set(C, &area);
+      ED_area_newspace(C, &area, target, true);
+    }
+  }
+  CTX_wm_window_set(C, win_prev);
 }
 
 /* --- LAUNCHER_OT_scroll --- */

@@ -45,6 +45,12 @@ void ED_spacetype_statusbar();
 void ED_spacetype_topbar();
 /** Blended launcher — canonical workspace system (§11, BLENDED.md). */
 void ED_spacetype_blended_launcher();
+/**
+ * Opening a project enters it: switch every launcher area in the window manager to the editor
+ * for the project's main content (the first pipeline section with data). A project with no
+ * content keeps the launcher. Called after File > Open (BLENDED.md §11).
+ */
+void ED_launcher_enter_project(bContext *C);
 
 namespace ed::vse {
 void ED_spacetype_sequencer();
