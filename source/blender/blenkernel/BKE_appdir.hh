@@ -37,10 +37,10 @@ void BKE_appdir_exit();
 /**
  * Blended keeps its user folder apart from Blender's (`Blended/X.X` instead of
  * `Blender Foundation/Blender/X.X` on Windows, `Blender/X.X` on macOS, `blender/X.X` on Linux).
- * On the first run, when the Blended user folder doesn't exist yet, copy the preferences, recent
- * files and bookmarks from the Blender user folder of the same version. The startup file is not
- * copied: the Blended startup is an empty project. Skipped when the user folder is overridden
- * (`BLENDER_USER_RESOURCES`) or the install is portable.
+ * On the first run, when the Blended user folder doesn't exist yet, copy the recent files and
+ * bookmarks from the Blender user folder of the same version. Preferences and the startup file
+ * are not copied: Blended doesn't read either (BLENDED.md §5). Skipped when the user folder is
+ * overridden (`BLENDER_USER_RESOURCES`) or the install is portable.
  */
 void BKE_appdir_user_dir_migrate_from_blender();
 

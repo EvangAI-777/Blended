@@ -882,7 +882,8 @@ void BKE_appdir_user_dir_migrate_from_blender()
     return;
   }
 
-  const char *config_files[] = {BLENDER_USERPREF_FILE, BLENDER_HISTORY_FILE, BLENDER_BOOKMARK_FILE};
+  /* Not #BLENDER_USERPREF_FILE: Blended doesn't read preferences from it (BLENDED.md §5). */
+  const char *config_files[] = {BLENDER_HISTORY_FILE, BLENDER_BOOKMARK_FILE};
   for (const char *config_file : config_files) {
     char path_src[FILE_MAX], path_dst[FILE_MAX];
     BLI_path_join(path_src, sizeof(path_src), blender_dir, "config", config_file);
