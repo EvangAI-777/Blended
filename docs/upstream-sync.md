@@ -71,6 +71,12 @@ Verify the build succeeds and Blended-specific features still work:
 
 Push your sync branch and open a pull request against `main` for review.
 
+## Fork Point
+
+Blended forked from upstream `main` at `03de53b7` (2026-04-23, Blender 5.2 alpha), the last upstream commit before Blended's own history. It is an ancestor of upstream `blender-v5.2-release`. No upstream commits have been merged or cherry-picked since. When some are, record the last one here.
+
+Upstream is reachable from cloud sessions through the GitHub mirror (`https://github.com/blender/blender.git`); `projects.blender.org` is blocked there.
+
 ## Conflict-Prone Files
 
 These files are modified by Blended and will likely conflict on upstream merges.

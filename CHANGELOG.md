@@ -1378,6 +1378,21 @@ small shared helper), and tests that only cover removed types are deleted with
 their CMake registration, not skipped. Then decide whether the passing subset
 runs in CI.
 
+**Upstream 5.2 LTS fixes (careful cherry-picks, no merge).** Blended forked
+from upstream `main` at `03de53b7` (2026-04-23, 5.2 alpha). Upstream has
+since shipped 5.2 LTS (5.2.0 on 2026-07-14, 5.2.2 on 2026-09-15). The
+release branch has 953 commits from the beta (`4b9b419d`, 2026-06-03) to the
+5.2.3 candidate, plus 1,189 on `main` between the fork and the beta.
+
+A first pass (2026-10-17) only sorted them, by whether the patch text applies
+to the current tree and whether it touches files Blended changed or deleted.
+That says nothing about whether a pick compiles, depends on a 5.2 change
+Blended doesn't have, or behaves correctly here, so it is not a candidate
+list. Do this only with a way to build and run each batch before the next:
+- small batches, each through a Windows build and a hardware check;
+- crash fixes in code Blended keeps first;
+- `git cherry-pick -x`, so every commit records its upstream SHA.
+
 **Settings folder name.** Since PR #254 the user folder is
 `%APPDATA%\Blended\X.X` (macOS `Application Support/Blended`, Linux
 `~/.config/blended`). Decide whether it should carry the publisher, as
