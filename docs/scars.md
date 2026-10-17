@@ -137,42 +137,7 @@ This is two failures compounded:
 
 **Why it wasn't caught immediately:** The initial assumption was "dead code with INIT_TYPE removed." Wrong for all three. `BKE_gpencil_data_addnew` is called from annotation painting, gpencil operators, and the ruler gizmo. `BKE_linestyle_new` is called from `freestyle.cc` which is unconditionally compiled (not guarded by `WITH_FREESTYLE`). `BKE_particlesettings_add` is called from the fluid sim path and `versioning_legacy.cc` (live path for loading pre-2.5 .blend files).
 
-**The fix pattern:** Replace `BKE_libblock_alloc(bmain, ID_XX, name, 0)` with manual allocation in the add-new function itself:
-```cpp
-T *obj = MEM_new<T>("TypeName");
-BKE_libblock_runtime_ensure(obj->id);
-*(reinterpret_cast<short *>(obj->id.name)) = ID_XX;
-obj->id.us = 1;
-{
-  ListBaseT<ID> *lb = which_libbase(bmain, ID_XX);  /* Scar 2 routing still intact */
-  BKE_main_lock(bmain);
-  BLI_addtail(lb, obj);
-  BLI_strncpy_utf8(obj->id.name + 2, name, sizeof(obj->id.name) - 2);
-  BLI_uniquename_cb(
-      [&](const StringRef check_name) {
-        for (const ID *id_iter = static_cast<const ID *>(lb->first); id_iter;
-             id_iter = static_cast<const ID *>(id_iter->next)) {
-          if (id_iter != &obj->id && id_iter->lib == obj->id.lib &&
-              check_name == (id_iter->name + 2)) {
-            return true;
-          }
-        }
-        return false;
-      },
-      name, '.', obj->id.name + 2, sizeof(obj->id.name) - 2);
-  id_sort_by_name(lb, &obj->id, nullptr);
-  bmain->is_memfile_undo_written = false;
-  BKE_main_unlock(bmain);
-}
-BKE_lib_libblock_session_uid_ensure(&obj->id);
-```
-Requires `BKE_lib_id.hh` (for `BKE_libblock_runtime_ensure`, `BKE_lib_libblock_session_uid_ensure`, `id_sort_by_name`), `BKE_main.hh` (for `which_libbase`, `BKE_main_lock/unlock`), `BLI_string_utf8.h` (for `BLI_strncpy_utf8`), and `BLI_string_utils.hh` (for `BLI_uniquename_cb`).
-
-**Why not `BKE_id_new_name_validate`:** This function routes into `BKE_main_namemap_get_unique_name` → `namemap_get_name`, which indexes `maps[BKE_idtype_idcode_to_index(type)]`. For deregistered types, `BKE_idtype_idcode_to_index` returns -1, and `maps[-1]` is `0xFFFFFFFFFFFFFFF8` — reading garbage as a `Map<string>`, crashing in the string slot destructor. **Never call `BKE_id_new_name_validate` for a deregistered type.**
-
-**Why `BLI_uniquename_cb` over `BLI_uniquename`:** `BLI_uniquename` has two gaps: (1) it doesn't call `id_sort_by_name` — the listbase is left unsorted; (2) it checks all IDs regardless of `id.lib` — a local "Foo" incorrectly gets renamed "Foo.001" if a linked library also has "Foo". `BKE_id_new_name_validate` scopes to `id.lib`; the lambda above preserves that behavior.
-
-**Cannot restore INIT_TYPE as the fix:** `INDEX_ID_XX` was also removed from the `IDIndex` enum. `MainListsArray` is `std::array<ListBaseT<ID>*, INDEX_ID_MAX - 1>` — `BKE_main_free` dereferences every slot. An unset `lb[INDEX_ID_XX]` nullptr crashes there. Restoring `INDEX_ID_PA` would require also restoring `lb[INDEX_ID_PA]` in `BKE_main_lists_get`, which fully restores the type to the indexed system — undoing the chisel.
+**The fix pattern** (manual allocation, the allocator decision tree and the mandatory greps) now lives in the path-scoped rule [`.claude/rules/id-types.md`](../.claude/rules/id-types.md), which loads when working on C/C++ sources. Moved there in PR #253 so the template has one home.
 
 **The three wrong answers before the right one (ego-honest record):**
 1. First fix: `static_cast<T *>(BKE_libblock_alloc(bmain, ID_PA, name, 0))` — compiles but crashes at runtime via null dereference in `BKE_libblock_runtime_ensure`.
@@ -181,33 +146,6 @@ Requires `BKE_lib_id.hh` (for `BKE_libblock_runtime_ensure`, `BKE_lib_libblock_s
 
 The rule that would have caught #2 immediately: **read the struct before choosing the allocator.** If the struct has any in-class initializers (`= value`), `DNA_DEFINE_CXX_METHODS`, or non-trivial member types, it is non-trivial and requires `MEM_new`. `MEM_new_zeroed` enforces this with a static_assert. `MEM_callocN` does not — it silently does the wrong thing.
 
-**Allocator decision tree:**
-- Trivially constructible T (all POD fields, no in-class initializers): `MEM_new_zeroed<T>` (zero-init + no constructor)
-- Non-trivial T (any in-class initializer, `DNA_DEFINE_CXX_METHODS`, std:: members): `MEM_new<T>` (runs constructor)
-- Never `MEM_callocN` for C++ types with constructors
-
-**Mandatory post-chisel greps (run after removing INIT_TYPE for any type):**
-
-Grep 1 — catch `BKE_libblock_alloc` calls for the deregistered type:
-```bash
-grep -rn "BKE_libblock_alloc.*ID_XX" source/ --include="*.cc" --include="*.c"
-```
-Every hit is a potential crash. Each allocation function must be patched to the manual pattern above, or the caller must be removed entirely if the path is truly dead.
-
-Grep 2 — catch `BKE_id_new_name_validate` calls in the same allocators:
-```bash
-grep -rn "BKE_id_new_name_validate" source/ --include="*.cc" --include="*.c"
-```
-Every hit in a deregistered-type allocator is a second-generation namemap crash. The Scar 10 template formerly showed `BKE_id_new_name_validate` as the correct fix — it is not. All calls in Scar 10 allocators must be replaced with the `BLI_strncpy_utf8` + `BLI_uniquename_cb` + `id_sort_by_name` pattern above.
-
-**Retroactivity note (Scar 25):** When this rule was first written (2026-05-01, during 0.4.0 work), it was framed as going forward — run it after each future INIT_TYPE removal. It was not run retroactively against all previously deregistered types. `ID_WM_LEGACY` and `ID_SCR_LEGACY` were deregistered in 0.3.0; their `BKE_libblock_alloc` callers (`wm_add_default`, `screen_add`, test helper) shipped crashing in every build from 0.3.0 through 0.9.0. The Phase 1 audit found all three. **When this rule is first added (or re-read for the first time in a new session), run both full sweeps now:**
-```bash
-grep -rn "BKE_libblock_alloc\b" source/ --include="*.cc" --include="*.c" | grep -v "alloc_notest\|get_alloc_info\|alloc_in_lib" | grep "ID_"
-grep -rn "BKE_id_new_name_validate" source/ --include="*.cc" --include="*.c"
-```
-Cross-reference every `ID_XX` in the first output against the `IDTypeInfo` registry. Any call using a deregistered type is a crash waiting to happen. For the second grep: any hit in a deregistered-type allocator (check against the registry) must be replaced with the correct pattern.
-
-**Automated since 1.0.0-dev:** `tools/check_blended.py` runs the first sweep on every PR. It reads the deregistered types from `idtype.cc` and `DNA_ID_enums.h`, skips comments, and also covers `BKE_libblock_alloc_in_lib`, `BKE_id_new` and `BKE_id_new_nomain`. The grep above misses those three, and that gap hid the render-curve crash ("Found by `tools/check_blended.py`" above). The `BKE_id_new_name_validate` sweep still has to be run by hand.
 
 ---
 
@@ -277,16 +215,8 @@ The checklist has two parts. Both run before every commit. Neither is optional.
 
 #### Part 1 — Documentation Consistency *(Scar 7)*
 
-*Applies to every commit touching CLAUDE.md, CHANGELOG.md, BLENDED.md, or any file with cross-references, ordered lists, version maps, or architectural decisions.*
+Moved to the path-scoped rule [`.claude/rules/docs.md`](../.claude/rules/docs.md) in PR #253; it loads when editing the documentation.
 
-1. **Run `git diff` and read the entire output.** Not a skim. Every line.
-2. **For every ordered list in the diff, find every other representation of that same order in the diff and in the touched files.** All representations must agree.
-3. **For every statement of the form "do X last / first / never / always," grep the diff for X.** Verify nothing else in the same diff contradicts it.
-4. **For every version number mentioned, verify it matches the version map in CHANGELOG.md.**
-5. **Search all sections within each of the four mandatory docs for stale references to the version or milestone being updated.** The headline status lines (CLAUDE.md "Current version", BLENDED.md "Status", README "Currently at") are obvious. The non-obvious ones are harder: internal roadmap tables, mid-document planning sections, version-specific subsection headers. `grep -n "0\\.X" CHANGELOG.md` (replace X with the version) will surface every reference — update all of them, not just the first one. The 0.6.0 design session caught a stale `### 0.6.x — Evaluation model` planning block at CHANGELOG.md:706 and a stale `In progress` status in the CLAUDE.md roadmap table — both invisible to a headline-only pass.
-6. **Fix any inconsistency before staging.** Not after. Not in a follow-up commit. Before.
-
-*Why: Scar 7 — chisel order corrected in prose but left wrong in the same commit's table. A bot caught it.*
 
 ---
 
