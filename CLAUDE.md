@@ -27,23 +27,6 @@ The runtime audit reference lives in [`docs/runtime-audit.md`](docs/runtime-audi
 
 ---
 
-### 0.8.0 — Complete
-
-Magic bytes `"BLENDED"`, `.blended` extension on all write paths, `FILE_TYPE_BLENDED` bit flag (`1 << 20`), 23 implementation layers (~80 sites), platform integration (Windows registry, Linux MIME, macOS UTI), Python scripts, UI strings, tests. CI-complete build 100, commit `99e20b96`. Site-by-site tables and implementation notes in CHANGELOG.md `## 0.8.0` section and PR #225.
-
-**Key architectural decisions carried forward:**
-- Open/browse dialogs: `FILE_TYPE_BLENDER | FILE_TYPE_BLENDED`. Save dialogs: `FILE_TYPE_BLENDED` only.
-- `filter_blender` and `filter_blended` are **separate** operator properties in `wm_operator_props.cc` — collapsing them into one causes `filesel.cc` to re-expand `.blended`-only save dialogs to include `.blend` (Codex catch, PR #225).
-- Bundled upstream datafiles (e.g. `compositing_nodes_essentials.blend`) stay `.blend`.
-
----
-
-### 0.9.0 — Complete
-
-✓ CI-complete (build 101, commit `c8e87078`, 2026-06-01). Third first-try on the project. Five layers: OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed by Codex catch (PR #229). See CHANGELOG.md `## 0.9.0` for full implementation notes and site-by-site detail.
-
----
-
 ## Repository Layout
 
 | Directory | Contents |
@@ -102,31 +85,9 @@ make check_mypy     # Python type checking
 
 ## Fork-Specific Patterns (What Makes Blended Different)
 
-### Branding
+### Branding, rig compatibility, update checker
 
-**Publisher:** Blended is developed and published by **CHJ 3 Productions LLC**, an Indiana-registered LLC. This is the legal entity behind the fork. All Blended-specific design decisions, the product identity, and fork-specific code additions are the work of CHJ 3 Productions LLC. Upstream Blender code retains its original copyright (Blender Foundation and contributors) under GPL-2.0-or-later — Blended inherits and preserves that license.
-
-**Code locations:**
-- `CMakeLists.txt:81` — `project(Blended)`
-- `source/blender/blenkernel/BKE_blender_version.h` — `BLENDED_VERSION_MAJOR/MINOR/PATCH` defines (see Version Management section for bump procedure), plus `BKE_blended_version_string()` declaration
-- `source/blender/blenkernel/intern/blender.cc` — `blended_version_string` built in `blender_version_init()`, `BKE_blended_version_string()` implemented
-- `source/blender/windowmanager/intern/wm_window.cc` — fallback title `"Blended"`, title suffix `"- Blended X.Y.Z"` via `BKE_blended_version_string()` (rendered dynamically from the defines above)
-- `source/blender/windowmanager/intern/wm_splash_screen.cc` — about dialog name/description, tagline `"Blender, simplified."`, splash version label
-
-### Pre-5.0 Rig Compatibility
-- `scripts/startup/blended_rig_compat.py` — adds `action.fcurves` as a Python property on `bpy.types.Action`
-- Returns `_FCurvesCompat` proxy flattening FCurves from all channelbags across all layers/strips
-- Restores iteration, `len()`, indexed access, `find()` — the subset Rigify `ActionCurveTable` uses
-- `register()` uses `bpy.types.Action.fcurves = property(...)` only if not already present
-- `unregister()` uses `type.__delattr__(bpy.types.Action, 'fcurves')` — Blender's metaclass `__delattr__` only handles RNA props, not plain Python descriptors
-
-### Update Checker
-- `scripts/startup/blended_update_check.py` — background thread on `load_post` handler
-- Polls GitHub Releases API, 24-hour JSON cache in `bpy.utils.user_resource('CONFIG')`
-- `BLENDED_MT_update_topbar` menu appended to `TOPBAR_HT_upper_bar` when update available
-- `BLENDED_PT_update_prefs` panel in System Preferences
-- `BLENDED_OT_open_update_page` operator opens browser via `webbrowser.open()`
-- Reads `bpy.app.blended_version_major/minor/patch` (wired into `source/blender/python/intern/bpy_app.cc` — `app_info_fields[]` + `make_app_info()`).
+Publisher: **CHJ 3 Productions LLC** (Indiana); upstream code keeps its Blender Foundation copyright under GPL-2.0-or-later. Code locations for the branding, `scripts/startup/blended_rig_compat.py` (pre-5.0 `action.fcurves`) and `scripts/startup/blended_update_check.py`: [`docs/fork-reference.md`](docs/fork-reference.md).
 
 ### CI / Build Config
 - `.github/workflows/build-windows.yml` — triggers only on `v*` tag pushes and manual `workflow_dispatch` (PRs and pushes to `main` get only the Checks workflow below; other branch pushes run nothing). Full release build → artifact → build-provenance attestation → headless smoke test of the packaged build (`tests/python/blended_smoke_test.py`: startup, Python startup scripts, window-manager RNA, File > Open of a legacy `.blend`, Save As `.blended` and reopen). On tags, a separate `release` job (the only one with write access) publishes the zip and its `.sha256`. Read-only token by default; one build per ref at a time (a second dispatch queues).
@@ -136,61 +97,11 @@ make check_mypy     # Python type checking
 
 ### Version Management
 
-**The single source of truth:** `source/blender/blenkernel/BKE_blender_version.h` — three defines:
-```c
-#define BLENDED_VERSION_MAJOR 1
-#define BLENDED_VERSION_MINOR N   // ← bump for new features (post-1.0.0 semantic versioning)
-#define BLENDED_VERSION_PATCH 0   // ← bump for bug fixes and CI repairs within a layer
-```
-The CI workflow reads these at build time. Packaged artifact name (`Blended-X.Y.Z-windows-x64`) derives entirely from these defines — no other file needs to be changed for the package label to update.
-
-**When to bump MINOR (new dev-cycle start):**
-Bump `BLENDED_VERSION_MINOR` on the **first commit of a new dev cycle**, not when CI goes green. Example: the first commit of 0.5.x work bumps minor to 5 even though 0.5.0 won't be CI-complete for weeks. This way the version string in a dev build always names the cycle in progress. *Do not wait for CI to go green before bumping.*
-
-**When to bump PATCH:**
-Bump `BLENDED_VERSION_PATCH` for CI fixes, doc updates, and build repairs within an existing layer that don't add new foundation work. A patch release is a stable point within a cycle — e.g., the ID_LP CI-fix PRs within 0.5.x would be 0.5.1 if they warranted a tagged release.
-
-**Post-1.0.0 — standard semantic versioning from here:**
-Once the 1.0.0 release tag ships, the foundation-layer versioning scheme retires. From 1.0.0 onward: `BLENDED_VERSION_PATCH` bumps for bug fixes, CI repairs, and doc updates (1.0.1, 1.0.2, …); `BLENDED_VERSION_MINOR` bumps for new features, pipeline sections, and modes (1.1.0, 1.2.0, …); `BLENDED_VERSION_MAJOR` bumps for breaking changes or major architectural shifts (2.0.0, …). The four-mandatory-docs update procedure and the quick checklist still apply to every version bump — only the bump rules change.
-
-**Version lag — what happened with 0.3.0 → 0.4.0:**
-The 0.4.0 CI-complete milestone (build 70) shipped without bumping the version header from 0.3.0. The product ran as "0.3.0" for the entire 0.5.x dev cycle until manually caught. The fix: treat the version bump as a required checklist item when a layer goes CI-green, not as something to do later.
-
-**Full procedure — bump + update all four mandatory docs:**
-
-1. **`BKE_blender_version.h`** — increment `BLENDED_VERSION_MINOR` (or `PATCH`).
-
-2. **`CLAUDE.md`** (this file) — update the "Current version" line at the top:
-   - For a new dev-cycle start: `Blended X.Y.0-dev — [layer description] in progress`
-   - For a CI-complete milestone: `Blended X.Y.0-dev — X.(Y-1).0 base: CI-complete (Windows x64, build N, commit XXXXXXX)`
-
-3. **`CHANGELOG.md`** — add a version bump note to the active *Unreleased* section (or the completed version section):
-   - One line: which define changed, old value → new value, what triggered it, commit reference.
-   - If CI just went green: also add a CI-complete note with build number and commit hash.
-
-4. **`BLENDED.md`** — update the **Status** line at the top of the file to match.
-
-5. **`.github/README.md`** — update the version/status sentence under the repo description. Stage with `git add -f .github/README.md` (it is in `.gitignore`).
-
-**Quick checklist (run after any CI-green milestone or new dev-cycle start):**
-```
-□ BKE_blender_version.h — MINOR or PATCH bumped
-□ CLAUDE.md — "Current version" line updated; roadmap table row updated
-□ CHANGELOG.md — version bump note + CI-complete note added; grep all sections for stale version refs
-□ BLENDED.md — Status line updated; grep all sections for stale version refs
-□ .github/README.md — version/status sentence updated (git add -f)
-□ All five changes in one commit, pushed to the working branch
-```
-**Note:** The four mandatory docs each contain multiple sections that reference version state — roadmap tables, mid-document planning blocks, subsection headers. A headline-only pass misses them. `grep -n "0\\.X" <file>` (replace X with the version) before staging each doc.
+`source/blender/blenkernel/BKE_blender_version.h` (`BLENDED_VERSION_MAJOR/MINOR/PATCH`) is the single source of truth; the CI artifact name comes from it. Bump MINOR on the first commit of a new dev cycle, PATCH for fixes within one; from 1.0.0 on, standard semantic versioning. Every bump updates the four mandatory docs in the same commit. The full procedure and checklist: the `version-bump` skill.
 
 ### Datablock Audit — Complete (BLENDED.md §10)
-Result: 39 → ~19 ID types. All buckets closed.
-- **Bucket 4 (UI state, remove):** `ID_WS` ✓ (0.2.0), `ID_SCR` ✓ (0.3.0), `ID_WM` ✓ (0.3.0)
-- **Bucket 5 (upstream deprecations, finish):** `ID_CU_LEGACY` ✓ (0.4.0), `ID_GD_LEGACY` ✓ (0.4.0)
-- **Bucket 6 (fossils, cut):** `ID_CF` ✓ (0.4.0); `ID_PC` ✓ (0.4.0); `ID_SPK` ✓ (0.4.0); `ID_PA` ✓ (0.4.0); `ID_LS` ✓ (0.4.0); `ID_MB` ✓ (0.4.0); `ID_TE` ✓ (0.4.0)
-- **Bucket 3 (runtime types, fold-down then permanent home):** `ID_LP` ✓ (0.5.0 fold-down → 0.7.0 Light type flag), `ID_PAL` ✓ (0.5.0 → 0.7.0 Brush embed), `ID_LT` ✓ (0.5.0 → 0.7.0 LatticeModifierData), `ID_MSK` ✓ (0.5.0 → 0.7.0 compositor NodeTree), `ID_VF` ✓ (0.5.0 → 0.7.0 OB_FONT filepath), `ID_BR` ✓ (0.5.0 → 0.7.0 project-optional flag)
 
----
+39 → ~19 ID types; all buckets closed. Per-type detail: [`docs/fork-reference.md`](docs/fork-reference.md) and BLENDED.md §10.
 
 ## Battle Scars, Philosophy, Session Discipline
 
