@@ -15,16 +15,15 @@ Categories A–D and the build-by-build findings. Read it before triaging.
 1. Check the run (`mcp__github__actions_list`, `list_workflow_runs` for `build-windows.yml`):
    conclusion, the `Smoke test (headless)` step, and the commit it built. A red smoke test or build
    is triaged from the job logs before anything goes to the developer.
-2. Give the developer the **full** test list in chat. Rules the developer set:
-   - The setup steps always stay intact: download the artifact from the run (link it), unzip into a
-     **new, empty** folder (not over the previous build), have a `.blend` file ready, open the folder
-     in File Explorer, type `cmd` in the address bar, run `Blended.exe > blended_log.txt 2>&1`.
-   - Include every test not yet done inside Blended, plus the new ones for this build. Nothing
-     omitted or shortened. Mark new tests "(new)".
-   - Number every step. End with: rename `blended_log.txt` to `blended_log_1.txt` before a second
-     launch, a log search (`SyntaxError`, `Traceback`, `empty keymap`, and the strings the last
-     fixes removed), and "Report back" (pass/fail per test; send both logs and any crash log).
-   - Remind them the crash log keeps only the most recent crash: send it before relaunching.
+2. Give the developer a **short** test list in chat (the developer asked for simpler lists on
+   2026-10-17, replacing the earlier "full list, nothing shortened" rule):
+   - Setup in one compact block: the artifact link, unzip into a **new, empty** folder, `cmd` in
+     the folder's address bar, `Blended.exe > blended_log.txt 2>&1`.
+   - One line per test: what to do and what should happen. Cover every test not yet done inside
+     Blended plus the new ones for this build; mark new tests "(new)". Group small related checks.
+   - End with one line each for the log search (`SyntaxError`, `Traceback`, `empty keymap`, and
+     the strings the last fixes removed), renaming the log before a relaunch, and what to send
+     back. Remind them the crash log keeps only the most recent crash.
 3. Save the list to the scratchpad as `build<N>_test_list.md`.
 
 ## 2. A report came in
