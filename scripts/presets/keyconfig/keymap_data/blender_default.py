@@ -716,6 +716,8 @@ def km_window(params):
         ])
 
     items.extend([
+        # Blended: return to the launcher from any area.
+        ("launcher.open", {"type": 'HOME', "value": 'PRESS', "ctrl": True, "alt": True}, None),
         # File operations
         op_menu("TOPBAR_MT_file_new", {"type": 'N', "value": 'PRESS', "ctrl": True}),
         op_menu("TOPBAR_MT_file_open_recent", {"type": 'O', "value": 'PRESS', "shift": True, "ctrl": True}),
@@ -2414,6 +2416,30 @@ def km_node_editor(params):
              {"properties": [("viewer_index", i)]})
             for i in range(1, 10)
         ),
+    ])
+
+    return keymap
+
+
+# ------------------------------------------------------------------------------
+# Editor (Blended Launcher)
+
+def km_blended_launcher(_params):
+    items = []
+    keymap = (
+        "Blended Launcher",
+        {"space_type": 'BLENDED_LAUNCHER', "region_type": 'WINDOW'},
+        {"items": items},
+    )
+
+    items.extend([
+        ("launcher.activate_mode", {"type": 'LEFTMOUSE', "value": 'PRESS'}, None),
+        # Scroll down: content moves up, revealing lower pipeline sections.
+        ("launcher.scroll", {"type": 'WHEELDOWNMOUSE', "value": 'PRESS'},
+         {"properties": [("delta", 1)]}),
+        # Scroll up: content moves down, revealing the heading.
+        ("launcher.scroll", {"type": 'WHEELUPMOUSE', "value": 'PRESS'},
+         {"properties": [("delta", -1)]}),
     ])
 
     return keymap
@@ -8955,6 +8981,7 @@ def generate_keymaps(params=None):
         km_node_generic(params),
         km_node_editor(params),
         km_spreadsheet_generic(params),
+        km_blended_launcher(params),
         km_info(params),
         km_file_browser(params),
         km_file_browser_main(params),
