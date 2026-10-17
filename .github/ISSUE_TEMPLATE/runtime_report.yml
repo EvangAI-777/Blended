@@ -1,0 +1,58 @@
+name: Runtime report
+description: Something crashed, failed or looked wrong while running a Blended build.
+title: "[build N] "
+labels: ["runtime-audit"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for testing Blended. The more specific the report, the faster the triage:
+        "adding a lattice modifier to an object in a file loaded from disk crashes" is easier to
+        work with than "it crashed". Check the Known Runtime Artifacts in `CLAUDE.md` first:
+        some behavior changes are expected.
+  - type: input
+    id: build
+    attributes:
+      label: Build
+      description: CI build number or version, as shown in the window title or the artifact name.
+      placeholder: "build 111 / Blended 1.0.0"
+    validations:
+      required: true
+  - type: textarea
+    id: doing
+    attributes:
+      label: What you were doing
+      description: Which mode, which operator, which file type (.blend or .blended). Steps if you have them.
+      placeholder: |
+        1. Started Blended, clicked Model in the launcher
+        2. File > Open a .blend from class work
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: Crash, wrong output, nothing at all, or an error message.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console log and crash log
+      description: |
+        Run `Blended.exe > blended_log.txt 2>&1` from a Command Prompt in the Blended folder, then
+        attach `blended_log.txt`. If it crashed, attach the crash log too: the crash dialog shows
+        where it was written. The crash log only keeps the most recent crash.
+  - type: input
+    id: system
+    attributes:
+      label: System
+      description: Windows version and GPU.
+      placeholder: "Windows 11 23H2, NVIDIA RTX 3060"
