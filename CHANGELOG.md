@@ -1340,6 +1340,50 @@ Rename them to Blended and add a `versioning_userdef.cc` step that maps the old
 names (there is already a `{"blender", "Blender"}` mapping to extend), so
 existing preferences keep their keymap and theme.
 
+**Open into the right mode, for every mode.** Since PR #254, File > Open enters
+the project instead of leaving the launcher up. `project_target_space`
+(`space_blended_launcher.cc`) picks the editor from the content:
+- the first Creative section with data;
+- the 3D view for any other objects;
+- the sequencer for strips;
+- the first Post section with data.
+
+Each launcher mode still maps only to a space type (most 3D modes are a plain
+View3D), so a sculpt file opens in a 3D view, not in Sculpt mode. For each of
+the 28 modes (BLENDED.md §12):
+1. define what content identifies it;
+2. open the project in that mode's real setup (editor, object mode, tool),
+   not just the space type;
+3. check it on hardware with a file of each kind.
+
+Remember the last mode a project was in (per user, since files carry no UI),
+so reopening a project returns to where the user left it.
+
+**Revive the upstream Python test suite.** CI runs only the build and
+`tests/python/blended_smoke_test.py`; the upstream ctest suite in `tests/` is
+never run and has drifted:
+- Since PR #254 the General factory startup has no objects. Nine tests
+  (`bl_blendfile_io`, `bl_animation_fcurves`, `bl_animation_action`,
+  `bl_animation_drivers`, `bl_animation_shapekey`, `bl_pyapi_idprop_datablock`,
+  `bl_alembic_io_test`, `vertex_group_painting`, the remote-listing generator
+  test) index the factory Cube, Camera or Light. Others may rely on it less
+  directly.
+- Five test files use `bpy.data` collections for removed ID types
+  (`workspaces`, `screens`, `metaballs`, `particles`, `textures`, `speakers`).
+
+Goal: a Linux build where `ctest`, or a curated subset registered in
+`tests/python/CMakeLists.txt`, passes. Tests create the scene they need (a
+small shared helper), and tests that only cover removed types are deleted with
+their CMake registration, not skipped. Then decide whether the passing subset
+runs in CI.
+
+**Settings folder name.** Since PR #254 the user folder is
+`%APPDATA%\Blended\X.X` (macOS `Application Support/Blended`, Linux
+`~/.config/blended`). Decide whether it should carry the publisher, as
+upstream's `Blender Foundation\Blender` does: `%APPDATA%\CHJ 3 Productions\Blended`.
+Changing it later needs the same one-time copy that
+`BKE_appdir_user_dir_migrate_from_blender` does now.
+
 ---
 
 ## 0.1.0

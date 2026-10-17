@@ -44,7 +44,7 @@ Phase 1 of 1.0.0, the runtime audit, is in progress: the developer runs each Win
 | 0.8.x | File format — `.blended` is the project, import/export is the boundary | ✓ CI-complete (build 100, commit `99e20b96`). First try. Magic bytes `"BLENDED"`, 23 layers, ~80 sites, platform integration, all tests green. |
 | 0.9.x | `.blend` import — seamless read with dropped-data manifest output | ✓ CI-complete (build 101, commit `c8e87078`). Third first-try on the project. OB_MBALL versioning pass, Scar 2 drain (PA/TE/CU/LS), manifest Text block, dead-code deletion. |
 | 1.0.0 | Foundation complete. Two sequential phases: (1) runtime audit — developer runs build, reports findings, Claude triages and fixes; (2) GitHub Pages — polished marketing + tech demo site, WASM interactive demo as stretch goal. Release tag when both phases clear. | In progress |
-| 1.1.0+ | Post-1.0 roadmap (minor versions). First entry: user workspaces — decide where they live (BLENDED.md §9 item 10), give them an owner, re-enable Duplicate/Delete/Reorder/Cycle. Plan in CHANGELOG.md "Post-1.0 roadmap". | Planned |
+| 1.1.0+ | Post-1.0 roadmap (minor versions). Entries: user workspaces (decide where they live, BLENDED.md §9 item 10; give them an owner; re-enable Duplicate/Delete/Reorder/Cycle), Blended keymap and theme presets, open into the right mode for every mode, revive the upstream Python test suite, the settings folder name (publisher folder or not). Plans in CHANGELOG.md "Post-1.0 roadmap". | Planned |
 
 ---
 
