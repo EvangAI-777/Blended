@@ -34,6 +34,7 @@
 ## Verification Checklist
 
 ### Code PRs
+- [ ] `python3 tools/check_blended.py` passes (also runs on the PR)
 - [ ] Builds locally: `cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -C build_files/cmake/config/blended_release.cmake && cmake --build build --target install`
 - [ ] No new warnings introduced
 - [ ] Follows coding conventions (SPDX header, `snake_case`, 2-space indent for C/C++)

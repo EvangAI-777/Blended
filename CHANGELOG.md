@@ -159,6 +159,28 @@ CI build 110 (run 38840006785, `main` @ `b43314cf`, the PR #245 merge) went gree
 
 **Claude AI contributor (2026-10-17 — 1.0.0-dev docs):** Corrected the project timeline in CLAUDE.md and `wtf.md` (PR #250). Scar 25 said "two years"; Scar 10 was written on 2026-05-01, two days after ID_WM/ID_SCR were deregistered, and the six foundation layers took about five weeks. Codex caught two wrong dates in the first correction. Added "Work, not judgment" to BLENDED.md §4 at the developer's request, with matching lines in CLAUDE.md (Pull Request Instructions) and `.github/README.md`. The repo is about work ethic and quality, not personal judgments. The reference point is a maintainer elsewhere closing one of the developer's PRs with "are you proud of yourself".
 
+**Repository standards (2026-10-17, PR #252):**
+- **Upstream leftovers removed:** `.github/FUNDING.yml` (Sponsor button pointed at fund.blender.org), `.well-known/funding-manifest-urls` (blender.org) and `.gitea/` (Blender's CODEOWNERS, Gitea templates, CLA workflow).
+- **Fast checks on every PR** (`.github/workflows/checks.yml`, `tools/check_blended.py`, a few minutes on Linux):
+  - Python syntax of `scripts/`, the Cycles add-on and `tests/python`;
+  - deregistered-ID allocation, with the deregistered types read from the registry;
+  - `bpy.types` references to removed RNA types;
+  - `LISTBASE_FOREACH` outside `listbase.cc`;
+  - workflow YAML parse.
+- **Latent crash found by the new check and fixed** (`2895a4d8`): `CurveComponent::get_curve_for_render()` allocated a legacy `Curve` with `BKE_id_new_nomain(ID_CU_LEGACY)`. That returns null without `IDTypeInfo`, and the next call dereferenced it. The path runs for any non-curve object whose Geometry Nodes output holds curves. New `BKE_curve_new_nomain` / `BKE_curve_free_nomain`. Not yet run on hardware.
+- **Windows build hardened** (`build-windows.yml`):
+  - read-only token by default;
+  - releases published by a separate `release` job, the only one with write access;
+  - one build per ref at a time;
+  - every action pinned to a commit SHA, on the Node 24 majors where they exist;
+  - SHA-256 checksums (`.sha256` published with releases, both hashes in the run summary);
+  - signed build-provenance attestation for `Blended.exe` and the zip (`gh attestation verify`).
+- **`sync-upstream.yml` script injection fixed:** the input now reaches the scripts only through `env`, and is validated with `git check-ref-format`. `.github/dependabot.yml` keeps the action pins current.
+- **Contributor files:** the Runtime report issue form, `SECURITY.md`, `CONTRIBUTING.md`, and a `check_blended.py` checkbox in the PR template. CLAUDE.md "CI / Build Config", the Scar 10 sweep note and the steward skill are updated.
+
+**Claude AI contributor (2026-10-17 — repository standards):** At the developer's request, compared the repo against current GitHub guidance (Node 20 retirement on runners, action pinning, least-privilege tokens, script injection, artifact attestations) and implemented the twelve items in PR #252. Resolved every action tag to its commit SHA with `git ls-remote`, and checked each major's Node runtime in its `action.yml`. Validated all workflows with actionlint 1.7.12. Tested each check against planted violations before relying on it. The check found the render-curve crash on its first run against the tree.
+Also corrected the docs' account of the developer's coursework, at their request. The 3D animation class assignments and grades were final by commencement on May 23, 2026, so BLENDED.md §4 "Dogfooding" is now in the past tense. Work after that date is not all in Taylor's computer lab: some was, and since that access ended it happens elsewhere. `wtf.md` is updated to match, and its "the last year-plus" (build 101) now reads "the spring".
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

@@ -1,0 +1,59 @@
+name: Checks
+
+# Fast source checks that need no build (a few minutes on Linux, against ~2 hours for the
+# Windows build). They target bugs that previously shipped in a Windows build and were only
+# found on hardware. See tools/check_blended.py.
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Source checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+      with:
+        fetch-depth: 1
+        lfs: false
+        submodules: false
+        persist-credentials: false
+
+    - name: Set up Python
+      uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+      with:
+        python-version: '3.13'
+
+    - name: Blended source checks
+      run: python tools/check_blended.py
+
+    - name: Workflow YAML parses
+      run: |
+        python -m pip install --quiet pyyaml==6.0.2
+        python - <<'EOF'
+        import glob, sys, yaml
+        failed = False
+        for path in sorted(glob.glob('.github/**/*.yml', recursive=True)):
+            try:
+                with open(path, encoding='utf-8') as fh:
+                    yaml.safe_load(fh)
+                print('ok:', path)
+            except yaml.YAMLError as ex:
+                print('FAIL:', path, ex)
+                failed = True
+        sys.exit(1 if failed else 0)
+        EOF

@@ -2,8 +2,12 @@ name: Build Blended (Windows x64)
 
 # Two build modes:
 #
-#   tag push (v*)       → full release build → artifact + GitHub Release
+#   tag push (v*)       → full release build → artifact + GitHub Release (separate job)
 #   workflow_dispatch   → choose build type, produces artifact only
+#
+# Every build records SHA-256 checksums in the run summary and a signed build-provenance
+# attestation for Blended.exe and the zip. Third-party actions are pinned to commit SHAs
+# (kept current by Dependabot, .github/dependabot.yml).
 
 on:
   push:
@@ -20,11 +24,27 @@ on:
           - Release
           - RelWithDebInfo
 
+# Read-only token by default; each job asks for what it needs.
+permissions:
+  contents: read
+
+# One build per ref at a time. A second dispatch queues instead of cancelling a running
+# 2-hour build.
+concurrency:
+  group: build-windows-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-windows-x64:
     name: Windows x64
     runs-on: windows-2022
     timeout-minutes: 360
+    permissions:
+      contents: read
+      id-token: write       # build provenance (Sigstore)
+      attestations: write  # build provenance
+    outputs:
+      version: ${{ steps.package.outputs.version }}
 
     env:
       BUILD_TYPE: ${{ inputs.build_type || 'Release' }}
@@ -36,12 +56,13 @@ jobs:
     steps:
     # ── Checkout ──────────────────────────────────────────────
     - name: Checkout source
-      uses: actions/checkout@v4
+      uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
       with:
         path: src
         fetch-depth: 1
         lfs: false
         submodules: false
+        persist-credentials: false
 
     - name: Compute submodule hash
       id: submod-hash
@@ -75,7 +96,7 @@ jobs:
     # ── Precompiled libraries ─────────────────────────────────
     - name: Restore library cache
       id: cache-libs
-      uses: actions/cache@v4
+      uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
       with:
         path: ${{ env.SRC_DIR }}/lib/windows_x64
         key: blender-libs-win-x64-${{ steps.submod-hash.outputs.hash }}
@@ -98,12 +119,12 @@ jobs:
 
     # ── Toolchain ─────────────────────────────────────────────
     - name: Setup MSVC 2022
-      uses: ilammy/msvc-dev-cmd@v1
+      uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
       with:
         arch: x64
 
     - name: Install Ninja
-      uses: seanmiddleditch/gha-setup-ninja@v5
+      uses: seanmiddleditch/gha-setup-ninja@96bed6edff20d1dd61ecff9b75cc519d516e6401 # v5
 
     # ── Clean ──────────────────────────────────────────────────
     - name: Clean build directory
@@ -169,21 +190,49 @@ jobs:
         Rename-Item $installDir $name
         Compress-Archive -Path "$env:BUILD_DIR\$name" -DestinationPath "$env:BUILD_DIR\$zip"
 
+        # SHA-256 checksums, in the format `sha256sum --check` reads.
+        $zipHash = (Get-FileHash "$env:BUILD_DIR\$zip" -Algorithm SHA256).Hash.ToLower()
+        [IO.File]::WriteAllText("$env:BUILD_DIR\$zip.sha256", "$zipHash  $zip`n")
+        $exeHash = (Get-FileHash "$env:BUILD_DIR\$name\Blended.exe" -Algorithm SHA256).Hash.ToLower()
+        "### Blended $version" | Out-File -Append $env:GITHUB_STEP_SUMMARY
+        "- ``$zip`` SHA-256: ``$zipHash``" | Out-File -Append $env:GITHUB_STEP_SUMMARY
+        "- ``Blended.exe`` SHA-256: ``$exeHash``" | Out-File -Append $env:GITHUB_STEP_SUMMARY
+
+        "version=$version"                        | Out-File -Append $env:GITHUB_OUTPUT
+
         "PACKAGE_NAME=$zip"                       | Out-File -Append $env:GITHUB_ENV
         "PACKAGE_PATH=$env:BUILD_DIR\$zip"         | Out-File -Append $env:GITHUB_ENV
         "PACKAGE_DIR=$env:BUILD_DIR\$name"         | Out-File -Append $env:GITHUB_ENV
         "VERSION=$version"                        | Out-File -Append $env:GITHUB_ENV
+        "SHA256_PATH=$env:BUILD_DIR\$zip.sha256"  | Out-File -Append $env:GITHUB_ENV
+        # Forward slashes: the attestation action reads subject paths as glob patterns.
+        $fwd = $env:BUILD_DIR -replace '\\', '/'
+        "ATTEST_EXE=$fwd/$name/Blended.exe"      | Out-File -Append $env:GITHUB_ENV
+        "ATTEST_ZIP=$fwd/$zip"                   | Out-File -Append $env:GITHUB_ENV
 
         Write-Host "Packaged: $zip"
 
     # ── Upload artifact ───────────────────────────────────────
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: Blended-${{ env.VERSION }}-windows-x64
         path: ${{ env.PACKAGE_DIR }}
         retention-days: 90
         compression-level: 0
+
+    # ── Build provenance ──────────────────────────────────────
+    # Signed record tying the binary and the release zip to this commit and workflow run.
+    # Verify with: gh attestation verify Blended.exe --repo EvangAI-777/Blended
+    # Runs after the upload so a provenance failure never costs the test build its artifact.
+    # It may fail a dispatch build without stopping it, but it must pass for a release.
+    - name: Attest build provenance
+      continue-on-error: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+      uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+      with:
+        subject-path: |
+          ${{ env.ATTEST_EXE }}
+          ${{ env.ATTEST_ZIP }}
 
     # ── Smoke test ────────────────────────────────────────────
     # Runs the packaged build headless: startup, Python startup scripts, window-manager RNA,
@@ -217,12 +266,40 @@ jobs:
           exit 1
         }
 
-    # ── GitHub Release (tags only) ────────────────────────────
-    - name: Create GitHub Release
+    # ── Release files (tags only) ─────────────────────────────
+    # The release itself is published by the `release` job, which is the only job with write
+    # access to the repository. It runs only after this job, smoke test included, passed.
+    - name: Upload release files
       if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v2
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
-        name: Blended ${{ env.VERSION }}
-        files: ${{ env.PACKAGE_PATH }}
+        name: release-files
+        path: |
+          ${{ env.PACKAGE_PATH }}
+          ${{ env.SHA256_PATH }}
+        retention-days: 7
+        compression-level: 0
+
+  # ── GitHub Release (tags only) ────────────────────────────
+  release:
+    name: GitHub Release
+    needs: build-windows-x64
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download release files
+      uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
+      with:
+        name: release-files
+        path: dist
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
+      with:
+        name: Blended ${{ needs.build-windows-x64.outputs.version }}
+        files: dist/*
         generate_release_notes: true
         draft: false

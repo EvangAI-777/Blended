@@ -6,6 +6,7 @@
 
 #include "DNA_curve_types.h"
 
+#include "BKE_curve.hh"
 #include "BKE_curves.hh"
 #include "BKE_geometry_fields.hh"
 #include "BKE_geometry_set.hh"
@@ -49,7 +50,7 @@ void CurveComponent::clear()
     if (curve_for_render_ != nullptr) {
       /* The curve created by this component should not have any edit mode data. */
       BLI_assert(curve_for_render_->editfont == nullptr && curve_for_render_->editnurb == nullptr);
-      BKE_id_free(nullptr, curve_for_render_);
+      BKE_curve_free_nomain(curve_for_render_);
       curve_for_render_ = nullptr;
     }
 
@@ -134,7 +135,7 @@ const Curve *CurveComponent::get_curve_for_render() const
     return curve_for_render_;
   }
 
-  curve_for_render_ = static_cast<Curve *>(BKE_id_new_nomain(ID_CU_LEGACY, nullptr));
+  curve_for_render_ = BKE_curve_new_nomain();
   curve_for_render_->curve_eval = curves_;
 
   return curve_for_render_;

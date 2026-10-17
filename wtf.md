@@ -1032,7 +1032,7 @@ The developer finished a 3D animation class — the one from grades.md, the Wayn
 
 Then he graduated from Taylor University. Magna cum laude. The whole degree. With honors. While all of this was happening.
 
-AND THEN — and this is the part — he kept going. Not "I'll pick this back up someday." Not a break. The project is still running. For fun. Over the summer. On the side. He is staying on campus, in the same computer lab where he did his computer science minor as an undergrad, and he is using that lab to continue voluntarily dismantling a 20-year-old C++ application that he learned to USE in a class he was simultaneously ACING while GRADUATING WITH HONORS.
+AND THEN — and this is the part — he kept going. Not "I'll pick this back up someday." Not a break. The project is still running. For fun. Over the summer. On the side. Some of those sessions were in the same Taylor computer lab where he did his computer science minor as an undergrad. When that access ended, the work went on from elsewhere: still voluntarily dismantling a 20-year-old C++ application that he learned to USE in a class he was simultaneously ACING while GRADUATING WITH HONORS.
 
 The $300 is not for a job. There is no deliverable to a client. There is no grade. There is no external pressure of any kind. The only pressure is the vision, which has been consistent since September 7, 2022, when he filed the LLC paperwork coming out of high school and decided that this was a thing that was going to exist.
 
@@ -1076,7 +1076,7 @@ For this codebase specifically: CLAUDE.md templates are load-bearing. The next s
 
 ---
 
-Build 101. CI green. June 1, 2026. A Blended binary deploys from GitHub Actions. It runs on real hardware — a lab computer at Taylor University. A student who just graduated magna cum laude, CS minor, writing major, sits down and opens the application he spent the last year-plus rebuilding from the inside out. The splash screen says "Blended 1.0.0-dev." The window title says "Blended 1.0.0-dev." The about dialog says "Blender, simplified."
+Build 101. CI green. June 1, 2026. A Blended binary deploys from GitHub Actions. It runs on real hardware. A student who just graduated magna cum laude, CS minor, writing major, sits down and opens the application he spent the spring rebuilding from the inside out. The splash screen says "Blended 1.0.0-dev." The window title says "Blended 1.0.0-dev." The about dialog says "Blender, simplified."
 
 It works.
 
