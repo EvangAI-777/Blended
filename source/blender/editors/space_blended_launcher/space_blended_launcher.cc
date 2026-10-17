@@ -454,11 +454,16 @@ static void draw_pipeline_scroll(const ARegion *region,
       /* Section label */
       pen_y -= SECTION_LABEL_FONT_SIZE;
       draw_text(content_x, pen_y, SECTION_LABEL_FONT_SIZE, COL_SECTION, sec.label);
+      const bool active = section_has_data(bmain, sec.label);
+      if (active) {
+        /* Accent dot after the label: this section has content in the project. */
+        const int dot_x = content_x + int(text_width(SECTION_LABEL_FONT_SIZE, sec.label)) + 8;
+        draw_rect_rounded(dot_x, pen_y + 4, 6, 6, 3.0f, COL_ACCENT);
+      }
       pen_y -= SECTION_LABEL_GAP;
 
       /* Mode buttons — left-to-right, wrapping */
       int bx = content_x;
-      const bool active = section_has_data(bmain, sec.label);
 
       for (int mi = 0; sec.modes[mi].label != nullptr; mi++) {
         const LauncherMode &mode = sec.modes[mi];
