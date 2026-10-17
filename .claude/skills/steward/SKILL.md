@@ -10,8 +10,10 @@ context; this file covers only the PR loop.
 
 ## What "green" means here
 
-- **No CI runs on PRs or branch pushes.** `build-windows.yml` runs only on `workflow_dispatch` and
-  `v*` tags. A PR has no check runs, so "CI green" on a PR does not exist. Never wait for one.
+- **PRs get the fast Checks workflow only** (`.github/workflows/checks.yml`, a few minutes:
+  `tools/check_blended.py` and a workflow YAML parse). A red Checks run is work now, like any red
+  CI. The Windows build (`build-windows.yml`) runs only on `workflow_dispatch` and `v*` tags, so
+  it never runs on a PR. Never wait for it there.
 - **The review signal is Codex** (`chatgpt-codex-connector[bot]`). It reviews when a PR opens and
   when someone comments `@codex review`. A clean pass is the receipt comment "Didn't find any major
   issues" or a 👍 reaction. Its summary comment shows `has_unresolved_findings`.
@@ -37,6 +39,8 @@ context; this file covers only the PR loop.
 Run the Codex Standard checklist in CLAUDE.md (both parts). The local checks that work in this
 container:
 
+- **Everything:** `python3 tools/check_blended.py` (the same checks the PR runs, about 15 seconds).
+- **Workflows:** `actionlint` on `.github/workflows/*.yml` (`pip install actionlint-py` in a venv).
 - **Python:** `python3 -m py_compile <file>`, then delete the `__pycache__` directories it creates.
 - **C++:** there is no full build. Compile only the changed file with `g++ -fsyntax-only`, and run it
   once on `git stash`ed sources and once with the change. Only errors that appear with the change
