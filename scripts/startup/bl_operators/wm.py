@@ -3402,7 +3402,7 @@ class WM_MT_splash_quick_setup(Menu):
         sub = col.column(heading="Keymap")
         text = bpy.path.display_name(kc.name)
         if not text:
-            text = "Blender"
+            text = "Blended"
         sub.menu("USERPREF_MT_keyconfigs", text=text)
 
         if hasattr(kc_prefs, "select_mouse"):
@@ -3519,7 +3519,7 @@ class WM_MT_splash_about(Menu):
         del _ghost_backend, ghost_backend
 
         col.separator(factor=2.0)
-        col.label(text="Blender is free software")
+        col.label(text="Blended is free software, based on Blender")
         col.label(text="Licensed under the GNU General Public License")
 
         col = split.column(align=True)

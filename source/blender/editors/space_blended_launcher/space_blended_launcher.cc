@@ -28,7 +28,10 @@
 
 #include "BLF_api.hh"
 
+#include "DNA_node_types.h"
 #include "DNA_object_types.h"
+#include "DNA_scene_types.h"
+#include "DNA_sequence_types.h"
 #include "DNA_space_types.h"
 #include "DNA_userdef_types.h"
 #include "DNA_windowmanager_types.h"
@@ -317,7 +320,12 @@ static bool section_has_data(const Main *bmain, const char *section_label)
     return bmain->images.first != nullptr;
   }
   if (STREQ(section_label, "Compositing")) {
-    return bmain->nodetrees.first != nullptr;
+    for (const bNodeTree &ntree : bmain->nodetrees) {
+      if (ntree.type == NTREE_COMPOSIT) {
+        return true;
+      }
+    }
+    return false;
   }
   if (STREQ(section_label, "Audio")) {
     return bmain->sounds.first != nullptr;
@@ -326,6 +334,42 @@ static bool section_has_data(const Main *bmain, const char *section_label)
     return bmain->objects.first != nullptr;
   }
   return false;
+}
+
+/* The editor a project opens in: the first Creative section with content, any objects or
+ * non-compositor node groups in the 3D view, sequencer strips in the sequencer, then the first
+ * Post section with content. Finalizing is skipped because it counts any object, which the 3D
+ * view already covers. */
+static int project_target_space(const Main *bmain)
+{
+  for (int si = 0; g_creative.sections[si].label != nullptr; si++) {
+    const LauncherSection &sec = g_creative.sections[si];
+    if (section_has_data(bmain, sec.label)) {
+      return sec.modes[0].target_space;
+    }
+  }
+  if (bmain->objects.first != nullptr) {
+    return SPACE_VIEW3D;
+  }
+  /* Geometry, shader and texture node groups are 3D content (VFX, materials), not compositing. */
+  for (const bNodeTree &ntree : bmain->nodetrees) {
+    if (ntree.type != NTREE_COMPOSIT) {
+      return SPACE_VIEW3D;
+    }
+  }
+  /* A timeline (video editing) project: strips in any scene's sequencer. */
+  for (const Scene &scene : bmain->scenes) {
+    if (scene.ed && scene.ed->seqbase.first != nullptr) {
+      return SPACE_SEQ;
+    }
+  }
+  for (int si = 0; g_post.sections[si].label != nullptr; si++) {
+    const LauncherSection &sec = g_post.sections[si];
+    if (!STREQ(sec.label, "Finalizing") && section_has_data(bmain, sec.label)) {
+      return sec.modes[0].target_space;
+    }
+  }
+  return SPACE_EMPTY;
 }
 
 /** \} */
@@ -454,11 +498,16 @@ static void draw_pipeline_scroll(const ARegion *region,
       /* Section label */
       pen_y -= SECTION_LABEL_FONT_SIZE;
       draw_text(content_x, pen_y, SECTION_LABEL_FONT_SIZE, COL_SECTION, sec.label);
+      const bool active = section_has_data(bmain, sec.label);
+      if (active) {
+        /* Accent dot after the label: this section has content in the project. */
+        const int dot_x = content_x + int(text_width(SECTION_LABEL_FONT_SIZE, sec.label)) + 8;
+        draw_rect_rounded(dot_x, pen_y + 4, 6, 6, 3.0f, COL_ACCENT);
+      }
       pen_y -= SECTION_LABEL_GAP;
 
       /* Mode buttons — left-to-right, wrapping */
       int bx = content_x;
-      const bool active = section_has_data(bmain, sec.label);
 
       for (int mi = 0; sec.modes[mi].label != nullptr; mi++) {
         const LauncherMode &mode = sec.modes[mi];
@@ -590,6 +639,32 @@ static void LAUNCHER_OT_activate_mode(wmOperatorType *ot)
   ot->invoke = activate_mode_invoke;
   ot->poll = activate_mode_poll;
   ot->flag = OPTYPE_INTERNAL;
+}
+
+void ED_launcher_enter_project(bContext *C)
+{
+  const int target = project_target_space(CTX_data_main(C));
+  if (target == SPACE_EMPTY) {
+    return;
+  }
+  wmWindowManager *wm = CTX_wm_manager(C);
+  wmWindow *win_prev = CTX_wm_window(C);
+  for (wmWindow &win : wm->windows) {
+    bScreen *screen = WM_window_get_active_screen(&win);
+    if (screen == nullptr || WM_window_is_temp_screen(&win)) {
+      continue;
+    }
+    for (ScrArea &area : screen->areabase) {
+      if (area.spacetype != SPACE_BLENDED_LAUNCHER) {
+        continue;
+      }
+      /* #ED_area_newspace works on the context's window and screen. */
+      CTX_wm_window_set(C, &win);
+      CTX_wm_area_set(C, &area);
+      ED_area_newspace(C, &area, target, true);
+    }
+  }
+  CTX_wm_window_set(C, win_prev);
 }
 
 /* --- LAUNCHER_OT_scroll --- */

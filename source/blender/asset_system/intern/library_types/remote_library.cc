@@ -487,7 +487,7 @@ void remote_library_request_asset_download(const bContext &C,
 #else
   UNUSED_VARS(C, asset);
   BKE_report(
-      reports, RPT_ERROR, "Downloading assets requires Python, and this Blender is built without");
+      reports, RPT_ERROR, "Downloading assets requires Python, and this Blended is built without");
 #endif
 }
 
@@ -552,7 +552,7 @@ void remote_library_request_preview_download(const bContext &C,
   /* TODO should we use CLOG here? Otherwise every preview will trigger a report. */
   BKE_report(reports,
              RPT_ERROR,
-             "Downloading asset previews requires Python, and this Blender is built without");
+             "Downloading asset previews requires Python, and this Blended is built without");
 #endif
 }
 

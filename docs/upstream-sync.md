@@ -71,6 +71,12 @@ Verify the build succeeds and Blended-specific features still work:
 
 Push your sync branch and open a pull request against `main` for review.
 
+## Fork Point
+
+Blended forked from upstream `main` at `03de53b7` (2026-04-23, Blender 5.2 alpha), the last upstream commit before Blended's own history. It is an ancestor of upstream `blender-v5.2-release`. No upstream commits have been merged or cherry-picked since. When some are, record the last one here.
+
+Upstream is reachable from cloud sessions through the GitHub mirror (`https://github.com/blender/blender.git`); `projects.blender.org` is blocked there.
+
 ## Conflict-Prone Files
 
 These files are modified by Blended and will likely conflict on upstream merges.
@@ -102,6 +108,8 @@ Every place Blended deliberately differs from upstream Blender, one row per chan
 | Change | Main files | Why | Drop when |
 |--------|-----------|-----|-----------|
 | Product identity and versioning | `BKE_blender_version.h`, `blender.cc`, `CMakeLists.txt` (`project`), `source/creator/CMakeLists.txt` (`OUTPUT_NAME Blended`, `Blended.exe`), `wm_window.cc`, `wm_splash_screen.cc`, `release/windows/icons/winblender.rc`, `release/freedesktop/blender.desktop` | §16 product identity | Never |
+| Blended user folders | `GHOST_SystemPaths{Win32,Unix,Cocoa}` (`Blended\X.X`, `~/.config/blended/X.X`, `Application Support/Blended/X.X`), `appdir.cc` (cache folder, `BKE_appdir_user_dir_migrate_from_blender`), `creator.cc`, `preferences.cc` (`Documents/Blended/Assets`), PR #254 | Blended and Blender must not share add-ons, extensions, recent files or each other's preference files | Never |
+| UI text names Blended | ~55 files: operator names and tooltips, RNA descriptions, reports and dialogs (`wm_files.cc`, `wm_operators.cc`, `rna_userdef.cc`, `rna_space.cc`, `io_*.cc`, `system_win32.cc`, `cpu_check.cc`, `render_view.cc`, `info_stats.cc`, `bl_ui`, `bl_operators`, the Cycles add-on), PR #254 | §16 identity. Rule: "Blended" where the text means the running application; "Blender" for Blender versions and compatibility, `.blend` as a Blender file, interop metadata, the Blender unit, preset names and Help links to blender.org | Never. An upstream merge brings back new "Blender" strings: re-run the grep (`docs/runtime-audit.md`, build 111 finding 4) |
 | Launcher instead of the splash | `editors/space_blended_launcher/`, `rna_space.cc` (`SPACE_BLENDED_LAUNCHER`), `wm_init_exit.cc` (`WM_init_splash` is a no-op), launcher keymap in `blender_default.py` / `industry_compatible_data.py` / `keymap_hierarchy.py` | §11–12 launcher and mode lenses | Never |
 | UI-state ID types removed (`ID_WS`, `ID_SCR`, `ID_WM`) | `workspace.cc`, `screen.cc`, `wm.cc` (`wm_add_default` builds the runtime Launcher UI), `wm_files.cc`, `blendfile.cc` (`kept_ui_*` remap), `screen_edit.cc`, `lib_id_delete.cc` (`id_free_runtime_screen`), `rna_ID.cc` (legacy codes → RNA types), `DNA_ID_enums.h`, `main.cc` (`which_libbase`), workspace operators and menus | §10 Bucket 4 | Never; the post-1.0 user-workspaces plan changes the workspace part |
 | Fossil and deprecated ID types removed (`ID_CU_LEGACY`, `ID_GD_LEGACY`, `ID_CF`, `ID_PC`, `ID_SPK`, `ID_PA`, `ID_LS`, `ID_MB`, `ID_TE`) | `idtype.cc`, `main.cc` (kept listbases, `BKE_main_clear` drain), `DNA_ID_enums.h`, the Scar 10 allocators (`particle.cc`, `gpencil_legacy.cc`, `linestyle.cc`, `curve.cc`), `geometry_component_curves.cc`, depsgraph, outliner, animation channels, RNA, `intern/cycles/blender/addon/properties.py` | §10 Buckets 5–6 | Never |

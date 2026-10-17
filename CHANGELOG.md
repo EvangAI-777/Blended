@@ -200,6 +200,21 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-17 — documentation restructure):** At the developer's request, compared the docs against Claude Code's memory documentation and Codex's AGENTS.md guidance and implemented the seven items in PR #253. Followed Scars 1 and 21 for a large doc edit: CLAUDE.md read in full first, moved section by section with one commit per move, nothing deleted, and a script confirmed every original line still exists in the new set.
 
+**Phase 1 runtime audit — tenth findings (2026-10-17):**
+
+*Build 111 — build 110 fixes verified:* CI build 111 (run 38996537581, `main` @ `3992628f`, the PR #249 merge) went green, with every headless smoke check passing. On hardware it was the first session with no crash. Blended started straight to the launcher with no splash. The launcher click, scroll and Ctrl+Alt+Home worked, and Model opened a 3D view with the navigate gizmo. File > Open of a class `.blend` and its Cancel both worked, Save As `.blended` wrote the file, and Render opened its window. Build 110 findings 1, 2 and 4 are verified; 3 (Cycles) and 5 (status bar) were not reported.
+
+*Build 111 findings (fix implemented, awaiting build verification):*
+- **A scene behind the launcher.** The General startup kept upstream's cube, camera and light: Render from the launcher rendered them, and the launcher counted 3D content before any file was open. Fixed in `647c7d78`: `BLO_update_defaults_startup_blend` deletes the startup objects and their data for the General template; the smoke test checks the factory startup has no objects.
+- **File > Open looked like it did nothing.** The file loaded, but the launcher stayed on screen with the scene out of sight, and its only project-state cue was a barely lighter card fill. Fixed in `7384726b`: opening a project enters it (new BLENDED.md §11 principle); launcher areas switch to the editor for the project's main content (the 3D view for the robot scene). Sections with content also get an accent dot (`bad1b8be`).
+- **Upstream branding:** the render window was titled "Blender Render" and the status bar showed `5.2.0 a`. Fixed in `067307a0`: "Blended Render" and "Blended 1.0.0".
+- **"Blender" across the UI** (developer request): about 90 user-facing strings that name the running application now say Blended (`f3d20eaa`). Blender versions, `.blend` as a Blender file, interop metadata, the Blender unit, preset names, Help links and the tagline stay. The rule and the grep are in `docs/upstream-sync.md` (divergence register) and `docs/runtime-audit.md`.
+- **Separate user folder** (`81586af8`, `33938592`): Blended had been sharing Blender's user folder: add-ons, extensions, recent files and bookmarks, and it wrote its `userpref.blend` over Blender's. It now uses `%APPDATA%\Blended\5.2` (and the macOS/Linux equivalents), with a one-time copy of preferences, recent files and bookmarks from Blender's folder on first run. The default asset library moves to `Documents\Blended\Assets`. Renaming the keymap and theme presets is on the post-1.0 roadmap.
+- **Preferences didn't persist.** Codex, reviewing the migration, found that `wm_homefile_read_ex` never reads `userpref.blend`. 0.7.0 removed userpref-as-blend from the startup path (BLENDED.md §5 Group 1), but Save Preferences still wrote the file, and nothing replaced it. So every launch started from factory preferences, losing the theme, keymap, enabled add-ons and file paths. Fixed in `86f042d6`, at the developer's decision: `userpref.blend` is read again. It is per-user state, never opened as a document. `startup.blend` stays dropped. The one-time copy includes `userpref.blend` again.
+- Not bugs: "Don't Save" continuing to the File > Open browser is the expected save-first prompt; the Windows security prompt on a second instance is SmartScreen for an unsigned executable.
+
+**Claude AI contributor (2026-10-17 — 1.0.0-dev Phase 1 tenth findings):** Read the developer's build 111 report and five screenshots. Traced the default cube to the factory startup file and the launcher's project-state cue to `section_has_data`. That cue was already lit for 3D at startup, which is why opening a file changed nothing on screen. Checked the "Don't Save" path against the File > Open flow instead of treating it as a bug. Syntax-checked the four C++ files against a stashed baseline (no new errors).
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
@@ -1316,6 +1331,74 @@ workspaces, they are never saved, and they are never freed.
    Cycle, and factory name translation (the 0.2.0 stubs). Restore
    `WORKSPACE_OT_duplicate`'s poll and the `TOPBAR_MT_workspace_menu` entries
    disabled in PR #245.
+
+**Blended keymap and theme presets.** Preferences still list the keymap preset
+"Blender" (and "Blender 27X") and the themes "Blender Dark" / "Blender Light"
+(build 111 report). The names are stored in user preferences: the keyconfig
+name (`WM_KEYCONFIG_STR_DEFAULT`, `UserDef::keyconfigstr`) and the preset file
+names in `scripts/presets/keyconfig/` and `scripts/presets/interface_theme/`.
+Rename them to Blended and add a `versioning_userdef.cc` step that maps the old
+names (there is already a `{"blender", "Blender"}` mapping to extend), so
+existing preferences keep their keymap and theme.
+
+**Open into the right mode, for every mode.** Since PR #254, File > Open enters
+the project instead of leaving the launcher up. `project_target_space`
+(`space_blended_launcher.cc`) picks the editor from the content:
+- the first Creative section with data;
+- the 3D view for any other objects;
+- the sequencer for strips;
+- the first Post section with data.
+
+Each launcher mode still maps only to a space type (most 3D modes are a plain
+View3D), so a sculpt file opens in a 3D view, not in Sculpt mode. For each of
+the 28 modes (BLENDED.md §12):
+1. define what content identifies it;
+2. open the project in that mode's real setup (editor, object mode, tool),
+   not just the space type;
+3. check it on hardware with a file of each kind.
+
+Remember the last mode a project was in (per user, since files carry no UI),
+so reopening a project returns to where the user left it.
+
+**Revive the upstream Python test suite.** CI runs only the build and
+`tests/python/blended_smoke_test.py`; the upstream ctest suite in `tests/` is
+never run and has drifted:
+- Since PR #254 the General factory startup has no objects. Nine tests
+  (`bl_blendfile_io`, `bl_animation_fcurves`, `bl_animation_action`,
+  `bl_animation_drivers`, `bl_animation_shapekey`, `bl_pyapi_idprop_datablock`,
+  `bl_alembic_io_test`, `vertex_group_painting`, the remote-listing generator
+  test) index the factory Cube, Camera or Light. Others may rely on it less
+  directly.
+- Five test files use `bpy.data` collections for removed ID types
+  (`workspaces`, `screens`, `metaballs`, `particles`, `textures`, `speakers`).
+
+Goal: a Linux build where `ctest`, or a curated subset registered in
+`tests/python/CMakeLists.txt`, passes. Tests create the scene they need (a
+small shared helper), and tests that only cover removed types are deleted with
+their CMake registration, not skipped. Then decide whether the passing subset
+runs in CI.
+
+**Upstream 5.2 LTS fixes (careful cherry-picks, no merge).** Blended forked
+from upstream `main` at `03de53b7` (2026-04-23, 5.2 alpha). Upstream has
+since shipped 5.2 LTS (5.2.0 on 2026-07-14, 5.2.2 on 2026-09-15). The
+release branch has 953 commits from the beta (`4b9b419d`, 2026-06-03) to the
+5.2.3 candidate, plus 1,189 on `main` between the fork and the beta.
+
+A first pass (2026-10-17) only sorted them, by whether the patch text applies
+to the current tree and whether it touches files Blended changed or deleted.
+That says nothing about whether a pick compiles, depends on a 5.2 change
+Blended doesn't have, or behaves correctly here, so it is not a candidate
+list. Do this only with a way to build and run each batch before the next:
+- small batches, each through a Windows build and a hardware check;
+- crash fixes in code Blended keeps first;
+- `git cherry-pick -x`, so every commit records its upstream SHA.
+
+**Settings folder name.** Since PR #254 the user folder is
+`%APPDATA%\Blended\X.X` (macOS `Application Support/Blended`, Linux
+`~/.config/blended`). Decide whether it should carry the publisher, as
+upstream's `Blender Foundation\Blender` does: `%APPDATA%\CHJ 3 Productions\Blended`.
+Changing it later needs the same one-time copy that
+`BKE_appdir_user_dir_migrate_from_blender` does now.
 
 ---
 

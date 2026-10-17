@@ -812,13 +812,13 @@ const char *ED_info_statusbar_string_ex(Main *bmain,
     }
   }
 
-  /* Blender version. */
+  /* Blended version. */
   if (statusbar_flag & STATUSBAR_SHOW_VERSION) {
     if (info[0]) {
       ofs += BLI_snprintf_utf8_rlen(info + ofs, len - ofs, " | ");
     }
     ofs += BLI_snprintf_utf8_rlen(
-        info + ofs, len - ofs, IFACE_("%s"), BKE_blender_version_string_compact());
+        info + ofs, len - ofs, IFACE_("Blended %s"), BKE_blended_version_string());
   }
 
   return info;

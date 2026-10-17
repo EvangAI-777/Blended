@@ -166,7 +166,7 @@ def _set_context_attr(context, data_path, value):
 
 class GenericUIListOperator:
     """Mix-in class containing functionality shared by operators
-    that deal with managing Blender list entries."""
+    that deal with managing list entries."""
     bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
 
     list_path: StringProperty()

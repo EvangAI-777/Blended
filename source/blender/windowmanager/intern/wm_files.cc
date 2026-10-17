@@ -112,6 +112,7 @@
 #include "ED_outliner.hh"
 #include "ED_render.hh"
 #include "ED_screen.hh"
+#include "ED_space_api.hh"
 #include "ED_undo.hh"
 #include "ED_util.hh"
 #include "ED_view3d.hh"
@@ -757,6 +758,12 @@ static void wm_file_read_post(bContext *C,
 
     ED_editors_init(C);
 
+    /* Blended: opening a project enters it. Launcher areas switch to the editor for the file's
+     * content (BLENDED.md §11). The startup file and File > New keep the launcher. */
+    if (!is_startup_file && params->success && !G.background) {
+      ED_launcher_enter_project(C);
+    }
+
     /* Add-ons are disabled when loading the startup file, so the Render Layer node in compositor
      * node trees might be wrong due to missing render engines that are available as add-ons, like
      * Cycles. So we need to update compositor node trees after reading the file when add-ons are
@@ -1280,9 +1287,13 @@ void wm_homefile_read_ex(bContext *C,
   const std::optional<std::string> cfgdir = BKE_appdir_folder_id(BLENDER_USER_CONFIG, nullptr);
   if (!use_factory_settings) {
     if (cfgdir.has_value()) {
-      /* startup-as-blend and userpref-as-blend removed (Blended 0.7.0):
-       * the .blended file is the project; startup state and preferences are not blend documents.
-       * cfgdir is still used below for app-template paths. */
+      /* startup-as-blend removed (Blended 0.7.0): the startup is always the factory project.
+       * Preferences are read from `userpref.blend` (BLENDED.md §5): per-user state the user never
+       * opens as a document. cfgdir is also used below for app-template paths. */
+      if (use_userdef) {
+        BLI_path_join(
+            filepath_userdef, sizeof(filepath_userdef), cfgdir->c_str(), BLENDER_USERPREF_FILE);
+      }
     }
     else {
       use_factory_settings = true;
@@ -2732,7 +2743,7 @@ static wmOperatorStatus wm_userpref_read_invoke(bContext *C,
                         IFACE_(display_name));
   }
   else {
-    title = IFACE_("Load Factory Blender Preferences");
+    title = IFACE_("Load Factory Blended Preferences");
   }
 
   return WM_operator_confirm_ex(
@@ -3338,7 +3349,7 @@ void WM_OT_open_mainfile(wmOperatorType *ot)
 {
   ot->name = "Open";
   ot->idname = "WM_OT_open_mainfile";
-  ot->description = "Open a Blender file";
+  ot->description = "Open a Blended or Blender file";
   ot->get_description = wm_open_mainfile_get_description;
 
   ot->invoke = wm_open_mainfile_invoke;
@@ -4187,7 +4198,7 @@ static std::string wm_save_mainfile_get_description(bContext * /*C*/,
 {
   if (RNA_boolean_get(ptr, "incremental")) {
     return TIP_(
-        "Save the current Blender file with a numerically incremented name that does not "
+        "Save the current Blended file with a numerically incremented name that does not "
         "overwrite any existing files");
   }
   return "";
@@ -4195,9 +4206,9 @@ static std::string wm_save_mainfile_get_description(bContext * /*C*/,
 
 void WM_OT_save_mainfile(wmOperatorType *ot)
 {
-  ot->name = "Save Blender File";
+  ot->name = "Save Blended File";
   ot->idname = "WM_OT_save_mainfile";
-  ot->description = "Save the current Blender file";
+  ot->description = "Save the current Blended file";
 
   ot->invoke = wm_save_mainfile_invoke;
   ot->exec = wm_save_as_mainfile_exec;
@@ -4220,14 +4231,14 @@ void WM_OT_save_mainfile(wmOperatorType *ot)
                   "Remap Relative",
                   "Remap relative paths when saving to a different directory");
 
-  prop = RNA_def_boolean(ot->srna, "exit", false, "Exit", "Exit Blender after saving");
+  prop = RNA_def_boolean(ot->srna, "exit", false, "Exit", "Exit Blended after saving");
   RNA_def_property_flag(prop, PROP_HIDDEN | PROP_SKIP_SAVE);
 
   prop = RNA_def_boolean(ot->srna,
                          "incremental",
                          false,
                          "Incremental",
-                         "Save the current Blender file with a numerically incremented name that "
+                         "Save the current Blended file with a numerically incremented name that "
                          "does not overwrite any existing files");
   RNA_def_property_flag(prop, PROP_HIDDEN | PROP_SKIP_SAVE);
 
@@ -4569,7 +4580,7 @@ void wm_test_foreign_file_warning(bContext *C)
     CTX_wm_window_set(C, win);
     alert(C,
           RPT_("Unable to Load File"),
-          RPT_("The file is not a valid Blender file."),
+          RPT_("The file is not a valid Blended or Blender file."),
           ui::AlertIcon::Error,
           false);
 
@@ -4625,7 +4636,7 @@ static void file_overwrite_detailed_info_show(ui::Layout &parent_layout, Main *b
       layout.separator(1.4f);
     }
 
-    layout.label(RPT_("This file is managed by the Blender asset system. It can only be"),
+    layout.label(RPT_("This file is managed by the Blended asset system. It can only be"),
                  ICON_NONE);
     layout.label(RPT_("saved as a new, regular file."), ICON_NONE);
   }

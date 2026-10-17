@@ -68,7 +68,7 @@ const EnumPropertyItem rna_enum_usd_mtl_name_collision_mode_items[] = {
      "MAKE_UNIQUE",
      0,
      "Make Unique",
-     "Import each USD material as a unique Blender material"},
+     "Import each USD material as a unique Blended material"},
     {int(MtlNameCollisionMode::ReferenceExisting),
      "REFERENCE_EXISTING",
      0,
@@ -83,13 +83,13 @@ const EnumPropertyItem rna_enum_usd_property_import_mode_items[] = {
      "USER",
      0,
      "User",
-     "Import USD attributes in the 'userProperties' namespace as Blender custom "
+     "Import USD attributes in the 'userProperties' namespace as Blended custom "
      "properties. The namespace will be stripped from the property names"},
     {int(PropertyImportMode::All),
      "ALL",
      0,
      "All Custom",
-     "Import all USD custom attributes as Blender custom properties. "
+     "Import all USD custom attributes as Blended custom properties. "
      "Namespaces will be retained in the property names"},
     {0, nullptr, 0, nullptr, nullptr},
 };
@@ -396,7 +396,7 @@ static void wm_usd_export_draw(bContext *C, wmOperator *op)
     }
     sub->prop(ptr, "export_animation", UI_ITEM_NONE, std::nullopt, ICON_NONE);
 
-    sub = &col->column(true, IFACE_("Blender Data"));
+    sub = &col->column(true, IFACE_("Blended Data"));
     sub->prop(ptr, "export_custom_properties", UI_ITEM_NONE, std::nullopt, ICON_NONE);
     ui::Layout *props_col = &sub->column(true);
     props_col->prop(ptr, "custom_properties_namespace", UI_ITEM_NONE, std::nullopt, ICON_NONE);
@@ -1264,7 +1264,7 @@ void WM_OT_usd_import(wmOperatorType *ot)
                rna_enum_usd_property_import_mode_items,
                int(PropertyImportMode::All),
                "Custom Properties",
-               "Behavior when importing USD attributes as Blender custom properties");
+               "Behavior when importing USD attributes as Blended custom properties");
 
   RNA_def_boolean(
       ot->srna,

@@ -165,7 +165,7 @@ static const EnumPropertyItem rna_enum_preference_gpu_backend_items[] = {
     {0, nullptr, 0, nullptr, nullptr},
 };
 static const EnumPropertyItem rna_enum_preference_gpu_preferred_device_items[] = {
-    {0, "AUTO", 0, "Auto", "Auto detect best GPU for running Blender"},
+    {0, "AUTO", 0, "Auto", "Auto detect best GPU for running Blended"},
     RNA_ENUM_ITEM_SEPR,
     {0, nullptr, 0, nullptr, nullptr},
 };
@@ -3267,7 +3267,7 @@ static void rna_def_userdef_theme_space_userpref(BlenderRNA *brna)
 
   srna = RNA_def_struct(brna, "ThemePreferences", nullptr);
   RNA_def_struct_sdna(srna, "ThemeSpace");
-  RNA_def_struct_ui_text(srna, "Theme Preferences", "Theme settings for the Blender Preferences");
+  RNA_def_struct_ui_text(srna, "Theme Preferences", "Theme settings for the Blended Preferences");
 
   prop = RNA_def_property(srna, "match", PROP_FLOAT, PROP_COLOR_GAMMA);
   RNA_def_property_array(prop, 3);
@@ -5485,7 +5485,7 @@ static void rna_def_userdef_view(BlenderRNA *brna)
 
   prop = RNA_def_property(srna, "show_statusbar_memory", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "statusbar_flag", STATUSBAR_SHOW_MEMORY);
-  RNA_def_property_ui_text(prop, "Show Memory", "Show Blender memory usage");
+  RNA_def_property_ui_text(prop, "Show Memory", "Show Blended memory usage");
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_INFO, "rna_userdef_update");
 
   prop = RNA_def_property(srna, "show_statusbar_vram", PROP_BOOLEAN, PROP_NONE);
@@ -5496,7 +5496,7 @@ static void rna_def_userdef_view(BlenderRNA *brna)
 
   prop = RNA_def_property(srna, "show_statusbar_version", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "statusbar_flag", STATUSBAR_SHOW_VERSION);
-  RNA_def_property_ui_text(prop, "Show Version", "Show Blender version string");
+  RNA_def_property_ui_text(prop, "Show Version", "Show Blended version string");
   RNA_def_property_update(prop, NC_SPACE | ND_SPACE_INFO, "rna_userdef_update");
 
   prop = RNA_def_property(srna, "show_statusbar_stats", PROP_BOOLEAN, PROP_NONE);
@@ -5566,7 +5566,7 @@ static void rna_def_userdef_edit(BlenderRNA *brna)
   srna = RNA_def_struct(brna, "PreferencesEdit", nullptr);
   RNA_def_struct_sdna(srna, "UserDef");
   RNA_def_struct_nested(brna, srna, "Preferences");
-  RNA_def_struct_ui_text(srna, "Edit Methods", "Settings for interacting with Blender data");
+  RNA_def_struct_ui_text(srna, "Edit Methods", "Settings for interacting with Blended data");
 
   /* Edit Methods */
 
@@ -6072,7 +6072,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
       "UI Scale",
       "Size multiplier to use when displaying custom user interface elements, so that "
       "they are scaled correctly on screens with different DPI. This value is based "
-      "on operating system DPI settings and Blender display scale.");
+      "on operating system DPI settings and Blended display scale.");
 
   prop = RNA_def_property(srna, "ui_line_width", PROP_FLOAT, PROP_NONE);
   RNA_def_property_clear_flag(prop, PROP_EDITABLE);
@@ -6081,7 +6081,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
       prop,
       "UI Line Width",
       "Suggested line thickness and point size in pixels, for add-ons displaying custom "
-      "user interface elements, based on operating system settings and Blender UI scale");
+      "user interface elements, based on operating system settings and Blended UI scale");
 
   prop = RNA_def_property(srna, "dpi", PROP_INT, PROP_NONE);
   RNA_def_property_clear_flag(prop, PROP_EDITABLE);
@@ -6262,7 +6262,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
   RNA_def_property_ui_text(
       prop,
       "GPU Backend",
-      "GPU backend to use (requires restarting Blender for changes to take effect)");
+      "GPU backend to use (requires restarting Blended for changes to take effect)");
 
   prop = RNA_def_property(srna, "gpu_preferred_device", PROP_ENUM, PROP_NONE);
   RNA_def_property_enum_items(prop, rna_enum_preference_gpu_preferred_device_items);
@@ -6274,7 +6274,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
   RNA_def_property_ui_text(prop,
                            "Device",
                            "Preferred device to select during detection (requires restarting "
-                           "Blender for changes to take effect)");
+                           "Blended for changes to take effect)");
 
   prop = RNA_def_property(srna, "gpu_shader_workers", PROP_INT, PROP_NONE);
   RNA_def_property_range(prop, 0, 32);
@@ -6282,7 +6282,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
                            "Shader Compilation Workers",
                            "Number of shader compilation threads or subprocesses, "
                            "clamped at the max threads supported by the CPU "
-                           "(requires restarting Blender for changes to take effect). "
+                           "(requires restarting Blended for changes to take effect). "
                            "A higher number increases the RAM usage while reducing "
                            "compilation time. A value of 0 will use automatic configuration. "
                            "(OpenGL only)");
@@ -6304,7 +6304,7 @@ static void rna_def_userdef_system(BlenderRNA *brna)
                            "Compilation method used for compiling shaders in parallel. "
                            "Subprocess requires a lot more RAM for each worker "
                            "but might compile shaders faster on some systems. "
-                           "Requires restarting Blender for changes to take effect. "
+                           "Requires restarting Blended for changes to take effect. "
                            "(OpenGL only)");
 
   /* Network. */
@@ -6314,9 +6314,9 @@ static void rna_def_userdef_system(BlenderRNA *brna)
   RNA_def_property_boolean_funcs(prop, nullptr, "rna_userdef_use_online_access_set");
   RNA_def_property_ui_text(prop,
                            "Allow Online Access",
-                           "Allow Blender to access the internet. Add-ons that follow this "
+                           "Allow Blended to access the internet. Add-ons that follow this "
                            "setting will only connect to the internet if enabled. However, "
-                           "Blender cannot prevent third-party add-ons from violating this rule.");
+                           "Blended cannot prevent third-party add-ons from violating this rule.");
   RNA_def_property_editable_func(prop, "rna_userdef_use_online_access_editable");
   RNA_def_property_update(prop, 0, "rna_userdef_update");
 
@@ -6390,7 +6390,8 @@ static void rna_def_userdef_system(BlenderRNA *brna)
   RNA_def_property_ui_text(
       prop,
       "Register for All Users",
-      "Make this Blender version open blend files for all users. Requires elevated privileges.");
+      "Make this Blended version open .blended and .blend files for all users. Requires elevated "
+      "privileges.");
 
   prop = RNA_def_boolean(
       srna,
@@ -6656,7 +6657,7 @@ static void rna_def_userdef_input(BlenderRNA *brna)
   RNA_def_property_range(prop, 0.0f, 1.0f);
   RNA_def_property_ui_range(prop, 0.0f, 1.0f, 0.01f, 3);
   RNA_def_property_ui_text(
-      prop, "Max Threshold", "Raw input pressure value that is interpreted as 100% by Blender");
+      prop, "Max Threshold", "Raw input pressure value that is interpreted as 100% by Blended");
 
   prop = RNA_def_property(srna, "pressure_softness", PROP_FLOAT, PROP_FACTOR);
   RNA_def_property_range(prop, -FLT_MAX, FLT_MAX);
@@ -6669,7 +6670,7 @@ static void rna_def_userdef_input(BlenderRNA *brna)
   RNA_def_property_ui_text(prop,
                            "Tablet API",
                            "Select the tablet API to use for pressure sensitivity (may require "
-                           "restarting Blender for changes to take effect)");
+                           "restarting Blended for changes to take effect)");
   RNA_def_property_update(prop, 0, "rna_userdef_input_devices");
 
   prop = RNA_def_property(srna, "show_tablet_debug_values", PROP_BOOLEAN, PROP_NONE);
@@ -7022,7 +7023,7 @@ static void rna_def_userdef_filepaths_extension_repo(BlenderRNA *brna)
   prop = RNA_def_property(srna, "use_sync_on_startup", PROP_BOOLEAN, PROP_NONE);
   RNA_def_property_boolean_sdna(prop, nullptr, "flag", USER_EXTENSION_REPO_FLAG_SYNC_ON_STARTUP);
   RNA_def_property_ui_text(
-      prop, "Check for Updates on Startup", "Allow Blender to check for updates upon launch");
+      prop, "Check for Updates on Startup", "Allow Blended to check for updates upon launch");
   RNA_def_property_update(prop, 0, "rna_userdef_update");
 
   prop = RNA_def_property(srna, "use_access_token", PROP_BOOLEAN, PROP_NONE);
@@ -7770,7 +7771,7 @@ void RNA_def_userdef(BlenderRNA *brna)
   RNA_def_property_flag(prop, PROP_NEVER_NULL);
   RNA_def_property_struct_type(prop, "PreferencesEdit");
   RNA_def_property_pointer_funcs(prop, "rna_UserDef_edit_get", nullptr, nullptr, nullptr);
-  RNA_def_property_ui_text(prop, "Edit Methods", "Settings for interacting with Blender data");
+  RNA_def_property_ui_text(prop, "Edit Methods", "Settings for interacting with Blended data");
 
   prop = RNA_def_property(srna, "inputs", PROP_POINTER, PROP_NONE);
   RNA_def_property_flag(prop, PROP_NEVER_NULL);
