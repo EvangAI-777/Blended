@@ -522,6 +522,10 @@ int main(int argc,
   /* After parsing #ARG_PASS_ENVIRONMENT such as `--env-*`,
    * since they impact `BKE_appdir` behavior. */
   BKE_appdir_init();
+#ifndef WITH_PYTHON_MODULE
+  /* Before anything reads the user folder (preferences, add-ons). */
+  BKE_appdir_user_dir_migrate_from_blender();
+#endif
 
   /* After parsing number of threads argument. */
   BLI_task_scheduler_init();

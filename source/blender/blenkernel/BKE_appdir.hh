@@ -35,6 +35,16 @@ void BKE_appdir_init();
 void BKE_appdir_exit();
 
 /**
+ * Blended keeps its user folder apart from Blender's (`Blended/X.X` instead of
+ * `Blender Foundation/Blender/X.X` on Windows, `Blender/X.X` on macOS, `blender/X.X` on Linux).
+ * On the first run, when the Blended user folder doesn't exist yet, copy the preferences, recent
+ * files and bookmarks from the Blender user folder of the same version. The startup file is not
+ * copied: the Blended startup is an empty project. Skipped when the user folder is overridden
+ * (`BLENDER_USER_RESOURCES`) or the install is portable.
+ */
+void BKE_appdir_user_dir_migrate_from_blender();
+
+/**
  * Get the folder that's the "natural" starting point for browsing files on an OS.
  * - Unix: `$HOME`
  * - Windows: `%userprofile%/Documents`
@@ -57,9 +67,9 @@ const char *BKE_appdir_folder_default_or_root() ATTR_WARN_UNUSED_RESULT ATTR_RET
 bool BKE_appdir_folder_documents(char *dir) ATTR_NONNULL(1) ATTR_WARN_UNUSED_RESULT;
 /**
  * Get the user's cache directory, i.e.
- * - Linux: `$HOME/.cache/blender/`
- * - Windows: `%USERPROFILE%\AppData\Local\Blender Foundation\Blender\Cache\`
- * - MacOS: `$HOME/Library/Caches/Blender/`
+ * - Linux: `$HOME/.cache/blended/`
+ * - Windows: `%USERPROFILE%\AppData\Local\Blended\Cache\`
+ * - MacOS: `$HOME/Library/Caches/Blended/`
  *
  * \returns True if the path is valid. It doesn't create or checks format
  * if the `blender` folder exists. It does check if the parent of the path exists.

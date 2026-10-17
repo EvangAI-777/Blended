@@ -221,14 +221,13 @@ bool BKE_appdir_folder_caches(char *path, const size_t path_maxncpy)
   BLI_path_join(path,
                 path_maxncpy,
                 caches_root_path->c_str(),
-                "Blender Foundation",
-                "Blender",
+                "Blended",
                 "Cache",
                 SEP_STR);
 #elif defined(__APPLE__)
-  BLI_path_join(path, path_maxncpy, caches_root_path->c_str(), "Blender", SEP_STR);
+  BLI_path_join(path, path_maxncpy, caches_root_path->c_str(), "Blended", SEP_STR);
 #else /* __linux__ */
-  BLI_path_join(path, path_maxncpy, caches_root_path->c_str(), "blender", SEP_STR);
+  BLI_path_join(path, path_maxncpy, caches_root_path->c_str(), "blended", SEP_STR);
 #endif
 
   return true;
@@ -843,6 +842,61 @@ std::optional<std::string> BKE_appdir_resource_path_id(const int folder_id,
                                                        const bool check_is_dir)
 {
   return BKE_appdir_resource_path_id_with_version(folder_id, check_is_dir, BLENDER_VERSION);
+}
+
+void BKE_appdir_user_dir_migrate_from_blender()
+{
+  char path_test[FILE_MAX];
+  if (test_env_path(path_test, "BLENDER_USER_RESOURCES", false) ||
+      get_path_local_ex(path_test, sizeof(path_test), "portable", nullptr, 0, true))
+  {
+    return;
+  }
+
+  char version_str[16];
+  STRNCPY(version_str, blender_version_decimal(BLENDER_VERSION));
+  const GHOST_ISystemPaths *ghost_system_paths = GHOST_ISystemPaths::get();
+  const char *ghost_user_dir = ghost_system_paths->getUserDir(BLENDER_VERSION, version_str);
+  if (ghost_user_dir == nullptr || BLI_is_dir(ghost_user_dir)) {
+    return;
+  }
+  char user_dir[FILE_MAX];
+  STRNCPY(user_dir, ghost_user_dir);
+
+  /* `<base>/Blended/X.X` -> `<base>`. */
+  char base_dir[FILE_MAX];
+  STRNCPY(base_dir, user_dir);
+  if (!BLI_path_parent_dir(base_dir) || !BLI_path_parent_dir(base_dir)) {
+    return;
+  }
+  char blender_dir[FILE_MAX];
+#ifdef WIN32
+  BLI_path_join(
+      blender_dir, sizeof(blender_dir), base_dir, "Blender Foundation", "Blender", version_str);
+#elif defined(__APPLE__)
+  BLI_path_join(blender_dir, sizeof(blender_dir), base_dir, "Blender", version_str);
+#else
+  BLI_path_join(blender_dir, sizeof(blender_dir), base_dir, "blender", version_str);
+#endif
+  if (!BLI_is_dir(blender_dir)) {
+    return;
+  }
+
+  const char *config_files[] = {BLENDER_USERPREF_FILE, BLENDER_HISTORY_FILE, BLENDER_BOOKMARK_FILE};
+  for (const char *config_file : config_files) {
+    char path_src[FILE_MAX], path_dst[FILE_MAX];
+    BLI_path_join(path_src, sizeof(path_src), blender_dir, "config", config_file);
+    if (!BLI_is_file(path_src)) {
+      continue;
+    }
+    BLI_path_join(path_dst, sizeof(path_dst), user_dir, "config", config_file);
+    if (BLI_file_ensure_parent_dir_exists(path_dst) && BLI_copy(path_src, path_dst) == 0) {
+      CLOG_INFO(&LOG, "Copied \"%s\" from the Blender user folder", path_src);
+    }
+    else {
+      CLOG_WARN(&LOG, "Could not copy \"%s\" to \"%s\"", path_src, path_dst);
+    }
+  }
 }
 
 /** \} */

@@ -85,12 +85,12 @@ const char *GHOST_SystemPathsUnix::getUserDir(int version, const char *versionst
     last_version = version;
 
     if (home) {
-      user_path = string(home) + "/blender/" + versionstr;
+      user_path = string(home) + "/blended/" + versionstr;
     }
     else {
       home = home_dir_get();
       if (home) {
-        user_path = string(home) + "/.config/blender/" + versionstr;
+        user_path = string(home) + "/.config/blended/" + versionstr;
       }
       else {
         return nullptr;
