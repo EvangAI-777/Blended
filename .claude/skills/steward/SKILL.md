@@ -17,7 +17,7 @@ context; this file covers only the PR loop.
 - **The review signal is Codex** (`chatgpt-codex-connector[bot]`). It reviews when a PR opens and
   when someone comments `@codex review`. A clean pass is the receipt comment "Didn't find any major
   issues" or a 👍 reaction. Its summary comment shows `has_unresolved_findings`.
-- A PR is ready for the developer when Codex's latest review of the **current head** is clean, all
+- A PR is ready for Charles when Codex's latest review of the **current head** is clean, all
   threads are answered and resolved, and GitHub reports it mergeable.
 
 ## Codex findings
@@ -28,7 +28,7 @@ context; this file covers only the PR loop.
    step 10).
 2. **Real → fix it in this PR.** Badges (P1/P2) are not optionality labels. A P2 that is a real bug
    gets fixed like a P1.
-3. **Not real → reply with the traced reason** and put the call to the developer. Don't build code
+3. **Not real → reply with the traced reason** and put the call to Charles. Don't build code
    for a far-fetched path.
 4. After the fix is pushed, **reply on the thread** with the commit and what it changes, then
    **resolve the thread**, then comment `@codex review` (with the attribution footer).
@@ -52,11 +52,13 @@ Step 7 of `docs/codex-standard.md`, plus:
   applies. Write "None" with the reason for a part that doesn't apply.
 - **Build testing is written before merge**, in the form of the chat list: the hardware tests
   this change needs on the next Windows build. The build runs only after merge (it never runs on
-  a PR), so when it is handed to the developer the full chat list is posted **verbatim** as a
+  a PR), so when it is handed to Charles the full chat list is posted **verbatim** as a
   comment on each merged PR the build carries (`runtime-audit` skill). A list given in chat while
   a PR is still open goes into its Test Plan verbatim.
 - When later commits change what the PR does (a Codex fix, a new commit), **rewrite the
-  description** so it matches the final diff before handing the PR to the developer.
+  description** so it matches the final diff before handing the PR to Charles.
+- **Write "Charles", not "the developer"**, in the description, commit messages, thread replies
+  and comments (`docs/codex-standard.md` 1.4). "Developer testing" stays, because it names a role.
 - **Say only accurate things** in the description, thread replies and comments: check each claim
   against the diff, the output and the record before posting (`docs/codex-standard.md` 1.4).
 - Write `build 110`, never `build #110`.
@@ -70,11 +72,10 @@ Step 7 of `docs/codex-standard.md`, plus:
 
 ## Merge and build
 
-- **The developer merges.** Claude merges only when asked, using the full 40-character head SHA as
+- **Charles merges.** Claude merges only when asked, using the full 40-character head SHA as
   `expectedHeadSha`.
-- After a merge Claude did on request: unsubscribe from the PR and cancel its check-in. If the
-  developer asked for a build, dispatch `build-windows.yml` on `main` with
+- After a merge Claude did on request: unsubscribe from the PR and cancel its check-in. If Charles asked for a build, dispatch `build-windows.yml` on `main` with
   `inputs: {"build_type": "Release"}` and schedule one check on the result about 110 minutes out.
   A build takes 1.5–2 hours.
-- A finished build goes to the developer for the hardware run: the `runtime-audit` skill. Their
+- A finished build goes to Charles for the hardware run: the `runtime-audit` skill. His
   report starts the next triage loop.

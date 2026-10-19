@@ -38,7 +38,7 @@ The Codex Standard is an item on the todo list before every commit, never after 
 - **1.3 Read before editing.** Read a whole file before editing it if it's longer than ~200 lines
   (Scar 21). Edit one logical section per Edit call (Scar 5). Revert a botched edit instead of
   fixing forward.
-- **1.4 Write accurately, everywhere** (Scar 6). This covers everything written: chat replies, commit messages, PR descriptions, review replies, comments and docs. Check each factual claim against its source before writing it: the commit, the diff, the log or screenshot, the CHANGELOG and `docs/runtime-audit.md` record, the developer's actual words. Quote verbatim. Don't round up: if a build verified three of five findings, say three. Don't embellish: an emoji isn't a grin. Say plainly what isn't verified or wasn't run. Screenshots, logs and crash logs are the ground truth. Two cases from PR #258: a note that said builds 110 and 111 each fixed a round of findings, when 111 verified only findings 1, 2 and 4; and a 😏 written up as "grinned".
+- **1.4 Write accurately, everywhere** (Scar 6). This covers everything written: chat replies, commit messages, PR descriptions, review replies, comments and docs. Check each factual claim against its source before writing it: the commit, the diff, the log or screenshot, the CHANGELOG and `docs/runtime-audit.md` record, Charles's actual words. Quote verbatim. Don't round up: if a build verified three of five findings, say three. Don't embellish: an emoji isn't a grin. Say plainly what isn't verified or wasn't run. Screenshots, logs and crash logs are the ground truth. Name the person: the project owner is Charles (he/him), so write "Charles" wherever the person is meant, not "the developer". "Developer" stays only where it names a role, as in "developer testing". Historical records stay as written: existing `docs/wtf.md` notes, the scar stories in `docs/scars.md` and older CHANGELOG entries. Two cases from PR #258: a note that said builds 110 and 111 each fixed a round of findings, when 111 verified only findings 1, 2 and 4; and a 😏 written up as "grinned".
 
 ## 2. Code
 
@@ -71,7 +71,7 @@ Run what applies. State in the PR what could not be checked in this container.
 - **3.1 Source-detectable bug class** → a check in `tools/check_blended.py`, tested against a
   planted violation.
 - **3.2 Runtime check that doesn't need a window** → `tests/python/blended_smoke_test.py` (CI),
-  not the developer's hardware list.
+  not Charles's hardware list.
 - **3.3 Needs a window** → the build testing part of the PR's Test Plan (step 7.2) and the open
   runtime checks in `docs/runtime-audit.md`.
 - **3.4 A new rule or check** → run it against the whole codebase in the same session (Scar 25).
@@ -94,7 +94,7 @@ changes match more than one.
 | **Rules for one kind of file** | `.claude/rules/*.md` with `paths:`. |
 | **An upstream divergence** | The divergence register in `docs/upstream-sync.md`. |
 | **A failure that produced a rule** | A new scar in `docs/scars.md` (blameless header), a one-line rule in CLAUDE.md, and the rule in this file if it's a check. |
-| **Something about working with the developer** | A new note at the end of `docs/wtf.md`, with an index row. Existing notes stay as written. |
+| **Something about working with Charles** | A new note at the end of `docs/wtf.md`, with an index row. Existing notes stay as written. |
 | **Something the next session needs** | The doc it belongs to, before the session ends, not just the chat. |
 
 Placement within each doc follows `.claude/rules/docs.md` ("Where things go"). CLAUDE.md stays
@@ -122,8 +122,8 @@ version maps or decisions.*
 ## 6. Commit and push
 
 - **6.1 One logical unit per commit, pushed immediately** (Scar 3). Never hold unpushed commits.
-- **6.2 The message** says what changed and why. Write `build 57`, never `build #57`. End with the
-  attribution lines. No model identifiers.
+- **6.2 The message** says what changed and why. Write `build 57`, never `build #57`. Write
+  "Charles", not "the developer" (1.4). End with the attribution lines. No model identifiers.
 - **6.3 Commit before anything risky**, so there's a clean base to return to.
 
 ## 7. Pull request
@@ -131,7 +131,8 @@ version maps or decisions.*
 - **7.1 Template.** Fill in `.github/pull_request_template.md`. When later commits change what
   the PR does, rewrite the description to match the final diff, including the commit table.
   Every claim in it (what changed, what ran, build numbers, what was verified) is checked against
-  the diff and the record before it's posted (1.4).
+  the diff and the record before it's posted (1.4). The description and every review reply say
+  "Charles", not "the developer" (1.4).
 - **7.2 Test Plan, four parts** (BLENDED.md §4 "Test plans"): automated (what ran), build testing
   (the hardware tests for the next Windows build, written before merge in the chat-list form),
   developer testing, user testing where it applies. "None" with the reason for a part that
@@ -144,9 +145,9 @@ version maps or decisions.*
 
 ## 8. Merge, build and session end
 
-- **8.1 Merge** only when the developer asks, with the full head SHA. Then unsubscribe from the PR
+- **8.1 Merge** only when Charles asks, with the full head SHA. Then unsubscribe from the PR
   and restart the branch from `origin/main`.
-- **8.2 Build hand-off** (`runtime-audit` skill): the test list goes to the developer in chat and,
+- **8.2 Build hand-off** (`runtime-audit` skill): the test list goes to Charles in chat and,
   verbatim, as a comment on each merged PR the build carries; record the build result per step 4.
 - **8.3 Session end:** anything the next session needs is written into the doc it belongs to
   (step 4, last row).

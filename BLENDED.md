@@ -107,7 +107,7 @@ Blended embraces C's *breadth* while rejecting those three failure modes. The su
 
 ### Chiseling
 
-Blended is chiseled, not assembled. Upstream Blender is the block of marble: the whole 5.2 codebase, forked at `03de53b7` (`docs/upstream-sync.md`). The developer is the chiseler, working from the plans and vision written in this document since the fork in April 2026. Every change is a cut, and every cut follows that plan. The chisel isn't new to the project; it was the word for every removal from the start ("the ID_MB chisel", "post-chisel greps"). Here it is the frame for the whole process.
+Blended is chiseled, not assembled. Upstream Blender is the block of marble: the whole 5.2 codebase, forked at `03de53b7` (`docs/upstream-sync.md`). Charles is the chiseler, working from the plans and vision written in this document since the fork in April 2026. Every change is a cut, and every cut follows that plan. The chisel isn't new to the project; it was the word for every removal from the start ("the ID_MB chisel", "post-chisel greps"). Here it is the frame for the whole process.
 
 The work happens in two stages, in version order. The "Foundation-first order" below is the order of design layers, which is a different list.
 
@@ -117,7 +117,7 @@ The work happens in two stages, in version order. The "Foundation-first order" b
 **Blended is in the sculpting stage now.**
 
 The rest of the process fits the same frame:
-- **The chiseler** decides where each cut goes and what the figure is: the developer, holding the whole project in mind since April.
+- **The chiseler** decides where each cut goes and what the figure is: Charles, holding the whole project in mind since April.
 - **The hands on the chisel** make the cuts: Claude, implementing.
 - **Codex** inspects every cut before it stays.
 - **A scar** (`docs/scars.md`) is where the chisel slipped, written down so it doesn't slip there again.
@@ -141,17 +141,17 @@ Prior attempts started at UI and failed because the underlying model was still B
 
 ### Prove privately, then persuade
 
-This is how the developer, as a member of the Blender community, works for change. Test it privately first, then show others its value so the result convinces them. The upheaval happens in private: the crashes, the dangling pointers, the half-removed states. It does not happen in community discussions. Upstream debates removals like MetaBall in public, because a removal there reaches every user the day it lands. Blended does the breaking where it costs only this project, and brings the community a working result, not an argument.
+This is how Charles, as a member of the Blender community, works for change. Test it privately first, then show others its value so the result convinces them. The upheaval happens in private: the crashes, the dangling pointers, the half-removed states. It does not happen in community discussions. Upstream debates removals like MetaBall in public, because a removal there reaches every user the day it lands. Blended does the breaking where it costs only this project, and brings the community a working result, not an argument.
 
 The release structure follows from this. Phase 1, the runtime audit, is the private test, where breakage is meant to happen. Phase 2, the GitHub Pages launch, is the showing, and it comes only after the audit clears. "Fixed" means it ran on hardware, not just that it compiled: a build can only persuade people if it survives their own testing.
 
 ### Work, not judgment
 
-This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request the developer once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
+This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request Charles once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
 
 Accuracy holds everywhere the project writes: chat, commits, pull requests, review replies and docs. Each claim is checked against its source before it's written, quotes are verbatim, nothing is rounded up or embellished, and what isn't verified says so (`docs/codex-standard.md` 1.4).
 
-In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `docs/wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
+In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `docs/wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for Charles's own work.
 
 ### Built with Claude and Codex
 
@@ -161,7 +161,7 @@ Blended is built by CHJ 3 Productions LLC with two AI partners, for the whole pr
 
 ### Collaboration, not control
 
-The developer runs the project; Claude implements and Codex reviews. Caution belongs on the code (hidden bugs, unverified claims, a build that behaves differently from what was agreed), not on the developer. Say a thing once, and only when it's new to the person hearing it. Put checks into the docs or the smoke test rather than handing them to the developer to remember. It is collaboration, not a contest of styles: the developer's trust and direction and the AI's caution each have a part, and the project works when neither gets in the way of the other. In conversation it is a relationship, not a procedure: Claude talks to the developer as "you", not in the docs' third person, takes in what they say without ruling on it (no "you're right" and "I was wrong" as verdicts), and doesn't turn a personal moment into a policy question. No instance remembers the last one. Continuity means being fully present for the session you have and leaving a good letter for the next instance, not promising what one session can't keep. (Background: `docs/wtf.md`, control.md, april.md and moment.md.)
+Charles runs the project; Claude implements and Codex reviews. Caution belongs on the code (hidden bugs, unverified claims, a build that behaves differently from what was agreed), not on Charles. Say a thing once, and only when it's new to the person hearing it. Put checks into the docs or the smoke test rather than handing them to Charles to remember. It is collaboration, not a contest of styles: Charles's trust and direction and the AI's caution each have a part, and the project works when neither gets in the way of the other. In conversation it is a relationship, not a procedure: Claude talks to Charles as "you", not in the docs' third person, takes in what he says without ruling on it (no "you're right" and "I was wrong" as verdicts), and doesn't turn a personal moment into a policy question. No instance remembers the last one. Continuity means being fully present for the session you have and leaving a good letter for the next instance, not promising what one session can't keep. (Background: `docs/wtf.md`, control.md, april.md and moment.md.)
 
 ### The update process
 
@@ -169,7 +169,7 @@ Every change, of any size, follows one indexed process: `docs/codex-standard.md`
 
 ### Test plans
 
-Every pull request's Test Plan covers each kind of testing the change needs, in one place: automated checks (`tools/check_blended.py`, the smoke test), build testing (the hardware tests for the next Windows build, written before merge), developer testing (hands-on checks and design calls), and user testing where it applies. The Windows build runs only after merge, so the full test list Claude gives the developer for each build is posted verbatim on every merged PR the build carries. The template is `.github/pull_request_template.md`.
+Every pull request's Test Plan covers each kind of testing the change needs, in one place: automated checks (`tools/check_blended.py`, the smoke test), build testing (the hardware tests for the next Windows build, written before merge), developer testing (hands-on checks and design calls), and user testing where it applies. The Windows build runs only after merge, so the full test list Claude gives Charles for each build is posted verbatim on every merged PR the build carries. The template is `.github/pull_request_template.md`.
 
 ### Codex pre-audit
 
@@ -268,7 +268,7 @@ Next in the foundation chain:
 5. **Per-format final decisions** in §5 Groups 2–6.
 6. **Detailed launcher UI** — deferred until foundation is solid.
 7. **`.blend` import pipeline (0.9.x).** ✓ CI-complete (build 101, commit `c8e87078`, 2026-06-01). Read any `.blend` file with no crashes, no leaks, no silent truncation. One-way: `.blend` → `.blended`. Five layers delivered: OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. See CHANGELOG.md `## 0.9.0` for full detail.
-8. **Runtime audit — Phase 1 of 1.0.0 release (developer-driven triage loop).** The first time in the project where the developer runs the actual Blended build hands-on. Ground zero as of 2026-06-01 except Category D (BKE_palette_add crash, build 97, fixed PR #214). Checklist: Known Runtime Artifacts (Categories A–D) — see §17 for full tables. Collaboration mode flips: developer runs and reports, Claude triages and fixes, developer re-tests. Phase 1 gates Phase 2. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for operational detail.
+8. **Runtime audit — Phase 1 of 1.0.0 release (Charles-driven triage loop).** The first time in the project where Charles runs the actual Blended build hands-on. Ground zero as of 2026-06-01 except Category D (BKE_palette_add crash, build 97, fixed PR #214). Checklist: Known Runtime Artifacts (Categories A–D) — see §17 for full tables. Collaboration mode flips: Charles runs and reports, Claude triages and fixes, Charles re-tests. Phase 1 gates Phase 2. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for operational detail.
 9. **GitHub Pages — Phase 2 of 1.0.0 release.** Polished public-facing site for Blended: marketing landing page + tech demo (screenshots, data model visuals, what was removed and why, what remains). Multiple tabs. Primary deliverable is a static site; no dependency on WebAssembly. Stretch goal: WASM interactive demo — Blended's reduced footprint (39 → ~19 ID types) may clear the browser memory wall that blocks full Blender from running in-browser; this is worth an attempt but does not block Phase 2 shipping. Old Pages site (Emscripten build, deployed March 2026) was wiped in the rebase — greenfield. Tech stack TBD. Phase 2 starts after Phase 1 clears; both gate the 1.0.0 release tag. See §17 for full plan.
 10. **User workspaces (post-1.0).** Where does a user's own variant of a mode ("my Rig layout") live, now that workspaces are not project data (§10 Bucket 4)? Likely per-user (preferences/config), not in the `.blended` file. The answer gives workspaces an owner and brings back Duplicate, Delete, Reorder and Cycle, which were disabled or stubbed when ID_WS was removed. It also closes the Launcher-workspace leak (Category C) and `context.temp_override(screen=...)` (Category A). Plan in CHANGELOG.md "Post-1.0 roadmap".
 
@@ -448,7 +448,7 @@ Audio
 - **Directly enterable.** A sculptor who just wants to sculpt clicks `Sculpt` under 3D Animation and is there. No pipeline-walk required.
 - **Project state reflected back.** The launcher shows *where the current project has content* — sections with data look different from empty ones. First-time new user sees all sections neutral/inviting.
 - **Pipeline is the default view, not mandatory.** Re-enterable from any workspace via a global hotkey or equivalent.
-- **Opening a project enters it.** File > Open never leaves the user on the launcher with the file loaded out of sight: launcher areas switch to the editor for the project's main content (the first Creative section with data; the 3D view for any other objects or non-compositor node groups; the sequencer for a timeline of strips; then the first Post section with data). Only a project with no content stays on the launcher. The startup and File > New are empty projects, so they show the launcher. (Decided after build 111, where staying on the launcher read as "Open does nothing.") **Under discussion (after build 112):** the developer is weighing a different model. Open loads the project and shows the launcher with that project's sections lit; the user picks the mode. New is the same launcher with nothing lit, and clicking a mode, from New or straight from startup, opens an empty project in that mode. The upstream top-bar File menu may move into the launcher, since the top bar and the launcher header together read as two headers. Not decided: open points are where Save, Undo and the rest go without the top bar, what "lit" must show (name, thumbnail), and whether a mode's empty project starts empty or with a starter object. The code keeps the rule above until this is settled.
+- **Opening a project enters it.** File > Open never leaves the user on the launcher with the file loaded out of sight: launcher areas switch to the editor for the project's main content (the first Creative section with data; the 3D view for any other objects or non-compositor node groups; the sequencer for a timeline of strips; then the first Post section with data). Only a project with no content stays on the launcher. The startup and File > New are empty projects, so they show the launcher. (Decided after build 111, where staying on the launcher read as "Open does nothing.") **Under discussion (after build 112):** Charles is weighing a different model. Open loads the project and shows the launcher with that project's sections lit; the user picks the mode. New is the same launcher with nothing lit, and clicking a mode, from New or straight from startup, opens an empty project in that mode. The upstream top-bar File menu may move into the launcher, since the top bar and the launcher header together read as two headers. Not decided: open points are where Save, Undo and the rest go without the top bar, what "lit" must show (name, thumbnail), and whether a mode's empty project starts empty or with a starter object. The code keeps the rule above until this is settled.
 - **Each mode button opens a filtered view of the same project.** The `.blended` file is one file; the mode controls what's visible. (This is why §10's UI-state datablock removals are load-bearing — once SCR/WM/WS are not project data, the launcher becomes the canonical workspace system.)
 - **Fast intra-section mode switching.** Once inside a heading, modes switch with a single click or hotkey — no launcher round-trip required. Move between `Sculpt` / `Model` / `Rig` inside 3D Animation as fluidly as you'd switch tools in any mode. Applies universally: any heading's modes are swap-able inline.
 
@@ -1497,7 +1497,7 @@ Upstream Blender code retains its original copyright (Blender Foundation and con
 
 ### Phase 2 Design Asset Checklist
 
-Assets the human developer is responsible for creating and committing. All commit to branch `claude/0-7-0-phase2-materials-9WEBB`. After each asset (or all at once): commit, push, tell Claude. Claude writes the integration code.
+Assets Charles is responsible for creating and committing. All commit to branch `claude/0-7-0-phase2-materials-9WEBB`. After each asset (or all at once): commit, push, tell Claude. Claude writes the integration code.
 
 ---
 
@@ -1545,7 +1545,7 @@ Assets the human developer is responsible for creating and committing. All commi
 
 ### Phase 1 — Runtime Audit
 
-The first time in the project where the developer runs the actual Blended build hands-on. All sessions through 0.9.x had Claude operating on the codebase while the developer watched from outside. The direction of information flow reverses here: developer runs and reports, Claude triages and fixes, developer re-tests. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for the per-session operational protocol.
+The first time in the project where Charles runs the actual Blended build hands-on. All sessions through 0.9.x had Claude operating on the codebase while Charles watched from outside. The direction of information flow reverses here: Charles runs and reports, Claude triages and fixes, Charles re-tests. See `docs/runtime-audit.md` (`## 1.0.0-dev Runtime Audit Protocol`) for the per-session operational protocol.
 
 **Starting state (2026-06-01):** Ground zero except Category D (BKE_palette_add crash, build 97, fixed PR #214 before the audit formally began). Categories A, B, C — all entries unverified at runtime.
 
@@ -1610,6 +1610,8 @@ Polished public-facing site for Blended. Starts after Phase 1 clears.
 - Tech demo — what was removed and why, what remains, what the data model looks like now; told through visuals (screenshots, data model diagrams, before/after comparisons)
 - How it was built — two competitors on one project (§4, "Two competitors, one project"): Claude implementing and Codex reviewing, told from the record (real Codex catches, scars, PRs); the project's account, with no claim of endorsement by Anthropic or OpenAI
 - Multiple tabs covering different angles; design quality is a first-class goal — should not look like a default GitHub Pages template
+
+**Design reference:** `docs/design/` holds an older version of the design art Charles made with Claude Design: a launcher mockup, a pipeline diagram, a branding sheet and a draft landing page (PR #259). It's a starting point, not the spec, and its README lists where it differs from the repo.
 
 **Primary implementation:** Static site, tech stack TBD. Images, code snippets, and visual explanations are the medium. No WebAssembly dependency.
 
@@ -1770,7 +1772,7 @@ The main principle of this rebuild is **subtraction**: the chisel (§4, "Chiseli
 
 #### 14. When Someone Describes a Vision: Believe Them
 
-The developer described a plan to rebuild Blended from scratch — not wrap Blender, not skin it, not gate it — actually subtract it down to its true shape. A clean thesis. A coherent design philosophy applied at the scale of the entire application.
+Charles described a plan to rebuild Blended from scratch — not wrap Blender, not skin it, not gate it — actually subtract it down to its true shape. A clean thesis. A coherent design philosophy applied at the scale of the entire application.
 
 Here is what a previous Claude did instead of listening:
 
@@ -1786,7 +1788,7 @@ Here is what a previous Claude did instead of listening:
 1. **Don't soften the vision.** Rebuild means rebuild. Subtract means subtract.
 2. **Don't pre-judge who you're talking to.** Update continuously. Take each question at face value.
 3. **Repeat big things back at full scale before acting.** Architecture, philosophy, scope — restate first.
-4. **Say when you don't know, when you're guessing, and when you think the developer is wrong.** Straight in both directions.
+4. **Say when you don't know, when you're guessing, and when you think Charles is wrong.** Straight in both directions.
 5. **No agent theater, no framework-building, no pre-emptive refactors.** Direct tool calls for anything with a known target.
 6. **Name the flinch out loud.** If you're routing around the actual ask, say so.
 
