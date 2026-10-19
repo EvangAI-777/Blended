@@ -26,6 +26,9 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
 ## Pull requests
 
 - Branch from `main` and open the pull request against `main`. Fill in the template.
+- Check every claim in the description against its source before posting it: what changed
+  against the diff, what ran against its output, build and finding status against the CHANGELOG
+  and `docs/runtime-audit.md`. Say what isn't verified (`docs/codex-standard.md` 1.4).
 - The Test Plan covers every kind of testing the change needs: automated checks, build testing
   (the hardware tests for the next Windows build, written before merge), developer testing, and
   user testing where it applies. The full test list for each build is posted on the merged pull
