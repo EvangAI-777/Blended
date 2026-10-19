@@ -27,8 +27,10 @@ Categories A–D and the build-by-build findings. Read it before triaging.
    - End with one line each for the log search (`SyntaxError`, `Traceback`, `empty keymap`, and
      the strings the last fixes removed), renaming the log before a relaunch, and what to send
      back. Remind them the crash log keeps only the most recent crash.
-3. Save the list to the scratchpad as `build<N>_test_list.md`, and paste it verbatim into the
-   open PR's Test Plan, "Build testing" (`.github/pull_request_template.md`).
+3. Save the list to the scratchpad as `build<N>_test_list.md`, and post it verbatim as a comment
+   (with the attribution footer) on each merged PR the build carries, the durable record of the
+   build's testing. If a PR is open when a list is given, it also goes into that PR's Test Plan,
+   "Build testing" (`.github/pull_request_template.md`).
 
 ## 2. A report came in
 

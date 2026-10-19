@@ -61,11 +61,14 @@ section, status lines and the CHANGELOG contributor note.
 ## PR description
 
 - Follow `.github/pull_request_template.md`.
-- **The Test Plan covers every kind of testing the PR needs:** automated (what ran), build testing
-  (the hardware test list for the next Windows build, **verbatim** as given to the developer in
-  chat), developer testing (hands-on checks and calls beyond that list) and user testing when it
-  applies. When the chat list changes, update the PR to match. Write "None" with the reason for a
-  part that doesn't apply.
+- **The Test Plan covers every kind of testing the PR needs:** automated (what ran), build testing,
+  developer testing (hands-on checks and calls beyond the build list) and user testing when it
+  applies. Write "None" with the reason for a part that doesn't apply.
+- **Build testing is written before merge**, in the form of the chat list: the hardware tests
+  this change needs on the next Windows build. The build runs only after merge (it never runs on
+  a PR), so when it is handed to the developer the full chat list is posted **verbatim** as a
+  comment on each merged PR the build carries (`runtime-audit` skill). A list given in chat while
+  a PR is still open goes into its Test Plan verbatim.
 - When later commits change what the PR does (a Codex fix, a new commit), **rewrite the
   description** so it matches the final diff before handing the PR to the developer.
 - Write `build 110`, never `build #110`.

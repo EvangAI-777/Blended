@@ -137,6 +137,10 @@ Blended is built by CHJ 3 Productions LLC with two AI partners, for the whole pr
 
 The developer runs the project; Claude implements and Codex reviews. Caution belongs on the code (hidden bugs, unverified claims, a build that behaves differently from what was agreed), not on the developer. Say a thing once, and only when it's new to the person hearing it. Put checks into the docs or the smoke test rather than handing them to the developer to remember. It is collaboration, not a contest of styles: the developer's trust and direction and the AI's caution each have a part, and the project works when neither gets in the way of the other. (Background: `docs/wtf.md`, control.md.)
 
+### Test plans
+
+Every pull request's Test Plan covers each kind of testing the change needs, in one place: automated checks (`tools/check_blended.py`, the smoke test), build testing (the hardware tests for the next Windows build, written before merge), developer testing (hands-on checks and design calls), and user testing where it applies. The Windows build runs only after merge, so the full test list Claude gives the developer for each build is posted verbatim on every merged PR the build carries. The template is `.github/pull_request_template.md`.
+
 ### Codex pre-audit
 
 Implementation plans written into the docs at implementation resolution (CLAUDE.md before PR #253; now a file under `docs/`, since CLAUDE.md stays under ~200 lines) — file paths, function names, invariants, edge cases — are audited by Codex as if they were real code, because Codex reviews PR diffs and does not distinguish between source files and documentation files. Errors in the plan are caught before any source is written. Canonical example: PR #229 caught the LS post-read use-after-free from the CLAUDE.md plan text alone, before the implementation commit existed. This is why 0.8.0 (23 layers, ~80 sites) and 0.9.0 shipped CI-green on the first push. Rule: write plans at implementation resolution. "Update the extension to `.blended`" is not auditable. "`source/blender/blenlib/BLI_fileops.h:245` — add `FILE_TYPE_BLENDED` to `BLI_file_extension_is_blend()`" is.

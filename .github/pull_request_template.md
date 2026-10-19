@@ -27,9 +27,10 @@
 
 ### Build testing
 
-<!-- The hardware test list for the Windows build that carries this change, verbatim as given to
-     the developer in chat: the setup block, then one line per test. Update it here whenever the
-     chat list changes. "None" if the PR doesn't change the built program. -->
+<!-- The hardware tests this change needs on the next Windows build, written before merge in the
+     same form as the chat list: the setup block, then one line per test. The build runs only
+     after merge; when it is handed to the developer, the full chat list is posted verbatim as a
+     comment on each merged PR it carries. "None" if the PR doesn't change the built program. -->
 
 ### Developer testing
 
