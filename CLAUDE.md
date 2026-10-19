@@ -138,7 +138,7 @@ Each comes from a real failure. The full story is in `docs/scars.md`; read it wh
 - **Deregistered ID types never go through generic ID APIs** (Scars 2, 10, 25). The list, the allocation template and the kept-listbase rule are in `.claude/rules/id-types.md`; `tools/check_blended.py` enforces the allocation part.
 - **Read a whole file before editing it** if it's longer than ~200 lines (Scar 21). Revert a botched edit instead of fixing forward.
 - **Instructions about how are as binding as instructions about what** (Scar 5). "Section by section" means one Edit call per section.
-- **Write from evidence** (Scar 6). Screenshots, logs and crash logs are the ground truth; don't soften a failure.
+- **Write from evidence, accurately, everywhere** (Scar 6): chat, commits, PRs, comments and docs. Check each claim against its source before writing it; quote verbatim; don't round up or embellish; say what isn't verified. Screenshots, logs and crash logs are the ground truth; don't soften a failure (`docs/codex-standard.md` 1.4).
 - **Read the full diff before committing docs** (Scar 7); every list, version and date must agree across files (`.claude/rules/docs.md`).
 - **Don't produce a menu about something plainly wrong; fix it** (Scar 14). Verify that something exists by grepping the specific commit, PR or build number, not the topic.
 - **After a rename, grep the whole repo with no filters** (Scar 20): `grep -rn "old_name" . --exclude-dir=.git`.

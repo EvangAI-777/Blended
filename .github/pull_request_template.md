@@ -56,6 +56,9 @@
 
 ## Verification Checklist
 
+### Every PR
+- [ ] Every claim in this description is checked against its source: what changed against the diff; what ran against its output; build numbers, verified findings and dates against the CHANGELOG and `docs/runtime-audit.md`; quotes against the actual words. Anything not verified says so (`docs/codex-standard.md` 1.4)
+
 ### Code PRs
 - [ ] `python3 tools/check_blended.py` passes (also runs on the PR)
 - [ ] Builds locally: `cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -C build_files/cmake/config/blended_release.cmake && cmake --build build --target install`

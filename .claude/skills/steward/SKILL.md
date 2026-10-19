@@ -57,6 +57,8 @@ Step 7 of `docs/codex-standard.md`, plus:
   a PR is still open goes into its Test Plan verbatim.
 - When later commits change what the PR does (a Codex fix, a new commit), **rewrite the
   description** so it matches the final diff before handing the PR to the developer.
+- **Say only accurate things** in the description, thread replies and comments: check each claim
+  against the diff, the output and the record before posting (`docs/codex-standard.md` 1.4).
 - Write `build 110`, never `build #110`.
 
 ## Branch

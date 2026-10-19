@@ -149,6 +149,8 @@ The release structure follows from this. Phase 1, the runtime audit, is the priv
 
 This repo is about work ethic and quality, not personal judgments. A contribution is judged by what it does: does it fix the thing, does it hold on hardware, is the record accurate? It is never judged by who sent it or how it makes anyone feel. The reference point is a pull request the developer once sent to another open-source project. A maintainer closed it with the reply "are you proud of yourself". That is the armor this project refuses: guarding the project from contributors instead of weighing what they bring.
 
+Accuracy holds everywhere the project writes: chat, commits, pull requests, review replies and docs. Each claim is checked against its source before it's written, quotes are verbatim, nothing is rounded up or embellished, and what isn't verified says so (`docs/codex-standard.md` 1.4).
+
 In practice: a review finding is a claim about the code, checked against the code and then fixed or answered. A mistake gets corrected and written down, not defended and not punished. The scars in `docs/scars.md` and the notes in `docs/wtf.md` record failures openly, so nobody has to protect their pride to protect the project. The same standard holds for every reviewer, human, Claude or Codex, and for the developer's own work.
 
 ### Built with Claude and Codex

@@ -14,7 +14,7 @@ place the process lives; the others point here. The stories behind the rules are
 
 | Step | When | What |
 |------|------|------|
-| [1. Start](#1-start) | Before the first edit | Branch, todo list, read before editing |
+| [1. Start](#1-start) | Before the first edit | Branch, todo list, read before editing, write accurately |
 | [2. Code](#2-code) | Code, scripts or CI changed | Local checks and the code questions |
 | [3. Tests](#3-tests) | Behavior changed | Where each new check goes |
 | [4. Docs](#4-docs) | Every change | The update matrix: which docs each kind of change touches |
@@ -38,7 +38,7 @@ The Codex Standard is an item on the todo list before every commit, never after 
 - **1.3 Read before editing.** Read a whole file before editing it if it's longer than ~200 lines
   (Scar 21). Edit one logical section per Edit call (Scar 5). Revert a botched edit instead of
   fixing forward.
-- **1.4 Write from evidence** (Scar 6). Screenshots, logs and crash logs are the ground truth.
+- **1.4 Write accurately, everywhere** (Scar 6). This covers everything written: chat replies, commit messages, PR descriptions, review replies, comments and docs. Check each factual claim against its source before writing it: the commit, the diff, the log or screenshot, the CHANGELOG and `docs/runtime-audit.md` record, the developer's actual words. Quote verbatim. Don't round up: if a build verified three of five findings, say three. Don't embellish: an emoji isn't a grin. Say plainly what isn't verified or wasn't run. Screenshots, logs and crash logs are the ground truth. Two cases from PR #258: a note that said builds 110 and 111 each fixed a round of findings, when 111 verified only findings 1, 2 and 4; and a 😏 written up as "grinned".
 
 ## 2. Code
 
@@ -130,6 +130,8 @@ version maps or decisions.*
 
 - **7.1 Template.** Fill in `.github/pull_request_template.md`. When later commits change what
   the PR does, rewrite the description to match the final diff, including the commit table.
+  Every claim in it (what changed, what ran, build numbers, what was verified) is checked against
+  the diff and the record before it's posted (1.4).
 - **7.2 Test Plan, four parts** (BLENDED.md §4 "Test plans"): automated (what ran), build testing
   (the hardware tests for the next Windows build, written before merge in the chat-list form),
   developer testing, user testing where it applies. "None" with the reason for a part that
