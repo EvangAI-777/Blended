@@ -6,6 +6,8 @@ The Phase 1 runtime audit reference: the protocol, the open runtime checks, the 
 
 **Read this before the first 1.0.0-dev session. The collaboration mode is different from every prior session in this project.**
 
+In the chiseling frame (BLENDED.md §4), the runtime audit is part of sculpting inside. Each hardware run steps back to see the figure in real light and find the cracks earlier cuts left.
+
 Every session through 0.9.x has been Claude operating on the codebase while the developer watches from outside — grep, edit, compile, CI confirms. The direction of information flow reverses at 1.0.0-dev. The developer runs the actual Blended build hands-on, doing real debugging and prototype testing inside the application. Claude cannot be inside the running build. The developer can. Neither can do the other's half.
 
 **Collaboration mode:**

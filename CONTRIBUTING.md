@@ -30,7 +30,8 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
   (the hardware tests for the next Windows build, written before merge), developer testing, and
   user testing where it applies. The full test list for each build is posted on the merged pull
   requests it carries.
-- Subtraction is the method: when removing something, remove it completely and follow the compile
+- Blended is chiseled from upstream Blender, and every change is a cut ([`BLENDED.md`](BLENDED.md) §4,
+  "Chiseling"). Subtraction is the method: when removing something, remove it completely and follow the compile
   errors ([`BLENDED.md`](BLENDED.md) §4 and its "Appendix — Development Philosophy").
 - Follow the update process in [`docs/codex-standard.md`](docs/codex-standard.md): checks, tests,
   the docs each kind of change updates, consistency, commit and pull request.

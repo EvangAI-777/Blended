@@ -1,7 +1,7 @@
 # The Codex Standard — the update process
 
-Every change to this repository follows these steps, in this order, every time, whatever the
-size: code, docs, CI, a one-line fix. Ask at each step: *would Codex catch this?* Then catch it
+Every change to this repository is a cut in the chiseling (BLENDED.md §4) and follows these steps,
+in this order, every time, whatever the size: code, docs, CI, a one-line fix. Ask at each step: *would Codex catch this?* Then catch it
 first. A step that doesn't apply is skipped on purpose, never by forgetting. Refer to items by
 number ("Codex Standard 3.2").
 

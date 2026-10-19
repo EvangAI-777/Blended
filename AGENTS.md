@@ -6,7 +6,8 @@ Code reads `CLAUDE.md` instead; the two say the same things where they overlap.
 ## What this repository is
 
 Blended is a fork of Blender 5.2 (GPL-2.0-or-later), published by CHJ 3 Productions LLC, being
-rebuilt by **subtraction**: Blender features that don't belong are removed completely, and the
+chiseled: upstream Blender is the marble and the developer is the chiseler (`BLENDED.md` §4,
+"Chiseling"). The method is **subtraction**: Blender features that don't belong are removed completely, and the
 compile errors are followed to every dependent site. `BLENDED.md` is the design authority. It
 records what was removed and why (§10, the datablock audit: 39 → ~19 ID types), and its decisions
 are locked: don't propose restoring something it removed.
