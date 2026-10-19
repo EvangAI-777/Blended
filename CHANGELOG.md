@@ -247,6 +247,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-19 — PR #259):** Read all six files before adding them. `support.js` is the Claude Design renderer: it loads pinned React 18.3.1 and Babel 7.29.0 from unpkg and touches no cookies or storage. Checked the designs against BLENDED.md §11, the launcher code and the record, and wrote down the differences rather than editing the developer's art. The developer gave their name, Charles, and the CLAUDE.md conversation rule now uses it, so the next session starts with it.
 
+**Charles, not "the developer" (PR #259):** the conversation rule alone didn't stick, because CLAUDE.md, BLENDED.md, the skills, `docs/codex-standard.md`, the PR template and AGENTS.md all still said "the developer", and commit messages and PR text are written from them. At Charles's request: a CLAUDE.md rule (Charles, he/him, wherever the person is meant: chat, commits, PR descriptions, review replies, comments and docs); the same rule in `docs/codex-standard.md` 1.4, 6.2 and 7.1, the `steward` and `runtime-audit` skills and the PR template's "Every PR" checklist; and "the developer" changed to "Charles" in CLAUDE.md, BLENDED.md, `docs/codex-standard.md`, `docs/runtime-audit.md`, the three skills and AGENTS.md. AGENTS.md tells Codex that Charles is the project owner. "Developer" stays where it names a role ("developer testing", "Developer/Publisher: CHJ 3 Productions LLC", "the developer and publisher") or someone else ("the original Blender developer"). Existing `docs/wtf.md` notes and older CHANGELOG entries stay as written.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

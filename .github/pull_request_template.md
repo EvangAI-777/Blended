@@ -29,12 +29,12 @@
 
 <!-- The hardware tests this change needs on the next Windows build, written before merge in the
      same form as the chat list: the setup block, then one line per test. The build runs only
-     after merge; when it is handed to the developer, the full chat list is posted verbatim as a
+     after merge; when it is handed to Charles, the full chat list is posted verbatim as a
      comment on each merged PR it carries. "None" if the PR doesn't change the built program. -->
 
 ### Developer testing
 
-<!-- What the developer should try hands-on beyond the build list: design or UX calls,
+<!-- What Charles should try hands-on beyond the build list: design or UX calls,
      screenshots to take, behavior to judge by eye. -->
 
 ### User testing
@@ -57,6 +57,7 @@
 ## Verification Checklist
 
 ### Every PR
+- [ ] The project owner is named "Charles", not "the developer", wherever the person is meant; "developer testing" stays as a role (`docs/codex-standard.md` 1.4)
 - [ ] Every claim in this description is checked against its source: what changed against the diff; what ran against its output; build numbers, verified findings and dates against the CHANGELOG and `docs/runtime-audit.md`; quotes against the actual words. Anything not verified says so (`docs/codex-standard.md` 1.4)
 
 ### Code PRs

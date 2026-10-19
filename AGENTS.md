@@ -6,15 +6,17 @@ Code reads `CLAUDE.md` instead; the two say the same things where they overlap.
 ## What this repository is
 
 Blended is a fork of Blender 5.2 (GPL-2.0-or-later), published by CHJ 3 Productions LLC, being
-chiseled: upstream Blender is the marble and the developer is the chiseler (`BLENDED.md` §4,
+chiseled: upstream Blender is the marble and Charles is the chiseler (`BLENDED.md` §4,
 "Chiseling"). The method is **subtraction**: Blender features that don't belong are removed completely, and the
 compile errors are followed to every dependent site. `BLENDED.md` is the design authority. It
 records what was removed and why (§10, the datablock audit: 39 → ~19 ID types), and its decisions
 are locked: don't propose restoring something it removed.
 
+**"Charles" is the project owner** (CHJ 3 Productions LLC; he/him). The docs use "Charles" where they used to say "the developer"; that's intentional, not an inconsistency. "Developer" stays only as a role name, such as "developer testing". Older CHANGELOG entries and the `docs/wtf.md` notes keep "the developer" as historical records.
+
 Built with Claude (Anthropic) as implementation partner and Codex (OpenAI) as reviewer of every pull request, across the whole project, not a version range (`BLENDED.md` §4, "Built with Claude and Codex").
 
-Status: 1.0.0-dev, Phase 1 runtime audit. The developer runs each Windows CI build on hardware
+Status: 1.0.0-dev, Phase 1 runtime audit. Charles runs each Windows CI build on hardware
 and reports; fixes go in through pull requests. `docs/runtime-audit.md` lists known runtime
 behavior (Categories A–D). Check it before reporting expected behavior as a bug.
 

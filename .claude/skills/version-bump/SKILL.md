@@ -1,6 +1,6 @@
 ---
 name: version-bump
-description: Bump the Blended version (BLENDED_VERSION_MAJOR/MINOR/PATCH) and update the four mandatory docs together. Use when a layer goes CI-green, a new dev cycle starts, a release tag is planned, or the developer asks to bump the version.
+description: Bump the Blended version (BLENDED_VERSION_MAJOR/MINOR/PATCH) and update the four mandatory docs together. Use when a layer goes CI-green, a new dev cycle starts, a release tag is planned, or Charles asks to bump the version.
 ---
 
 # Version bump
