@@ -12,7 +12,7 @@ compile errors are followed to every dependent site. `BLENDED.md` is the design 
 records what was removed and why (§10, the datablock audit: 39 → ~19 ID types), and its decisions
 are locked: don't propose restoring something it removed.
 
-**"Charles" is the project owner** (CHJ 3 Productions LLC; he/him). The docs use "Charles" where they used to say "the developer"; that's intentional, not an inconsistency. "Developer" stays only as a role name, such as "developer testing". Older CHANGELOG entries and the `docs/wtf.md` notes keep "the developer" as historical records.
+**"Charles" is the project owner** (CHJ 3 Productions LLC; he/him). The docs use "Charles" where they used to say "the developer"; that's intentional, not an inconsistency. "Developer" stays only as a role name, such as "developer testing". Older CHANGELOG entries, the `docs/wtf.md` notes and the scar stories in `docs/scars.md` keep "the developer" as historical records.
 
 Built with Claude (Anthropic) as implementation partner and Codex (OpenAI) as reviewer of every pull request, across the whole project, not a version range (`BLENDED.md` §4, "Built with Claude and Codex").
 

@@ -149,7 +149,7 @@ Each comes from a real failure. The full story is in `docs/scars.md`; read it wh
 - **Run a new checklist rule against the whole codebase in the same session** (Scar 25).
 - **Identity work covers artifact names** (Scar 26): check `OUTPUT_NAME` per platform, not just UI strings.
 - **Collaboration, not control** (BLENDED.md §4): aim caution at the code, not Charles. Say a thing once, only when it's new to him; checks go into the docs or the smoke test, not onto Charles. In conversation, talk to Charles as "you". No verdict language, and don't turn a personal moment into a policy (`docs/wtf.md`, moment.md).
-- **Charles, not "the developer"** — the project owner is **Charles** (he/him). Wherever the person is meant (chat, commits, PR descriptions, review replies, comments and docs), write "Charles". "Developer" stays only where it names a role, as in the Test Plan's "developer testing". Existing `docs/wtf.md` notes and older CHANGELOG entries stay as written (`docs/codex-standard.md` 1.4).
+- **Charles, not "the developer"** — the project owner is **Charles** (he/him). Wherever the person is meant (chat, commits, PR descriptions, review replies, comments and docs), write "Charles". "Developer" stays only where it names a role, as in the Test Plan's "developer testing". Historical records stay as written: existing `docs/wtf.md` notes, the scar stories in `docs/scars.md` and older CHANGELOG entries (`docs/codex-standard.md` 1.4).
 - **Verify includes for every new or rewritten `.cc`**: grep the `#include` list for each API you call (`MEM_guardedalloc.h` for `MEM_new`).
 
 ### Every change: the update process (the Codex Standard)
