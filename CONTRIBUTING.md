@@ -26,8 +26,14 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
 ## Pull requests
 
 - Branch from `main` and open the pull request against `main`. Fill in the template.
+- The Test Plan covers every kind of testing the change needs: automated checks, build testing
+  (the hardware tests for the next Windows build, written before merge), developer testing, and
+  user testing where it applies. The full test list for each build is posted on the merged pull
+  requests it carries.
 - Subtraction is the method: when removing something, remove it completely and follow the compile
   errors ([`BLENDED.md`](BLENDED.md) §4 and its "Appendix — Development Philosophy").
+- Follow the update process in [`docs/codex-standard.md`](docs/codex-standard.md): checks, tests,
+  the docs each kind of change updates, consistency, commit and pull request.
 - Run the fast checks before pushing. They also run on every pull request:
 
   ```

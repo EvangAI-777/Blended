@@ -6,11 +6,11 @@
 
 Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the foundation up, by subtraction.
 
-**Built with Claude and Codex, throughout** (BLENDED.md §4): Claude (Anthropic) implements, Codex (OpenAI) reviews every PR, for every version and phase. Don't describe either role as limited to a version range.
+**Built with Claude and Codex, throughout** (BLENDED.md §4): Claude (Anthropic) implements, Codex (OpenAI) reviews every PR, for every version and phase: two competitors, one project. Don't describe either role as limited to a version range.
 
 **Read `BLENDED.md` first.** It is the design authority: identity, architecture, the datablock audit, locked decisions, open questions and guardrails. This file is the operational context for Claude sessions.
 
-**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches its own UI (the launcher) for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open crash when the file browser closes, upstream splash over the launcher, Cycles `MetaBall` registration error, empty launcher keymap, spurious "loading empty scene" warning) fixed and verified on hardware in build 111 — the first session with no crash; build 111 findings (a scene behind the launcher, a too-faint project-state cue, upstream branding in the render window and status bar) fixed; build 112 CI-green with the smoke test passing, awaiting hardware verification. Category D table updated. CI now smoke-tests each packaged build headless (`tests/python/blended_smoke_test.py`), and every PR runs fast source checks (`tools/check_blended.py`; PR #252, which also hardened the workflows and fixed a latent render-curve crash the check found). Docs restructured for Claude Code and Codex (PR #253): CLAUDE.md core, `.claude/rules/`, skills, `docs/`, `AGENTS.md`. Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
+**Current version:** Blended 1.0.0-dev — 0.9.0 base: CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass 502.31, `BKE_main_clear` Scar 2 drain (PA/TE/CU/LS), `BKE_screen_blend_read_data` deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — two sequential phases: Phase 1 runtime audit (developer runs build, checklists, triage loop with Claude) in progress — build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches its own UI (the launcher) for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open crash when the file browser closes, upstream splash over the launcher, Cycles `MetaBall` registration error, empty launcher keymap, spurious "loading empty scene" warning) fixed and verified on hardware in build 111 — the first session with no crash; build 111 findings (a scene behind the launcher, a too-faint project-state cue, upstream branding in the render window and status bar) fixed; build 112 CI-green with the smoke test passing, awaiting hardware verification (its test list is on PRs #250–#254; the open multi-window check is two windows in one running Blended, not a second instance, PR #256). Category D table updated. CI now smoke-tests each packaged build headless (`tests/python/blended_smoke_test.py`), and every PR runs fast source checks (`tools/check_blended.py`; PR #252, which also hardened the workflows and fixed a latent render-curve crash the check found). Docs restructured for Claude Code and Codex (PR #253): CLAUDE.md core, `.claude/rules/`, skills, `docs/`, `AGENTS.md`. Phase 2 GitHub Pages launch pending Phase 1 completion. Release tag when both phases clear.
 
 ---
 
@@ -20,6 +20,7 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the found
 |------|--------------|
 | `BLENDED.md` | Always first. Design authority; its appendix holds the Development Philosophy |
 | `docs/runtime-audit.md` | Before calling anything a new bug: the audit protocol, open runtime checks, Categories A–D, build findings |
+| `docs/codex-standard.md` | Every change: the indexed update process (checks, the docs update matrix, consistency, commit, PR, build hand-off) |
 | `docs/scars.md` | Before your first session, and when a rule below points to a scar: the full story behind each rule |
 | `docs/fork-reference.md` | Branding locations, rig compatibility, update checker, completed layers, datablock audit |
 | `CHANGELOG.md` | Release record, per-session detail, Claude AI contributor notes |
@@ -149,9 +150,9 @@ Each comes from a real failure. The full story is in `docs/scars.md`; read it wh
 - **Collaboration, not control** (BLENDED.md §4): aim caution at the code, not the developer. Say a thing once, only when it's new to them; checks go into the docs or the smoke test, not onto the developer.
 - **Verify includes for every new or rewritten `.cc`**: grep the `#include` list for each API you call (`MEM_guardedalloc.h` for `MEM_new`).
 
-### Before every commit (the Codex Standard)
+### Every change: the update process (the Codex Standard)
 
-Ask: would Codex catch this? Catch it first. Run `python3 tools/check_blended.py`; for docs, the Part 1 checklist in `.claude/rules/docs.md`; then answer the rules above as yes/no questions. The full checklist is in `docs/scars.md`.
+Ask: would Codex catch this? Catch it first. Every change, of any size, follows [`docs/codex-standard.md`](docs/codex-standard.md) in order: **1** Start (branch, todo list, read first) → **2** Code (local checks, the code questions) → **3** Tests (where each check goes) → **4** Docs (the update matrix: which docs each kind of change touches) → **5** Consistency (read the diff; everything agrees) → **6** Commit and push → **7** Pull request (template, four-part Test Plan, Codex) → **8** Merge, build and session end. Skip a step only on purpose.
 
 ### Session discipline
 
@@ -166,7 +167,7 @@ Subtraction is the method: delete, follow the compile errors, and treat the brea
 
 ## Documentation
 
-**After every milestone or structural change, update all four mandatory docs before the session ends:** `CLAUDE.md` (current-version line, roadmap row), `CHANGELOG.md` (milestone note, Claude AI contributor note), `BLENDED.md` (status line, affected sections), `.github/README.md` (status sentence). Where each kind of content goes, and how to edit the docs, is in `.claude/rules/docs.md`. If you learn something the next session needs, write it into the right doc before the session ends, not just into the chat.
+**Which docs each change updates is the update matrix, step 4 of [`docs/codex-standard.md`](docs/codex-standard.md).** Every change gets a CHANGELOG entry; any change to behavior, workflow, process or structure updates all four mandatory docs in the same commit: `CLAUDE.md` (current-version line, roadmap row, or a rule line), `CHANGELOG.md` (the note and a Claude AI contributor note), `BLENDED.md` (status line, the section it belongs to), `.github/README.md` (status sentence, or the section it belongs to). Where content goes within each doc, and how to edit them, is in `.claude/rules/docs.md`. If you learn something the next session needs, write it into the right doc before the session ends, not just into the chat.
 
 ---
 
@@ -187,6 +188,7 @@ Pull requests can always be created whenever requested — no need to ask whethe
 - **If there is already an open PR on a feature branch, keep committing to that same branch.** All commits on an open branch are included in the PR automatically — the developer reviews and merges PRs themselves, so batching related work into one PR is preferred over opening multiple small ones. This also preserves continuity in the git log: one merge commit per logical unit of work rather than a fragmented trail of micro-PRs.
 - **The orphaned-commit trap:** before committing to an existing branch, `git fetch origin main` and check whether the branch already merged. If it did, restart it from `origin/main` before writing any commits. (Story: `docs/scars.md`.)
 - **Write `build 57`, never `build #57`**: GitHub links `#N` to PR N.
+- **The PR's Test Plan covers every kind of testing:** automated, build testing (written before merge; the build's full chat list goes verbatim on each merged PR it carries), developer testing, user testing where it applies (`.github/pull_request_template.md`).
 
 ---
 

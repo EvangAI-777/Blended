@@ -36,31 +36,25 @@ context; this file covers only the PR loop.
 
 ## Before every push
 
-Run the Codex Standard: CLAUDE.md "Before every commit" and, for docs, the Part 1 checklist in
-`.claude/rules/docs.md`. The local checks that work in this
-container:
-
-- **Everything:** `python3 tools/check_blended.py` (the same checks the PR runs, about 15 seconds).
-- **Workflows:** `actionlint` on `.github/workflows/*.yml` (`pip install actionlint-py` in a venv).
-- **Python:** `python3 -m py_compile <file>`, then delete the `__pycache__` directories it creates.
-- **C++:** there is no full build. Compile only the changed file with `g++ -fsyntax-only`, and run it
-  once on `git stash`ed sources and once with the change. Only errors that appear with the change
-  count. Some errors come from the container's libraries and are there both times.
-- **YAML:** `python3 -c "import yaml; yaml.safe_load(open(path))"`.
-- **RNA runtime code** (`rna_*.cc` under `RNA_RUNTIME`) only compiles through makesrna. Check names
-  against the generated prototypes and existing patterns instead.
-
-State plainly in the PR what could not be checked locally.
-
-## Docs in the same PR
-
-Any fix or finding that changes behavior updates the four mandatory docs (CLAUDE.md, CHANGELOG.md,
-BLENDED.md, `.github/README.md`) in the same PR. That covers Category tables, the open-findings
-section, status lines and the CHANGELOG contributor note.
+Follow the update process, [`docs/codex-standard.md`](../../../docs/codex-standard.md), steps 1–6:
+the local checks that work in this container are step 2, where new checks go is step 3, which
+docs the change updates is step 4 (the update matrix; behavior or process changes update all four
+mandatory docs in the same PR), and the consistency check is step 5. State plainly in the PR what
+could not be checked locally.
 
 ## PR description
 
+Step 7 of `docs/codex-standard.md`, plus:
+
 - Follow `.github/pull_request_template.md`.
+- **The Test Plan covers every kind of testing the PR needs:** automated (what ran), build testing,
+  developer testing (hands-on checks and calls beyond the build list) and user testing when it
+  applies. Write "None" with the reason for a part that doesn't apply.
+- **Build testing is written before merge**, in the form of the chat list: the hardware tests
+  this change needs on the next Windows build. The build runs only after merge (it never runs on
+  a PR), so when it is handed to the developer the full chat list is posted **verbatim** as a
+  comment on each merged PR the build carries (`runtime-audit` skill). A list given in chat while
+  a PR is still open goes into its Test Plan verbatim.
 - When later commits change what the PR does (a Codex fix, a new commit), **rewrite the
   description** so it matches the final diff before handing the PR to the developer.
 - Write `build 110`, never `build #110`.

@@ -13,7 +13,7 @@ paths:
 
 # Editing the project documentation
 
-Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the Codex Standard (Part 1) in PR #253.
+Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" in PR #253; the update process itself is `docs/codex-standard.md` (PR #256).
 
 ## Where things go
 
@@ -33,11 +33,7 @@ Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the C
 
 **Claude AI contributor notes go in CHANGELOG, not the README.** The README Contributors section is two sentences linking to CHANGELOG. All per-session implementation detail — what was built, what was removed, what scars were applied — belongs in the CHANGELOG *Unreleased* entry for that version, alongside the code progress rows. The README is a landing page.
 
-**After every milestone or structural change, all four documents must be updated before the session ends.** The four are: `CLAUDE.md`, `CHANGELOG.md`, `BLENDED.md`, `.github/README.md`. Specific targets per document:
-- **CLAUDE.md** — current version line updated, roadmap table row updated
-- **CHANGELOG.md** — milestone note added; Claude AI contributor detail added to *Unreleased* section
-- **BLENDED.md** — Status line updated; relevant sections updated
-- **`.github/README.md`** — version/status sentence updated
+**Which docs a change updates** is the update matrix, step 4 of [`docs/codex-standard.md`](../../docs/codex-standard.md). Every change gets a CHANGELOG entry; any change to behavior, workflow, process or structure updates all four mandatory docs (`CLAUDE.md`, `CHANGELOG.md`, `BLENDED.md`, `.github/README.md`) in the same commit. This file covers where the content goes inside each doc and how to edit them.
 
 ## How to edit them
 
@@ -49,15 +45,6 @@ Loaded when editing the docs. Moved from CLAUDE.md "Key Documentation" and the C
 - **A new scar** goes in `docs/scars.md` with the same header as the others (when, impact, root cause, rule; blameless: what happened, not who), then the story, and gets a one-line rule in CLAUDE.md. **A new `wtf.md` note** goes at the end of `docs/wtf.md` and gets a row in its index; existing notes stay as written.
 - **Maintainer-only notes in CLAUDE.md go in block HTML comments** (`<!-- ... -->`). Claude Code strips them before loading the file, so they cost no context.
 
-## Part 1 — Documentation Consistency *(Scar 7)*
+## Consistency check *(Scar 7)*
 
-*Applies to every commit touching CLAUDE.md, CHANGELOG.md, BLENDED.md, or any file with cross-references, ordered lists, version maps, or architectural decisions.*
-
-1. **Run `git diff` and read the entire output.** Not a skim. Every line.
-2. **For every ordered list in the diff, find every other representation of that same order in the diff and in the touched files.** All representations must agree.
-3. **For every statement of the form "do X last / first / never / always," grep the diff for X.** Verify nothing else in the same diff contradicts it.
-4. **For every version number mentioned, verify it matches the version map in CHANGELOG.md.**
-5. **Search all sections within each of the four mandatory docs for stale references to the version or milestone being updated.** The headline status lines (CLAUDE.md "Current version", BLENDED.md "Status", README "Currently at") are obvious. The non-obvious ones are harder: internal roadmap tables, mid-document planning sections, version-specific subsection headers. `grep -n "0\\.X" CHANGELOG.md` (replace X with the version) will surface every reference — update all of them, not just the first one. The 0.6.0 design session caught a stale `### 0.6.x — Evaluation model` planning block at CHANGELOG.md:706 and a stale `In progress` status in the CLAUDE.md roadmap table — both invisible to a headline-only pass.
-6. **Fix any inconsistency before staging.** Not after. Not in a follow-up commit. Before.
-
-*Why: Scar 7 — chisel order corrected in prose but left wrong in the same commit's table. A bot caught it.*
+The former Part 1 checklist is step 5 of [`docs/codex-standard.md`](../../docs/codex-standard.md): read the whole diff, make lists, versions, build and PR numbers agree, grep the four docs for stale references, verify by artifact, and fix everything before staging.

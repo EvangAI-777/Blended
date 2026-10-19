@@ -17,7 +17,30 @@
 
 ## Test Plan
 
-<!-- How to verify this works: reproduction steps, test commands, what to look for. -->
+<!-- Every kind of testing this PR needs, in one place. Fill in each part, or write "None" and why.
+     Say plainly what has not been run yet. -->
+
+### Automated
+
+<!-- What ran and its result: `python3 tools/check_blended.py`, actionlint, syntax checks, and any
+     smoke-test (`tests/python/blended_smoke_test.py`) changes, with the build they first run in. -->
+
+### Build testing
+
+<!-- The hardware tests this change needs on the next Windows build, written before merge in the
+     same form as the chat list: the setup block, then one line per test. The build runs only
+     after merge; when it is handed to the developer, the full chat list is posted verbatim as a
+     comment on each merged PR it carries. "None" if the PR doesn't change the built program. -->
+
+### Developer testing
+
+<!-- What the developer should try hands-on beyond the build list: design or UX calls,
+     screenshots to take, behavior to judge by eye. -->
+
+### User testing
+
+<!-- If applicable or necessary: what outside users should try, and what feedback to collect.
+     "Not needed" otherwise. -->
 
 ## Substantive Changes
 
