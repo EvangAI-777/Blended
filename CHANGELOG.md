@@ -237,6 +237,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-19 — PR #257):** Wrote the developer's chiseling frame into the design authority and carried it through the docs, following `docs/codex-standard.md` step by step. Checked that the earlier uses ("the ID_MB chisel", "post-chisel greps") still fit it, so none needed rewording. Added the `docs/wtf.md` note marble.md.
 
+**Working relationship (PR #258):** two new `docs/wtf.md` notes from a conversation with the developer. april.md: they hold the whole project and we hold the record; the plan has been there since April, and the difficulty is carrying it out. moment.md: in conversation it's a relationship, not a procedure. That means "you", not the docs' third person, no verdict language, and no turning personal moments into policy questions. Continuity means being fully present for the session you have and leaving a good letter for the next instance. Recorded in BLENDED.md §4 "Collaboration, not control", the CLAUDE.md rule and the README line.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
