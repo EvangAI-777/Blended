@@ -39,7 +39,17 @@ don't copy them from here:
 - **Branding, "Never" rule:** "use Layer 2 neutral gray (#323232)" is garbled; `#323232` is the
   hover color, and Layer 2 is `#2c2c2c`.
 - **Manifest (`github.md`):** "Ready for GitHub Pages static hosting". Nothing is hosted; the Phase
-  2 site is still to be built.
+  2 site is still to be built. It also says the screens have "No external dependencies except Google
+  Fonts", but every page loads `support.js`, which loads React, ReactDOM and Babel from unpkg.
+- **Pipeline, sequence:** the diagram's subtitle ("Two sequential stages") and the landing page's
+  "Work flows through Creative → Post" read as a fixed order. In Blended every section and mode is
+  freely enterable; the pipeline is an organizing metaphor, not a forced sequence (`BLENDED.md` §11).
+- **Launcher, version attribution:** the mockup has none. `BLENDED.md` §11 lists version
+  attribution as part of the launcher's file-management chrome (only its placement is open).
+- **Launcher, hover states:** the mockup uses inline `onmouseover`/`onmouseout` strings.
+  `support.js` passes them to React as strings, not functions, so the hover states don't fire when
+  the page renders through it. (The landing page uses CSS `:hover`, which works.) A shipped
+  version uses CSS `:hover` or real handlers.
 
 The launcher mockup's header ("+ New", "Open…") and its Recent Projects sidebar are one picture of
 the file-open model under discussion (`BLENDED.md` §11, "Opening a project enters it"). That model
