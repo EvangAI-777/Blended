@@ -245,7 +245,7 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Design art, older version (PR #259):** `docs/design/` holds the developer's Claude Design files: a launcher mockup, a pipeline diagram, a branding sheet, a draft Phase 2 landing page, the project manifest (`github.md`, last synced 2026-09-04) and the `support.js` runtime the pages load. They're added unedited and marked as an older version of the design documents: reference art, not the spec. `docs/design/README.md` lists where they differ from the repo (the landing page's "January 2026" build date and "rebuilt from scratch", the unmeasured performance claims, Audio missing from the landing pipeline, Compositing's three modes, an off-palette Post blue, placeholder icon and splash, a garbled branding rule). Pointed to from CLAUDE.md, AGENTS.md, BLENDED.md §17 Phase 2 and the README.
 
-**Claude AI contributor (2026-10-19 — PR #259):** Read all six files before adding them. `support.js` is the Claude Design renderer: it loads pinned React 18.3.1 and Babel 7.29.0 from unpkg and touches no cookies or storage. Checked the designs against BLENDED.md §11, the launcher code and the record, and wrote down the differences rather than editing the developer's art.
+**Claude AI contributor (2026-10-19 — PR #259):** Read all six files before adding them. `support.js` is the Claude Design renderer: it loads pinned React 18.3.1 and Babel 7.29.0 from unpkg and touches no cookies or storage. Checked the designs against BLENDED.md §11, the launcher code and the record, and wrote down the differences rather than editing the developer's art. The developer gave their name, Charles, and the CLAUDE.md conversation rule now uses it, so the next session starts with it.
 
 ---
 
