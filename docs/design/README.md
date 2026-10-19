@@ -5,7 +5,7 @@ current spec.** Where they differ from the repository, the repository wins: `BLE
 the launcher, §16 product identity, §17 Phase 2), the launcher code
 (`source/blender/editors/space_blended_launcher/`) and the shipped branding assets.
 
-The developer made them with Claude Design and added them in PR #259. The design project's own
+Charles made them with Claude Design and added them in PR #259. The design project's own
 manifest, `github.md`, records its last sync as 2026-09-04. They're kept as they were exported,
 unedited, as a starting point for the Phase 2 site and as a record of how the design looked at
 that point.
