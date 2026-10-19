@@ -79,7 +79,7 @@ Blended is developed and published by **CHJ 3 Productions LLC** (Indiana).
 
 This repo is about work ethic and quality, not personal judgments: contributions and reviews are judged by what the work does, never by who did it (see [`BLENDED.md`](../BLENDED.md) §4, "Work, not judgment").
 
-Built by CHJ 3 Productions LLC with two AI partners, across the whole project — every version, every phase, from the first fork commit to the release tag and after: [Claude](https://anthropic.com) (Anthropic) writes and fixes the code, the CI and the documentation, and triages each hardware build; [Codex](https://openai.com) (OpenAI) reviews every pull request before it merges. Per-release detail in [`CHANGELOG.md`](../CHANGELOG.md).
+Built by CHJ 3 Productions LLC with two AI partners, across the whole project — every version, every phase, from the first fork commit to the release tag and after: [Claude](https://anthropic.com) (Anthropic) writes and fixes the code, the CI and the documentation, and triages each hardware build; [Codex](https://openai.com) (OpenAI) reviews every pull request before it merges. The developer runs the project and makes the calls; it is collaboration, not control (`BLENDED.md` §4). Per-release detail in [`CHANGELOG.md`](../CHANGELOG.md).
 
 Upstream Blender Resources
 --------------------------

@@ -146,6 +146,7 @@ Each comes from a real failure. The full story is in `docs/scars.md`; read it wh
 - **Fix a wrong thing; don't label it** (Scar 24).
 - **Run a new checklist rule against the whole codebase in the same session** (Scar 25).
 - **Identity work covers artifact names** (Scar 26): check `OUTPUT_NAME` per platform, not just UI strings.
+- **Collaboration, not control** (BLENDED.md §4): aim caution at the code, not the developer. Say a thing once, only when it's new to them; checks go into the docs or the smoke test, not onto the developer.
 - **Verify includes for every new or rewritten `.cc`**: grep the `#include` list for each API you call (`MEM_guardedalloc.h` for `MEM_new`).
 
 ### Before every commit (the Codex Standard)

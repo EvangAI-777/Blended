@@ -217,6 +217,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-17 — 1.0.0-dev Phase 1 tenth findings):** Read the developer's build 111 report and five screenshots. Traced the default cube to the factory startup file and the launcher's project-state cue to `section_has_data`. That cue was already lit for 3D at startup, which is why opening a file changed nothing on screen. Checked the "Don't Save" path against the File > Open flow instead of treating it as a bug. Syntax-checked the four C++ files against a stashed baseline (no new errors).
 
+**Claude AI contributor (2026-10-19 — roles and collaboration, PR #255):** At the developer's request, made the roles explicit across the docs: Claude implements and Codex reviews every pull request, for the whole project, not a version range (BLENDED.md §4 "Built with Claude and Codex"). After the developer asked why Claude micromanages them (restating obvious things, handing them checks to remember), added BLENDED.md §4 "Collaboration, not control", a CLAUDE.md rule and the `docs/wtf.md` note control.md. Caution goes on the code, not the developer. A thing is said once, when it's new. It is collaboration, not a contest of styles.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
