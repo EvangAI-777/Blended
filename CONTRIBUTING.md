@@ -38,7 +38,7 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
   2-space C/C++ indentation, 99-column lines.
 - A change that alters behavior updates the docs in the same pull request: `CLAUDE.md`,
   `CHANGELOG.md`, `BLENDED.md` and `.github/README.md`.
-- Pull requests are reviewed by Codex and by the maintainer. The full Windows build runs on
+- Blended is built with Claude (Anthropic) as implementation partner and Codex (OpenAI) as reviewer, across the whole project (`BLENDED.md` §4). Every pull request is reviewed by Codex and by the maintainer. The full Windows build runs on
   manual dispatch and on release tags, and includes a headless smoke test of the packaged build.
 
 ## Building

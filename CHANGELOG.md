@@ -2,6 +2,8 @@
 
 **Developer/Publisher:** CHJ 3 Productions LLC (Indiana).
 
+**Built with Claude and Codex, throughout:** Claude (Anthropic) is the implementation partner and Codex (OpenAI) is the pull-request reviewer for the entire project, every version and phase, not a particular range. The per-session "Claude AI contributor" notes below record what each session did; they don't mark where either partner's role starts or stops.
+
 Versioning policy: each minor version (0.x.0) corresponds to a completed
 foundation layer from the build order in BLENDED.md §4. Patch releases
 (0.x.y) are stable points within a layer — CI fixes, doc updates, build
@@ -462,7 +464,7 @@ Each mode button opens the focused editor layout described in the corresponding 
 
 **Claude AI contributor (2026-05-30, app icon build system):** 0.7.0 Phase 2 — app icon build system renames. Branch `claude/0-7-0-phase2-materials-9WEBB`. Commit `0bb9e585` (PR #216). All platform icon references renamed for Blended identity: `winblender.rc` → `winblended.rc` (line 12: `"winblender.ico"` → `"winblended.ico"`); `blender.desktop` → `blended.desktop` (`Icon=blender` → `Icon=blended`); `build_files/cmake/packaging.cmake` lines 92+98 (`winblender.ico` → `winblended.ico`); `source/creator/CMakeLists.txt` all `.rc`, `.desktop`, `.svg` references updated; `source/blender/windowmanager/CMakeLists.txt` line 135 (`blender.svg` → `blended.svg`). Artwork files (`winblended.ico`, `blended.svg`) committed by developer separately; `winblender.ico` and `blender.svg` deleted. App icon checklist item complete.
 
-**Codex AI contributor (OpenAI) — active review partner:** Codex (OpenAI) has been contributing automated code review on pull requests throughout the 0.4.x–0.7.x development cycle. Key contributions: catching functional regressions in dopesheet filter rows (particles/textures toggles restored after incorrect removal), identifying the `rna_enum_metaelem_type_items` orphan array in `rna_object.cc` during ID_MB chisel (Scar 11), flagging `CASE_IDINDEX(SCR/WM)` in idtype.cc after the 0.3.0 chisel (Scar 4), catching `BLT_I18NCONTEXT_ID_CACHEFILE` borrowed by `NodesModifier` in `rna_modifier.cc` (Scar 13), and the versioning gap in `brush_stroke_method` during 0.5.0 work. Per-instance Codex review comments appear on PRs throughout; the most significant catches are documented in the CLAUDE.md Battle Scars section.
+**Codex AI contributor (OpenAI) — active review partner:** Codex (OpenAI) reviews every pull request, across the whole project. The contributions listed here are from the 0.4.x–0.7.x cycle. Key contributions: catching functional regressions in dopesheet filter rows (particles/textures toggles restored after incorrect removal), identifying the `rna_enum_metaelem_type_items` orphan array in `rna_object.cc` during ID_MB chisel (Scar 11), flagging `CASE_IDINDEX(SCR/WM)` in idtype.cc after the 0.3.0 chisel (Scar 4), catching `BLT_I18NCONTEXT_ID_CACHEFILE` borrowed by `NodesModifier` in `rna_modifier.cc` (Scar 13), and the versioning gap in `brush_stroke_method` during 0.5.0 work. Per-instance Codex review comments appear on PRs throughout; the most significant catches are documented in the CLAUDE.md Battle Scars section.
 
 ---
 
