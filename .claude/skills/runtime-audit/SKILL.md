@@ -21,6 +21,9 @@ Categories A–D and the build-by-build findings. Read it before triaging.
      the folder's address bar, `Blended.exe > blended_log.txt 2>&1`.
    - One line per test: what to do and what should happen. Cover every test not yet done inside
      Blended plus the new ones for this build; mark new tests "(new)". Group small related checks.
+   - Name multi-window tests exactly: *two windows* is Window > New Window inside one running
+     Blended; *second instance* is a second `Blended.exe`. They test different things
+     (`docs/runtime-audit.md`, "Two windows and two instances are different tests").
    - End with one line each for the log search (`SyntaxError`, `Traceback`, `empty keymap`, and
      the strings the last fixes removed), renaming the log before a relaunch, and what to send
      back. Remind them the crash log keeps only the most recent crash.
@@ -35,9 +38,11 @@ Categories A–D and the build-by-build findings. Read it before triaging.
    downstream errors (build 109).
 3. **Trace each crash** from the backtrace into the source. Name the faulting read (`0x70`,
    `0x88`, …) and the call chain.
-4. **Check `docs/runtime-audit.md`** before calling something new: Category A (expected),
+4. **Match each result to the test it reports.** A second instance is not a two-windows result
+   (build 111). When a report could be either, ask which.
+5. **Check `docs/runtime-audit.md`** before calling something new: Category A (expected),
    B (resolved), C (leaks), D (fixed crashes). A known item is reported as known.
-5. **Look for the class, not just the instance.** The build 110 File > Open crash was every
+6. **Look for the class, not just the instance.** The build 110 File > Open crash was every
    temporary-window close. Ask whether `tools/check_blended.py` could catch the class; if so, add
    the check in the same PR.
 
