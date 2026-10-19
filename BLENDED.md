@@ -1611,6 +1611,8 @@ Polished public-facing site for Blended. Starts after Phase 1 clears.
 - How it was built — two competitors on one project (§4, "Two competitors, one project"): Claude implementing and Codex reviewing, told from the record (real Codex catches, scars, PRs); the project's account, with no claim of endorsement by Anthropic or OpenAI
 - Multiple tabs covering different angles; design quality is a first-class goal — should not look like a default GitHub Pages template
 
+**Design reference:** `docs/design/` holds an older version of the design art the developer made with Claude Design: a launcher mockup, a pipeline diagram, a branding sheet and a draft landing page (PR #259). It's a starting point, not the spec, and its README lists where it differs from the repo.
+
 **Primary implementation:** Static site, tech stack TBD. Images, code snippets, and visual explanations are the medium. No WebAssembly dependency.
 
 **Stretch goal — WASM interactive demo:** The original Blended Pages site (March 2026, wiped in rebase) used an Emscripten build deployed to GitHub Pages. Full Blender hits browser memory limits and isn't viable as a WASM demo. Blended's datablock audit (39 → ~19 ID types, significant binary reduction) may bring it within range. Worth an attempt as a parallel investigation; does not block Phase 2 shipping. If it works, it goes in. If it doesn't, the static site ships without it.

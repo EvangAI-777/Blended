@@ -30,6 +30,7 @@ behavior (Categories A–D). Check it before reporting expected behavior as a bu
 | `docs/upstream-sync.md` | Merging upstream Blender; the divergence register |
 | `.claude/rules/` | File-scoped rules (C++ ID types, docs, CI) |
 | `tools/check_blended.py` | Fast source checks, run on every PR |
+| `docs/design/` | An older version of the design art: reference, not the spec; its README lists where it differs from the repo |
 
 ## Conventions
 

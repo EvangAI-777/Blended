@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blended — Free 2D and 3D Software Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #1d1d1d;
+  color: #e0e0e0;
+  line-height: 1.6;
+}
+* { box-sizing: border-box; }
+a { color: #ff7f00; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #1d1d1d 0%, #252525 100%);
+  padding: 96px 48px;
+  text-align: center;
+  border-bottom: 1px solid #323232;
+}
+.hero h1 {
+  font-size: 56px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  letter-spacing: -0.8px;
+}
+.hero p {
+  font-size: 20px;
+  color: #999999;
+  max-width: 600px;
+  margin: 0 auto 32px;
+  line-height: 1.5;
+}
+.cta {
+  display: inline-block;
+  background: #ff7f00;
+  color: white;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background 130ms ease-out;
+}
+.cta:hover {
+  background: #ff9933;
+  text-decoration: none;
+}
+
+/* Content Sections */
+.section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 48px;
+  border-bottom: 1px solid #323232;
+}
+.section h2 {
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 32px;
+  text-align: center;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+}
+.card {
+  background: #252525;
+  border: 1px solid #323232;
+  border-radius: 8px;
+  padding: 32px;
+}
+.card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #e0e0e0;
+}
+.card p {
+  color: #999999;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Features Grid */
+.features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+@media (max-width: 768px) {
+  .features { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 40px; }
+}
+
+.feature-item {
+  background: #2c2c2c;
+  border-radius: 6px;
+  padding: 20px;
+  border-left: 4px solid #ff7f00;
+}
+.feature-item strong {
+  color: #e0e0e0;
+}
+.feature-item p {
+  color: #999999;
+  margin: 8px 0 0;
+}
+
+/* Footer */
+.footer {
+  background: #252525;
+  border-top: 1px solid #323232;
+  padding: 48px;
+  text-align: center;
+  color: #666666;
+}
+.footer p { margin: 8px 0; }
+</style>
+</helmet>
+
+<!-- Hero -->
+<div class="hero">
+  <h1>Blended</h1>
+  <p>Free 2D and 3D software tools with an explicit focus on the craft of animation.</p>
+  <a href="#download" class="cta">Download Now</a>
+  <p style="margin-top: 32px; font-size: 14px; color: #666666;">Based on Blender 5.2 · Open Source (GPL-2.0-or-later) · Developed by CHJ 3 Productions LLC</p>
+</div>
+
+<!-- Craft Narrative -->
+<div class="section" style="background: #252525; border-top: 1px solid #323232; border-bottom: 1px solid #323232;">
+  <h2 style="color: #ff7f00;">Animation as the Shaping Discipline</h2>
+  <div style="max-width: 900px; margin: 0 auto;">
+    <p style="font-size: 18px; color: #ccc; margin-bottom: 32px; line-height: 1.8; text-align: center;">
+      Blended is built on a core truth: <strong>every creative property is keyframeable</strong>. Whether you're animating 3D objects, 2D stroke points, material parameters, or audio faders — it's all interpolation using the same F-curve system. One engine. Every content type.
+    </p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px;">
+      <div style="background: #1d1d1d; padding: 24px; border-radius: 8px; border-left: 4px solid #ff7f00;">
+        <h3 style="color: #ff7f00; margin-top: 0;">What This Means</h3>
+        <ul style="color: #ccc; line-height: 1.8; margin: 0; padding-left: 20px;">
+          <li>Static work is animation with one frame.</li>
+          <li>Motion graphics is Design with keyframes.</li>
+          <li>Animated UI is Game with keyframes.</li>
+          <li>No special cases. Everything falls out of the same principle.</li>
+        </ul>
+      </div>
+      <div style="background: #1d1d1d; padding: 24px; border-radius: 8px; border-left: 4px solid #0066cc;">
+        <h3 style="color: #0066cc; margin-top: 0;">For Animators</h3>
+        <p style="color: #ccc; margin: 0; line-height: 1.8;">
+          This means the timeline is never an afterthought. Whether you're building 3D rigs, painting frames, or compositing, keyframing is first-class. The craft comes first.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- What is Blended -->
+<div class="section">
+  <h2>What is Blended?</h2>
+  <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+    <p style="font-size: 18px; color: #ccc; margin-bottom: 32px; line-height: 1.8;">
+      Blended is a rebuild of Blender from the foundation up. It keeps what makes Blender powerful — the 3D modeling, the timeline, the node system, the GPL license — and simplifies everything else. A focused, opinionated tool shaped by animation as the core discipline.
+    </p>
+    <p style="color: #999999; font-size: 16px;">
+      The goal: free creative software that doesn't overwhelm. You open it, you pick what you're doing, and you get a focused lens onto powerful tools.
+    </p>
+  </div>
+</div>
+
+<!-- Pipeline Overview -->
+<div class="section">
+  <h2>The Creative Pipeline</h2>
+  <p style="text-align: center; color: #999999; max-width: 800px; margin: 0 auto 48px; font-size: 16px;">
+    Work flows through Creative (authoring) → Post (finishing). Animation is the shaping discipline of both. One engine, every content type.
+  </p>
+  
+  <div style="max-width: 900px; margin: 0 auto;">
+    <svg viewBox="0 0 900 200" style="width: 100%; height: auto;">
+      <!-- Creative boxes -->
+      <g>
+        <rect x="20" y="40" width="100" height="60" rx="4" fill="#ff7f00" stroke="none"/>
+        <text x="70" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">Storyboarding</text>
+        
+        <rect x="140" y="40" width="100" height="60" rx="4" fill="#ff7f00" stroke="none"/>
+        <text x="190" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">2D Animation</text>
+        
+        <rect x="260" y="40" width="100" height="60" rx="4" fill="#ff7f00" stroke="none"/>
+        <text x="310" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">3D Animation</text>
+        
+        <rect x="380" y="40" width="80" height="60" rx="4" fill="#ff7f00" stroke="none"/>
+        <text x="420" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">Game</text>
+        
+        <rect x="480" y="40" width="80" height="60" rx="4" fill="#ff7f00" stroke="none"/>
+        <text x="520" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">Design</text>
+
+        <!-- Creative label -->
+        <text x="20" y="25" font-size="11" font-weight="600" fill="#ff7f00" text-transform="uppercase">CREATIVE</text>
+      </g>
+
+      <!-- Post boxes -->
+      <g>
+        <rect x="620" y="40" width="100" height="60" rx="4" fill="#0066cc" stroke="none"/>
+        <text x="670" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">Finalizing</text>
+        
+        <rect x="740" y="40" width="100" height="60" rx="4" fill="#0066cc" stroke="none"/>
+        <text x="790" y="72" font-size="12" font-weight="600" fill="white" text-anchor="middle">Compositing</text>
+
+        <!-- Post label -->
+        <text x="620" y="25" font-size="11" font-weight="600" fill="#0066cc" text-transform="uppercase">POST</text>
+      </g>
+
+      <!-- Flow arrows -->
+      <path d="M 120 70 L 140 70" stroke="#ff7f00" stroke-width="2" fill="none"/>
+      <path d="M 240 70 L 260 70" stroke="#ff7f00" stroke-width="2" fill="none"/>
+      <path d="M 360 70 L 380 70" stroke="#ff7f00" stroke-width="2" fill="none"/>
+      <path d="M 460 70 L 480 70" stroke="#ff7f00" stroke-width="2" fill="none"/>
+      <path d="M 560 70 L 620 70" stroke="#999999" stroke-width="2" fill="none" stroke-dasharray="4,4"/>
+      <path d="M 720 70 L 740 70" stroke="#0066cc" stroke-width="2" fill="none"/>
+    </svg>
+  </div>
+
+  <div style="margin-top: 48px; max-width: 800px; margin-left: auto; margin-right: auto;">
+    <p style="color: #999999; text-align: center; font-size: 14px; font-style: italic;">
+      Every section shares the same animation engine. One timeline. One keyframe system. Static work is animation with one frame. Motion graphics is Design with keyframes. No special cases.
+    </p>
+  </div>
+</div>
+
+<!-- Workflow Example -->
+<div class="section" style="background: #252525; border-top: 1px solid #323232; border-bottom: 1px solid #323232;">
+  <h2>Workflow Example: From Concept to Finished Animation</h2>
+  <div style="max-width: 900px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px;">
+      <div style="background: #1d1d1d; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #ff7f00;">
+        <div style="font-size: 14px; font-weight: 600; color: #ff7f00; margin-bottom: 12px;">1. Storyboard</div>
+        <p style="color: #999999; font-size: 13px; margin: 0;">Panel-based narrative. Each panel becomes a keyframe in 2D Animation.</p>
+      </div>
+      <div style="background: #1d1d1d; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #ff7f00;">
+        <div style="font-size: 14px; font-weight: 600; color: #ff7f00; margin-bottom: 12px;">2. 2D or 3D</div>
+        <p style="color: #999999; font-size: 13px; margin: 0;">Frame-by-frame drawing or 3D animation. One timeline, same keyframe system.</p>
+      </div>
+      <div style="background: #1d1d1d; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #0066cc;">
+        <div style="font-size: 14px; font-weight: 600; color: #0066cc; margin-bottom: 12px;">3. Finalize</div>
+        <p style="color: #999999; font-size: 13px; margin: 0;">QC, timing tweaks, export-ready cuts. Receives output from any Creative stage.</p>
+      </div>
+      <div style="background: #1d1d1d; padding: 20px; border-radius: 8px; text-align: center; border-top: 3px solid #0066cc;">
+        <div style="font-size: 14px; font-weight: 600; color: #0066cc; margin-bottom: 12px;">4. Post</div>
+        <p style="color: #999999; font-size: 13px; margin: 0;">Compositing, grading, audio. Timeline-synchronized finishing.</p>
+      </div>
+    </div>
+    <p style="text-align: center; color: #999999; font-size: 14px; font-style: italic;">
+      No export/re-import. No transcoding. Everything stays in the project. One animator. One timeline. One engine.
+    </p>
+  </div>
+</div>
+
+<!-- Key Features -->
+<div class="section">
+  <h2>Why Blended</h2>
+  <div class="features">
+    <div class="feature-item">
+      <strong>🎬 Animation-First Design</strong>
+      <p>Animation shapes the core. Every property in every tool is keyframeable using the same F-curve system. One engine, every content type.</p>
+    </div>
+    <div class="feature-item">
+      <strong>🎯 Focused Pipeline</strong>
+      <p>Work flows from authoring through finishing. Pick what you're doing — Storyboarding, 2D, 3D, Game, Design — get a clean, purposeful interface.</p>
+    </div>
+    <div class="feature-item">
+      <strong>📐 Rebuilt Foundation</strong>
+      <p>39 Blender datatypes reduced to ~19. Removed fossils and cruft. The core is lean, coherent, and easy to extend.</p>
+    </div>
+    <div class="feature-item">
+      <strong>🆓 Free & Open</strong>
+      <p>GPL-2.0-or-later. All source code available. No vendor lock-in. Run it, modify it, learn from it.</p>
+    </div>
+    <div class="feature-item">
+      <strong>🔗 Industry Formats</strong>
+      <p>USD, glTF, FBX, OBJ, Alembic. Import/export at the boundary. The .blended file is your project; formats are translators.</p>
+    </div>
+    <div class="feature-item">
+      <strong>⚡ Fast & Lightweight</strong>
+      <p>Reduced codebase means smaller builds, faster startup, lower memory. The foundation reduction is real.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Scope -->
+<div class="section">
+  <h2>What's In Scope</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>✓ 2D & 3D Animation</h3>
+      <p>The shaping discipline. Full timeline, F-curves, keyframes, all animation tools.</p>
+    </div>
+    <div class="card">
+      <h3>✓ 3D Modeling & Sculpting</h3>
+      <p>Mesh modeling, sculpting, rigging, rendering. Full geometry node system.</p>
+    </div>
+    <div class="card">
+      <h3>✓ Game Asset Creation</h3>
+      <p>Polygon budgets, LOD workflows, sprite sheets, engine-ready exports (Unity, Unreal, Godot).</p>
+    </div>
+    <div class="card">
+      <h3>✓ Graphic Design & Illustration</h3>
+      <p>Concept art, UI design, illustration. Shares animation timeline with 3D content.</p>
+    </div>
+    <div class="card">
+      <h3>✓ Compositing & Post</h3>
+      <p>Node-based compositing, video editing, audio mixing. Timeline-driven finishing.</p>
+    </div>
+    <div class="card">
+      <h3>✓ Extensible via Addons</h3>
+      <p>Python API. Community-contributed workflows and tools. Asset library support.</p>
+    </div>
+  </div>
+</div>
+
+<!-- What's Different -->
+<div class="section">
+  <h2>Explicitly Not</h2>
+  <div style="max-width: 800px; margin: 0 auto;">
+    <ul style="color: #ccc; line-height: 1.8; font-size: 16px;">
+      <li><strong>Not a game engine.</strong> Blended authors content. It doesn't host runtime gameplay.</li>
+      <li><strong>Not a feature-parity arms race.</strong> Every feature must serve animation or fit the scope. No "because Maya has it."</li>
+      <li><strong>Not a kitchen sink.</strong> Fossils and legacy formats are cut. The codebase is lean.</li>
+      <li><strong>Not Blender with a reskin.</strong> Foundation rebuilt from scratch. Data model simplified. Pipeline rethought.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Version & Status -->
+<div class="section" style="background: #252525; border-radius: 8px; text-align: center;">
+  <h2 style="margin-top: 0;">Current Status</h2>
+  <p style="font-size: 18px; color: #ff7f00; margin-bottom: 8px; font-weight: 600;">Blended 1.0.0-dev</p>
+  <p style="color: #999999; margin: 0;">Foundation complete. Runtime audit in progress. GitHub Pages and interactive demo coming soon.</p>
+  <p style="color: #666666; font-size: 14px; margin-top: 16px;">Latest build: January 2026 · <a href="#source">Source on GitHub</a></p>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p><strong>Blended</strong> is developed by <strong>CHJ 3 Productions LLC</strong></p>
+  <p>Based on Blender 5.2 · GPL-2.0-or-later license</p>
+  <p style="margin-top: 24px; color: #555555; font-size: 12px;">
+    © 2026 CHJ 3 Productions LLC. Blender is a trademark of the Blender Foundation.
+  </p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+
+</script>
+</body>
+</html>

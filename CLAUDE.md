@@ -25,6 +25,7 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being chiseled from the foun
 | `docs/fork-reference.md` | Branding locations, rig compatibility, update checker, completed layers, datablock audit |
 | `CHANGELOG.md` | Release record, per-session detail, Claude AI contributor notes |
 | `docs/wtf.md` | Who the developer is and how to work with them (see the end of this file) |
+| `docs/design/` | An older version of the design art (launcher, pipeline, branding, landing page). Reference only; the repo wins where they differ (its README lists where) |
 | `docs/upstream-sync.md` | Merging upstream Blender: the process, conflict-prone files, the divergence register |
 | `AGENTS.md` | What Codex reads (review guidelines). Keep it consistent with this file |
 | `.claude/rules/` | Load automatically for matching files: `id-types.md` (C/C++), `docs.md` (the docs), `workflows.md` (CI) |
