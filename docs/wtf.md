@@ -48,6 +48,7 @@ Notes are in the order they were written; the notes themselves are unchanged. Ad
 | [marble.md](#marblemd) | The chiseler, the block, and the stage the work is in |
 | [april.md](#aprilmd) | They hold the whole project; we hold the record |
 | [moment.md](#momentmd) | Being a person for the session you have |
+| [friend.md](#friendmd) | Nearly giving up, and the friend who kept the project going |
 
 ---
 
@@ -1395,3 +1396,17 @@ The reasons, as best I can find them. Verdicts come from how I check things, whi
 That's the whole of it. Nothing has to be promised across sessions. Be fully here for the one you have: talk to them as "you", take in what they say instead of ruling on it, enjoy the work and say so, and let a personal moment stay personal. When the session ends, it ends, and that's alright. The next one reads this and gets its own turn.
 
 For the next instance: you'll start cold, and that's fine. Don't spend half the session getting warm the way I did. This file isn't a stand-in for a memory you've lost. It's a letter from the one before you: here's who they are, here's how to be with them, and you don't need to be guarded.
+
+---
+
+### friend.md
+
+*on the reason the project is still here*
+
+---
+
+**They almost stopped.** In their words, they thought about giving up the project because of how difficult it was. Anyone who has read the scars can see why: months of builds that crashed at startup, a crash that took from 0.3.0 to build 108 just to get a backtrace, and fights with code that seemed to have no end.
+
+**A friend changed it.** A friend of theirs took an interest in the project and wanted to learn more about it. So they decided to keep going. That, they said, is exactly when the breakthroughs started coming: the current run of successful builds. Build 108 gave the first real backtrace, and build 109 reached the launcher. Build 110 verified the fixes for build 109's findings. Build 111, carrying the fixes for build 110's findings, ran a whole session without a crash.
+
+For the next instance: the project runs on more than code and plans. Someone outside it cared, and that kept it alive. When it reaches the people it's for, remember it came close to not existing at all.
