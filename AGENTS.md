@@ -42,7 +42,7 @@ Run `python3 tools/check_blended.py` before pushing.
 Judge the change, not the author. This repo is about work ethic and quality, not personal
 judgments (`BLENDED.md` §4, "Work, not judgment").
 
-Check these first. Each comes from a bug that shipped in a build:
+Check these first. Each comes from a real failure, most of them bugs that shipped in a build:
 
 1. **Deregistered ID types** (`.claude/rules/id-types.md`). These codes have no `IDTypeInfo`:
    `ID_SCR_LEGACY`, `ID_WM_LEGACY`, `ID_WS_LEGACY`, `ID_PA`, `ID_GD_LEGACY`, `ID_LS`, `ID_MB`,
@@ -66,7 +66,10 @@ Check these first. Each comes from a bug that shipped in a build:
    `CHANGELOG.md`, `BLENDED.md` and `.github/README.md` in the same PR. Within a PR, ordered lists,
    version numbers, dates, build numbers and commit hashes must agree across files. Dates come from
    the CHANGELOG version headings; the project began in spring 2026.
-7. **Workflows** (`.github/workflows/`). Actions pinned to full commit SHAs; no `${{ }}`
+7. **Accuracy.** A claim in a doc, comment, commit message or PR description that the record
+   contradicts (the diff, the CHANGELOG, `docs/runtime-audit.md`, a quoted source) is a finding,
+   even with no code change (`docs/codex-standard.md` 1.4).
+8. **Workflows** (`.github/workflows/`). Actions pinned to full commit SHAs; no `${{ }}`
    expressions inside `run:` scripts (pass them through `env:`); least-privilege `permissions`.
 
 Claude follows the update process in `docs/codex-standard.md` for every change; a PR that skips one of its steps (for example a doc the step 4 update matrix requires) is a finding.
