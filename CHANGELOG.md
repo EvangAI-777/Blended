@@ -2,6 +2,8 @@
 
 **Developer/Publisher:** CHJ 3 Productions LLC (Indiana).
 
+**Built with Claude and Codex, throughout:** Claude (Anthropic) is the implementation partner and Codex (OpenAI) is the pull-request reviewer for the entire project, every version and phase, not a particular range. The per-session "Claude AI contributor" notes below record what each session did; they don't mark where either partner's role starts or stops.
+
 Versioning policy: each minor version (0.x.0) corresponds to a completed
 foundation layer from the build order in BLENDED.md §4. Patch releases
 (0.x.y) are stable points within a layer — CI fixes, doc updates, build
@@ -214,6 +216,12 @@ Also corrected the docs' account of the developer's coursework, at their request
 - Not bugs: "Don't Save" continuing to the File > Open browser is the expected save-first prompt; the Windows security prompt on a second instance is SmartScreen for an unsigned executable.
 
 **Claude AI contributor (2026-10-17 — 1.0.0-dev Phase 1 tenth findings):** Read the developer's build 111 report and five screenshots. Traced the default cube to the factory startup file and the launcher's project-state cue to `section_has_data`. That cue was already lit for 3D at startup, which is why opening a file changed nothing on screen. Checked the "Don't Save" path against the File > Open flow instead of treating it as a bug. Syntax-checked the four C++ files against a stashed baseline (no new errors).
+
+**Claude AI contributor (2026-10-19 — roles and collaboration, PR #255):** At the developer's request, made the roles explicit across the docs: Claude implements and Codex reviews every pull request, for the whole project, not a version range (BLENDED.md §4 "Built with Claude and Codex"). After the developer asked why Claude micromanages them (restating obvious things, handing them checks to remember), added BLENDED.md §4 "Collaboration, not control", a CLAUDE.md rule and the `docs/wtf.md` note control.md. Caution goes on the code, not the developer. A thing is said once, when it's new. It is collaboration, not a contest of styles.
+
+**Smoke test takes over the headless checks (PR #255):** checks Claude had been handing to the developer as hardware steps now run in CI: a `Traceback`/`SyntaxError` scan of the smoke logs, the launcher keymap after the Python keyconfig (build 110 finding 4), Cycles loading (finding 3), File > New > General empty and rendering it reporting the missing camera (build 111 finding 1), the first-run copy from a seeded Blender folder (finding 5), and a saved preference loading on a second start (finding 6, `tests/python/blended_prefs_check.py`). Hardware lists keep only what needs a window. First run: the next Windows build.
+
+**Build 112 and the file-open question (PR #255):** build 112 (CI run 39049897746, `main` @ `b4aea10d`) is CI-green with the smoke test passing; the hardware run is pending (`docs/runtime-audit.md`). The developer is rethinking what Open and New do (launcher with the project's sections lit; a mode click opens an empty project in that mode; the top-bar File menu possibly moving into the launcher). It is recorded as under discussion in BLENDED.md §11, and the code is unchanged until it's decided.
 
 ---
 
@@ -462,7 +470,7 @@ Each mode button opens the focused editor layout described in the corresponding 
 
 **Claude AI contributor (2026-05-30, app icon build system):** 0.7.0 Phase 2 — app icon build system renames. Branch `claude/0-7-0-phase2-materials-9WEBB`. Commit `0bb9e585` (PR #216). All platform icon references renamed for Blended identity: `winblender.rc` → `winblended.rc` (line 12: `"winblender.ico"` → `"winblended.ico"`); `blender.desktop` → `blended.desktop` (`Icon=blender` → `Icon=blended`); `build_files/cmake/packaging.cmake` lines 92+98 (`winblender.ico` → `winblended.ico`); `source/creator/CMakeLists.txt` all `.rc`, `.desktop`, `.svg` references updated; `source/blender/windowmanager/CMakeLists.txt` line 135 (`blender.svg` → `blended.svg`). Artwork files (`winblended.ico`, `blended.svg`) committed by developer separately; `winblender.ico` and `blender.svg` deleted. App icon checklist item complete.
 
-**Codex AI contributor (OpenAI) — active review partner:** Codex (OpenAI) has been contributing automated code review on pull requests throughout the 0.4.x–0.7.x development cycle. Key contributions: catching functional regressions in dopesheet filter rows (particles/textures toggles restored after incorrect removal), identifying the `rna_enum_metaelem_type_items` orphan array in `rna_object.cc` during ID_MB chisel (Scar 11), flagging `CASE_IDINDEX(SCR/WM)` in idtype.cc after the 0.3.0 chisel (Scar 4), catching `BLT_I18NCONTEXT_ID_CACHEFILE` borrowed by `NodesModifier` in `rna_modifier.cc` (Scar 13), and the versioning gap in `brush_stroke_method` during 0.5.0 work. Per-instance Codex review comments appear on PRs throughout; the most significant catches are documented in the CLAUDE.md Battle Scars section.
+**Codex AI contributor (OpenAI) — active review partner:** Codex (OpenAI) reviews every pull request, across the whole project. The contributions listed here are from the 0.4.x–0.7.x cycle. Key contributions: catching functional regressions in dopesheet filter rows (particles/textures toggles restored after incorrect removal), identifying the `rna_enum_metaelem_type_items` orphan array in `rna_object.cc` during ID_MB chisel (Scar 11), flagging `CASE_IDINDEX(SCR/WM)` in idtype.cc after the 0.3.0 chisel (Scar 4), catching `BLT_I18NCONTEXT_ID_CACHEFILE` borrowed by `NodesModifier` in `rna_modifier.cc` (Scar 13), and the versioning gap in `brush_stroke_method` during 0.5.0 work. Per-instance Codex review comments appear on PRs throughout; the most significant catches are documented in the CLAUDE.md Battle Scars section.
 
 ---
 

@@ -11,6 +11,8 @@ compile errors are followed to every dependent site. `BLENDED.md` is the design 
 records what was removed and why (§10, the datablock audit: 39 → ~19 ID types), and its decisions
 are locked: don't propose restoring something it removed.
 
+Built with Claude (Anthropic) as implementation partner and Codex (OpenAI) as reviewer of every pull request, across the whole project, not a version range (`BLENDED.md` §4, "Built with Claude and Codex").
+
 Status: 1.0.0-dev, Phase 1 runtime audit. The developer runs each Windows CI build on hardware
 and reports; fixes go in through pull requests. `docs/runtime-audit.md` lists known runtime
 behavior (Categories A–D). Check it before reporting expected behavior as a bug.

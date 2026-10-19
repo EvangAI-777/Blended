@@ -12,7 +12,11 @@ This script checks the runtime paths those crashes broke:
 - Python operators register (the navigate gizmo needs `WM_OT_context_toggle`);
 - the window manager refines to `WindowManager` in RNA (keymaps depend on it);
 - a legacy `.blend` with UI data opens (File > Open with the kept window manager);
-- the file saves as `.blended` with the `BLENDED` magic and opens again.
+- the file saves as `.blended` with the `BLENDED` magic and opens again;
+- the launcher keymap survives the Python keyconfig (build 110), Cycles loads, File > New gives
+  an empty project and rendering it reports the missing camera (build 111);
+- in CI (`BLENDED_SMOKE_CI=1`): the first-run copy from a seeded Blender folder, and a saved
+  preference that `blended_prefs_check.py` reads back in a second run (build 111).
 
 Usage:
   Blended.exe --background --factory-startup --python-exit-code 1 \\
@@ -59,6 +63,26 @@ def main():
     # The General startup is an empty project: nothing behind the launcher (build 111).
     check(len(bpy.data.objects) == 0, "factory startup has no objects (got {})".format(len(bpy.data.objects)))
 
+    # Background mode skips the Python keyconfig; load it the way a windowed start does. Its
+    # refill wiped the launcher items added in C until they moved into blender_default.py (build 110).
+    bpy.utils.keyconfig_init()
+    launcher_km = wm.keyconfigs.default.keymaps.get("Blended Launcher")
+    check(launcher_km is not None and len(launcher_km.keymap_items) > 0,
+          "launcher keymap has items after the Python keyconfig")
+
+    import addon_utils
+    check(addon_utils.check("cycles")[1], "Cycles add-on is loaded")
+
+    if os.environ.get("BLENDED_SMOKE_CI") == "1":
+        # The workflow seeds the Blender user folder before the first run.
+        bookmarks = os.path.join(user_dir, "config", "bookmarks.txt")
+        check(os.path.isfile(bookmarks), "first run copied bookmarks from the Blender folder")
+        with open(bookmarks, encoding="utf-8", errors="replace") as fh:
+            check("blended-smoke-marker" in fh.read(), "copied bookmarks are the seeded ones")
+        # Read back by blended_prefs_check.py in a second process.
+        bpy.context.preferences.view.ui_scale = 1.25
+        check(bpy.ops.wm.save_userpref() == {'FINISHED'}, "saved preferences")
+
     # blended_rig_compat adds Action.fcurves; unregistering it raised TypeError at quit (build 111).
     rig_compat = sys.modules.get("blended_rig_compat")
     check(rig_compat is not None, "startup module blended_rig_compat imported")
@@ -85,6 +109,17 @@ def main():
     result = bpy.ops.wm.open_mainfile(filepath=blended_path)
     check(result == {'FINISHED'}, "reopened .blended")
     check(sorted(scene.name for scene in bpy.data.scenes) == scene_names, "scenes survive the round trip")
+
+    # File > New > General passes an empty template name.
+    check(bpy.ops.wm.read_homefile(app_template="") == {'FINISHED'}, "File > New > General")
+    check(len(bpy.data.objects) == 0, "new General project has no objects (got {})".format(len(bpy.data.objects)))
+    try:
+        bpy.ops.render.render()
+        rendered = True
+    except RuntimeError as ex:
+        rendered = False
+        check("camera" in str(ex).lower(), "render of the empty project reports no camera: " + str(ex).strip())
+    check(not rendered, "render of the empty project does not run")
 
     print("Blended smoke test passed")
 

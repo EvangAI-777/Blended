@@ -236,8 +236,11 @@ jobs:
 
     # ── Smoke test ────────────────────────────────────────────
     # Runs the packaged build headless: startup, Python startup scripts, window-manager RNA,
-    # File > Open of a legacy .blend, Save As .blended and reopen. Runs after the upload so a
-    # failing build is still downloadable for debugging; a failure blocks the GitHub Release.
+    # File > Open of a legacy .blend, Save As .blended and reopen, launcher keymap, Cycles,
+    # File > New, the first-run copy from a seeded Blender folder and a second start that must
+    # load the saved preferences. Any Python Traceback or SyntaxError in either log fails it.
+    # Runs after the upload so a failing build is still downloadable for debugging; a failure
+    # blocks the GitHub Release.
     - name: Smoke test (headless)
       shell: pwsh
       timeout-minutes: 15
@@ -247,6 +250,24 @@ jobs:
         $blend = Join-Path $env:SRC_DIR 'release\datafiles\startup.blend'
         New-Item -ItemType Directory -Force $out | Out-Null
         Get-ChildItem $env:TEMP -Filter '*crash.txt' -ErrorAction SilentlyContinue | Remove-Item -Force
+
+        # Seed a Blender user folder for the first-run copy (blended_smoke_test.py checks it).
+        $hdr = Get-Content (Join-Path $env:SRC_DIR 'source\blender\blenkernel\BKE_blender_version.h') -Raw
+        $bv  = [int]([regex]::Match($hdr, '#define BLENDER_VERSION (\d+)').Groups[1].Value)
+        $ver = '{0}.{1}' -f [math]::Floor($bv / 100), ($bv % 100)
+        $blenderCfg = Join-Path $env:APPDATA "Blender Foundation\Blender\$ver\config"
+        New-Item -ItemType Directory -Force $blenderCfg | Out-Null
+        Set-Content -Path (Join-Path $blenderCfg 'bookmarks.txt') -Value "[Bookmarks]`nC:\blended-smoke-marker"
+        Remove-Item (Join-Path $env:APPDATA 'Blended') -Recurse -Force -ErrorAction SilentlyContinue
+        $env:BLENDED_SMOKE_CI = '1'
+
+        function Assert-CleanLog($stdout, $stderr) {
+          $text = (Get-Content $stdout, $stderr -Raw -ErrorAction SilentlyContinue) -join "`n"
+          if ($text -match 'Traceback|SyntaxError') {
+            Write-Host "::error::Smoke test log contains a Python Traceback or SyntaxError"
+            exit 1
+          }
+        }
 
         $argList = @(
           '--background', '--factory-startup', '--python-exit-code', '1',
@@ -265,6 +286,21 @@ jobs:
           }
           exit 1
         }
+        Assert-CleanLog "$out\stdout.txt" "$out\stderr.txt"
+
+        # Second start, without --factory-startup: the preference saved above must load.
+        $argList2 = @(
+          '--background', '--python-exit-code', '1',
+          '--python', "`"$env:SRC_DIR\tests\python\blended_prefs_check.py`""
+        )
+        $proc2 = Start-Process -FilePath $exe -ArgumentList $argList2 -Wait -PassThru -NoNewWindow `
+          -RedirectStandardOutput "$out\stdout2.txt" -RedirectStandardError "$out\stderr2.txt"
+        Get-Content "$out\stdout2.txt", "$out\stderr2.txt" -ErrorAction SilentlyContinue
+        if ($proc2.ExitCode -ne 0) {
+          Write-Host "::error::Preferences check failed (exit code $($proc2.ExitCode))"
+          exit 1
+        }
+        Assert-CleanLog "$out\stdout2.txt" "$out\stderr2.txt"
 
     # ── Release files (tags only) ─────────────────────────────
     # The release itself is published by the `release` job, which is the only job with write

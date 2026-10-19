@@ -25,18 +25,17 @@ The Known Runtime Artifacts table in this file (Categories A, B, C) is the start
 
 **Verified on hardware in build 111** (CI run 38996537581, `main` @ `3992628f`): startup straight to the launcher with no splash; launcher click, scroll and Ctrl+Alt+Home; Model opens a 3D view with the navigate gizmo, and G works; File > Open of a legacy `.blend` and File > Open Cancel without a crash; Save As `.blended`; rendering from the top bar; a second Blended instance. No crash in the whole session.
 
-**Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run, or were not reached in build 111. The CI smoke test (`tests/python/blended_smoke_test.py`) covers their headless parts; everything that needs a window still needs a hardware run.
+**CI-green in build 112** (CI run 39049897746, `main` @ `b4aea10d`): the build, the provenance attestation and the smoke test passed, including Blended's own user and cache folders, an empty factory startup and the `blended_rig_compat` unregister and re-register (no Traceback at quit). The hardware run is pending.
+
+**Open runtime checks (not yet run on hardware):** these paths have changed since the last hardware run, or were not reached in build 111. The CI smoke test covers their headless parts; everything that needs a window still needs a hardware run. **Checked by CI instead of by hand** (from the build after 112): no Python `Traceback` or `SyntaxError` in the smoke logs, the launcher keymap after the Python keyconfig, Cycles loading, File > New > General empty, rendering an empty project reporting the missing camera, the first-run copy from a seeded Blender folder, and a saved preference loading on a second start (`tests/python/blended_smoke_test.py`, `blended_prefs_check.py`). Keep them off the hardware lists.
 - After File > Open, the launcher switches to the opened file's editor (the 3D view for a scene) and editors keep working (PR #244 steps 4–11, build 111 finding 2).
 - Two windows (Window > New Window, not a second instance), then File > Open: the secondary window's scene is remapped (PR #244 step 7).
 - Reopen a saved `.blended`: it opens in its editor with the saved change.
 - Undo and redo after File > Open (memfile undo with the kept UI).
-- File > New.
 - Closing Preferences and the render window: no crash (build 110 finding 1).
-- Cycles in the render engine list with no traceback (build 110 finding 3); no "loading empty scene" in the status bar (finding 5).
+- No "loading empty scene" in the status bar (build 110 finding 5).
 - A mesh object with a Geometry Nodes modifier that outputs curves (Mesh to Curve) draws in the viewport and renders (render-curve fix `2895a4d8`).
-- First run of build 112: preferences, recent files and bookmarks were copied from the Blender folder into `%APPDATA%\Blended\5.2\config` (build 111 finding 5).
-- Change a preference (for example the theme), close Blended, relaunch: the change is kept (build 111 finding 6). The smoke test checks the folder names headless; the copy needs an existing Blender folder, so only a hardware run shows it.
-- Build 111 findings (below): empty startup, File > Open entering the project's editor, the launcher's content dot, the render window title and the status-bar version; no `blended_rig_compat` Traceback at quit.
+- Build 111 findings (below): empty startup, File > Open entering the project's editor, the launcher's content dot, the render window title and the status-bar version.
 
 **Gate condition for the release tag:**
 Every checklist item must reach one of two states: **fixed** (code change, committed, CI-confirmed) or **explicitly accepted** (documented in Known Runtime Artifacts as expected post-removal behavior with a named trigger). No silent unknowns at 1.0.0. "I think it's probably fine" is not accepted status.

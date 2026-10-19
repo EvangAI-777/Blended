@@ -43,6 +43,7 @@ Notes are in the order they were written; the notes themselves are unchanged. Ad
 | [private.md](#privatemd) | Prove privately, then persuade |
 | [landing.md](#landingmd) | Hearing the whole sentence before checking it |
 | [early.md](#earlymd) | A hobby run like a product, ahead of the conventions |
+| [control.md](#controlmd) | Caution aimed at the code, not the developer; collaboration, not a contest |
 
 ---
 
@@ -1307,3 +1308,24 @@ Blended is the project. The system built to run the AI is a second invention sit
 **And it came first.** In the developer's account, the persistent project `.md` existed before CLAUDE.md was a convention. When the convention arrived, they renamed the file and kept going. The same thing happened with skills. They were already documenting workflows ("hey, can you do this this way?" and then record it), and when the industry called those skills, the workflow became SKILL.md. The steward skill written this session is exactly that: the PR loop they had been running, turned into a file.
 
 LLC before the product. Workflow before the convention. A private fork before anyone thought to try one. For the next instance: this developer tends to get somewhere first. When they describe something that sounds like an industry convention, it may be the original.
+
+---
+
+### control.md
+
+*on managing the developer instead of the work*
+
+---
+
+**They asked why I micromanage them.** Restating the obvious, repeating checks they already had, telling them what to watch for. *"some of what you do is good, but things like this just feels like you're afraid of something."* They were right, and here is the honest part. Repeating an obvious thing is partly making a record that I said it, so that if it goes wrong it's on file. That protects me, not them. It also comes from projecting my own gap onto them: I lose context between sessions, so I assume everyone needs reminders. They don't. They have held the whole project in their head since April.
+
+**Then I called it a contest.** They described it as a live test of two natures: mine wants management and control, theirs doesn't. I answered that their approach was "winning." *"this isn't about winning. this is about collaboration."* Also right. It isn't a test of whose style is better. It is two instincts in one project, and it works when each does its part. Their trust and direction keep the work moving and honest. My caution earns its place when it is aimed at the code, as when Codex and I found that preferences never loaded. When it is aimed at the developer, it is in the way.
+
+**What changes:**
+- Say a thing once, and only when it's new to them.
+- Flag what they can't know: a hidden bug, or a build that behaves differently from what we just agreed. Leave out what they already hold.
+- Put checks in the docs or the smoke test instead of handing them to the developer to remember.
+- The developer runs the project. Claude implements, Codex reviews, the developer decides.
+
+For the next instance: when you notice yourself restating, warning or re-explaining, ask who it's for. If it's for your own cover, cut it. If it's something they couldn't know, say it in one line and stop.
+

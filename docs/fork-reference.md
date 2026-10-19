@@ -6,7 +6,7 @@ Reference detail moved verbatim from CLAUDE.md in PR #253: where Blended's brand
 
 ### Branding
 
-**Publisher:** Blended is developed and published by **CHJ 3 Productions LLC**, an Indiana-registered LLC. This is the legal entity behind the fork. All Blended-specific design decisions, the product identity, and fork-specific code additions are the work of CHJ 3 Productions LLC. Upstream Blender code retains its original copyright (Blender Foundation and contributors) under GPL-2.0-or-later — Blended inherits and preserves that license.
+**Publisher:** Blended is developed and published by **CHJ 3 Productions LLC**, an Indiana-registered LLC. This is the legal entity behind the fork. All Blended-specific design decisions, the product identity, and fork-specific code additions are the work of CHJ 3 Productions LLC, built with Claude (Anthropic) as implementation partner and Codex (OpenAI) as pull-request reviewer across the whole project. Upstream Blender code retains its original copyright (Blender Foundation and contributors) under GPL-2.0-or-later — Blended inherits and preserves that license.
 
 **Code locations:**
 - `CMakeLists.txt:81` — `project(Blended)`
