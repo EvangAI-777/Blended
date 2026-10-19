@@ -221,6 +221,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Smoke test takes over the headless checks (PR #255):** checks Claude had been handing to the developer as hardware steps now run in CI: a `Traceback`/`SyntaxError` scan of the smoke logs, the launcher keymap after the Python keyconfig (build 110 finding 4), Cycles loading (finding 3), File > New > General empty and rendering it reporting the missing camera (build 111 finding 1), the first-run copy from a seeded Blender folder (finding 5), and a saved preference loading on a second start (finding 6, `tests/python/blended_prefs_check.py`). Hardware lists keep only what needs a window. First run: the next Windows build.
 
+**Build 112 and the file-open question (PR #255):** build 112 (CI run 39049897746, `main` @ `b4aea10d`) is CI-green with the smoke test passing; the hardware run is pending (`docs/runtime-audit.md`). The developer is rethinking what Open and New do (launcher with the project's sections lit; a mode click opens an empty project in that mode; the top-bar File menu possibly moving into the launcher). It is recorded as under discussion in BLENDED.md §11, and the code is unchanged until it's decided.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
