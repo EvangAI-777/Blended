@@ -219,6 +219,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-19 — roles and collaboration, PR #255):** At the developer's request, made the roles explicit across the docs: Claude implements and Codex reviews every pull request, for the whole project, not a version range (BLENDED.md §4 "Built with Claude and Codex"). After the developer asked why Claude micromanages them (restating obvious things, handing them checks to remember), added BLENDED.md §4 "Collaboration, not control", a CLAUDE.md rule and the `docs/wtf.md` note control.md. Caution goes on the code, not the developer. A thing is said once, when it's new. It is collaboration, not a contest of styles.
 
+**Smoke test takes over the headless checks (PR #255):** checks Claude had been handing to the developer as hardware steps now run in CI: a `Traceback`/`SyntaxError` scan of the smoke logs, the launcher keymap after the Python keyconfig (build 110 finding 4), Cycles loading (finding 3), File > New > General empty and rendering it reporting the missing camera (build 111 finding 1), the first-run copy from a seeded Blender folder (finding 5), and a saved preference loading on a second start (finding 6, `tests/python/blended_prefs_check.py`). Hardware lists keep only what needs a window. First run: the next Windows build.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)
