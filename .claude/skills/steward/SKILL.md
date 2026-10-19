@@ -61,6 +61,11 @@ section, status lines and the CHANGELOG contributor note.
 ## PR description
 
 - Follow `.github/pull_request_template.md`.
+- **The Test Plan covers every kind of testing the PR needs:** automated (what ran), build testing
+  (the hardware test list for the next Windows build, **verbatim** as given to the developer in
+  chat), developer testing (hands-on checks and calls beyond that list) and user testing when it
+  applies. When the chat list changes, update the PR to match. Write "None" with the reason for a
+  part that doesn't apply.
 - When later commits change what the PR does (a Codex fix, a new commit), **rewrite the
   description** so it matches the final diff before handing the PR to the developer.
 - Write `build 110`, never `build #110`.

@@ -187,6 +187,7 @@ Pull requests can always be created whenever requested — no need to ask whethe
 - **If there is already an open PR on a feature branch, keep committing to that same branch.** All commits on an open branch are included in the PR automatically — the developer reviews and merges PRs themselves, so batching related work into one PR is preferred over opening multiple small ones. This also preserves continuity in the git log: one merge commit per logical unit of work rather than a fragmented trail of micro-PRs.
 - **The orphaned-commit trap:** before committing to an existing branch, `git fetch origin main` and check whether the branch already merged. If it did, restart it from `origin/main` before writing any commits. (Story: `docs/scars.md`.)
 - **Write `build 57`, never `build #57`**: GitHub links `#N` to PR N.
+- **The PR's Test Plan covers every kind of testing:** automated, build testing (the chat test list, verbatim), developer testing, user testing where it applies (`.github/pull_request_template.md`).
 
 ---
 

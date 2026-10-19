@@ -225,6 +225,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Two windows vs. two instances (PR #256):** build 111 confirmed that a second instance (a second `Blended.exe`) starts, but the open check is two windows inside one running Blended (Window > New Window), the File > Open window switch-over from PR #244 step 7. The docs had written "a second Blended instance" next to a "two windows" check with no explanation of the difference. `docs/runtime-audit.md` now defines both and says why only two windows reaches that code path; the `runtime-audit` skill names them exactly in test lists and matches each reported result to the right test.
 
+**Test Plan covers every kind of testing (PR #256):** at the developer's request, the PR template's Test Plan has four parts: automated, build testing (the hardware test list given in chat, verbatim), developer testing, and user testing where it applies. The `steward` and `runtime-audit` skills, CONTRIBUTING.md and CLAUDE.md say the same.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

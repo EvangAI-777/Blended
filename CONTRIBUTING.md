@@ -26,6 +26,9 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
 ## Pull requests
 
 - Branch from `main` and open the pull request against `main`. Fill in the template.
+- The Test Plan covers every kind of testing the change needs: automated checks, build testing
+  (the hardware test list for the Windows build, verbatim), developer testing, and user testing
+  where it applies.
 - Subtraction is the method: when removing something, remove it completely and follow the compile
   errors ([`BLENDED.md`](BLENDED.md) §4 and its "Appendix — Development Philosophy").
 - Run the fast checks before pushing. They also run on every pull request:
