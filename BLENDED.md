@@ -1,7 +1,7 @@
 # BLENDED — Identity & Design Agreements
 
 **Developer/Publisher:** CHJ 3 Productions LLC (Indiana).
-**Status:** Living document. Working agreements from the rebuild conversation. Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches the launcher for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open / temporary-window close crash, upstream splash over the launcher, Cycles `MetaBall` registration, empty launcher keymap, spurious "loading empty scene" warning) fixed and verified on hardware in build 111, the first session with no crash; build 111 findings (scene behind the launcher, faint project-state cue, upstream branding) fixed, build 112 CI-green, awaiting hardware verification (test list on PRs #250–#254; the open multi-window check is two windows in one running Blended, not a second instance, PR #256); Category D updated; CI now smoke-tests each packaged build headless, and every PR runs fast source checks (`tools/check_blended.py`, PR #252); AI-facing docs restructured (PR #253: CLAUDE.md core, path-scoped rules, skills, `docs/`, `AGENTS.md`)). Phase 2 GitHub Pages launch pending Phase 1 completion.
+**Status:** Living document. Working agreements from the rebuild conversation. Chiseling stage: sculpting inside (§4, "Chiseling"). Current build: 1.0.0-dev — 0.9.0 CI-complete (Windows x64, build 101, commit `c8e87078`). Third first-try on the project. 0.9.0 delivered: `.blend` import ✓ — OB_MBALL versioning pass (502.31), BKE_main_clear Scar 2 drain (PA/TE/CU/LS), BKE_screen_blend_read_data deletion, dropped-data manifest Text block. Layer 3 post-read LS drain removed — Codex catch PR #229. 1.0.x: foundation complete — Phase 1 runtime audit in progress (build 103/104/106 crashes diagnosed and fixed, build 107 empty crash log fixed (PR #242) and verified on hardware in build 108 — first real backtrace of the startup crash; root cause identified (`wm_add_default` workspace/screen bootstrap), launcher-bootstrap fix (PR #244) verified on hardware in build 109 — Blended reaches the launcher for the first time; build 109 findings (bl_ui syntax error → navigate-gizmo crash, window manager refining to plain `ID` in RNA) fixed and verified on hardware in build 110; build 110 findings (File > Open / temporary-window close crash, upstream splash over the launcher, Cycles `MetaBall` registration, empty launcher keymap, spurious "loading empty scene" warning) fixed and verified on hardware in build 111, the first session with no crash; build 111 findings (scene behind the launcher, faint project-state cue, upstream branding) fixed, build 112 CI-green, awaiting hardware verification (test list on PRs #250–#254; the open multi-window check is two windows in one running Blended, not a second instance, PR #256); Category D updated; CI now smoke-tests each packaged build headless, and every PR runs fast source checks (`tools/check_blended.py`, PR #252); AI-facing docs restructured (PR #253: CLAUDE.md core, path-scoped rules, skills, `docs/`, `AGENTS.md`)). Phase 2 GitHub Pages launch pending Phase 1 completion.
 **Purpose:** So any future session, contributor, or Claude instance can pick up without re-litigating what's already been decided. Read this first before proposing changes to scope, identity, or architecture.
 
 ---
@@ -104,6 +104,28 @@ Blended embraces C's *breadth* while rejecting those three failure modes. The su
 ---
 
 ## 4. Methodology [LOCKED]
+
+### Chiseling
+
+Blended is chiseled, not assembled. Upstream Blender is the block of marble: the whole 5.2 codebase, forked at `03de53b7` (`docs/upstream-sync.md`). The developer is the chiseler, working from the plans and vision written in this document since the fork in April 2026. Every change is a cut, and every cut follows that plan. The chisel isn't new to the project; it was the word for every removal from the start ("the ID_MB chisel", "post-chisel greps"). Here it is the frame for the whole process.
+
+The work happens in two stages, in version order. The "Foundation-first order" below is the order of design layers, which is a different list.
+
+1. **Roughing out: cutting away the raw material.** The pieces that don't belong come off whole: the datablock audit (0.2.x–0.5.x, 39 → ~19 ID types) and the evaluation seam (0.6.x). Subtraction is the tool, and the compile errors after each cut show where the block was still holding on.
+2. **Sculpting inside: shaping what's left.** With the bulk gone, the work moves into the form itself: the launcher and mode lenses (0.7.x), `.blended` as the project file (0.8.x), `.blend` import (0.9.x), and the runtime audit (1.0.0 Phase 1), which finds the cracks earlier cuts left and closes them. Sculpting still removes more than it adds. When it adds, as with the launcher, it's carving the shape the plan calls for, not attaching a new block.
+
+**Blended is in the sculpting stage now.**
+
+The rest of the process fits the same frame:
+- **The chiseler** decides where each cut goes and what the figure is: the developer, holding the whole project in mind since April.
+- **The hands on the chisel** make the cuts: Claude, implementing.
+- **Codex** inspects every cut before it stays.
+- **A scar** (`docs/scars.md`) is where the chisel slipped, written down so it doesn't slip there again.
+- **The hardware run** is stepping back to look at the figure in real light.
+- **Phase 2**, the GitHub Pages launch, is showing the sculpture.
+- **Upstream keeps changing its own marble**, so fixes come over in small, verified pieces (cherry-picks), never as a fresh block (`docs/upstream-sync.md`).
+
+"Subtraction" and "the chisel" name the same method. Subtraction is the action, and chiseling is the whole craft around it.
 
 ### Foundation-first order
 
@@ -1742,7 +1764,7 @@ This principle was born from a real incident. The user reported a blank screen o
 
 #### 13. Subtraction Is the Methodology
 
-The main principle of this rebuild is **subtraction**. Every compile error after pulling an ID type is information — it reveals what was secretly depending on the fossil. Don't paper over breaks; follow them. The breakage is the audit.
+The main principle of this rebuild is **subtraction**: the chisel (§4, "Chiseling"). Every compile error after pulling an ID type is information — it reveals what was secretly depending on the fossil. Don't paper over breaks; follow them. The breakage is the audit.
 
 #### 14. When Someone Describes a Vision: Believe Them
 

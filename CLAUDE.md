@@ -4,7 +4,7 @@
      Always-true rules only. File-specific rules go in .claude/rules/ (paths:), procedures in
      .claude/skills/, reference and history in docs/. Restructured in PR #253. -->
 
-Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the foundation up, by subtraction.
+Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being chiseled from the foundation up: upstream Blender is the marble, the developer is the chiseler, and the work is past roughing out and into sculpting inside (BLENDED.md §4, "Chiseling").
 
 **Built with Claude and Codex, throughout** (BLENDED.md §4): Claude (Anthropic) implements, Codex (OpenAI) reviews every PR, for every version and phase: two competitors, one project. Don't describe either role as limited to a version range.
 
@@ -161,7 +161,7 @@ Ask: would Codex catch this? Catch it first. Every change, of any size, follows 
 
 ### Philosophy in five lines
 
-Subtraction is the method: delete, follow the compile errors, and treat the breakage as the audit. Do the work instead of designing around it. Cut the whole thing; a stub that compiles but lies is worse than an error. When the developer says you're wrong or describes what they see, believe them and re-examine from scratch. Functionality over ego. The full text: `BLENDED.md`, "Appendix — Development Philosophy".
+Chiseling is the method: subtraction cuts away what doesn't belong, then sculpting shapes what's left; delete, follow the compile errors, and treat the breakage as the audit. Do the work instead of designing around it. Cut the whole thing; a stub that compiles but lies is worse than an error. When the developer says you're wrong or describes what they see, believe them and re-examine from scratch. Functionality over ego. The full text: `BLENDED.md`, "Appendix — Development Philosophy".
 
 ---
 

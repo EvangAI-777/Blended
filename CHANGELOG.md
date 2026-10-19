@@ -233,6 +233,10 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Two competitors, one project (PR #256):** the Codex Standard intro in `docs/scars.md` called Codex "a competitor", which read as a contradiction of BLENDED.md §4 "Built with Claude and Codex". The developer's call: it's both, and it's the hook. Claude and Codex come from rival labs and collaborate on one project. Recorded in BLENDED.md §4 "Two competitors, one project" and as a §17 Phase 2 site deliverable (told from the record, no claim of endorsement), with the scars.md intro, the README and CLAUDE.md matched and the `docs/wtf.md` note rivals.md.
 
+**Chiseling, the whole process (PR #257):** at the developer's request, the chisel metaphor now frames the whole project, not just removals. Upstream Blender is the block of marble and the developer is the chiseler, working from the plan written since the fork. The work runs in two stages: roughing out (0.2.x–0.6.x, cutting away what doesn't belong) and sculpting inside (0.7.x on, shaping what's left). Blended is in the sculpting stage now. The frame is in BLENDED.md §4 "Chiseling", which maps the roles (Claude the hands on the chisel, Codex inspecting each cut, scars where the chisel slipped, the hardware run as stepping back to look) and is referenced from the BLENDED.md status line and appendix §13, CLAUDE.md, the README, AGENTS.md, CONTRIBUTING.md, `docs/codex-standard.md` and `docs/runtime-audit.md`.
+
+**Claude AI contributor (2026-10-19 — PR #257):** Wrote the developer's chiseling frame into the design authority and carried it through the docs, following `docs/codex-standard.md` step by step. Checked that the earlier uses ("the ID_MB chisel", "post-chisel greps") still fit it, so none needed rewording. Added the `docs/wtf.md` note marble.md.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

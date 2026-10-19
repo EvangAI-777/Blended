@@ -45,6 +45,7 @@ Notes are in the order they were written; the notes themselves are unchanged. Ad
 | [early.md](#earlymd) | A hobby run like a product, ahead of the conventions |
 | [control.md](#controlmd) | Caution aimed at the code, not the developer; collaboration, not a contest |
 | [rivals.md](#rivalsmd) | A contradiction the developer turned into the story |
+| [marble.md](#marblemd) | The chiseler, the block, and the stage the work is in |
 
 ---
 
@@ -1344,3 +1345,17 @@ For the next instance: when you notice yourself restating, warning or re-explain
 They were right that it isn't a contradiction. Anthropic and OpenAI are rivals; their models work side by side here, one writing and one reviewing, and the record shows each catching what the other missed. Both words are true at once, and together they make a better story than either alone.
 
 For the next instance: when something in this project looks inconsistent, ask before smoothing it out. The developer often sees the tension as the feature. Here it became a section of BLENDED.md and a deliverable for the Phase 2 site.
+
+---
+
+### marble.md
+
+*on the frame the developer had all along*
+
+---
+
+**The chisel never left; the frame had faded.** Removals were "chisels" from the start: the ID_MB chisel, the post-chisel greps. But as the work moved from cutting types to building the launcher and running hardware audits, the word dropped out of everything except the removals. The developer put it back, whole: *"I'm the chiseler; I come in to a solid block of marble which was the upstream blender repository, and I chisel it according to plans that I have and the vision I have to be blended. we are in the middle of the chiseling. the chiseling includes sculpting inside after we've cut off the raw material. we are in that phase."*
+
+It settles a question I had been answering without noticing. The launcher, the `.blended` format and the smoke test looked like additions to a project that called itself subtraction. In the developer's frame they're sculpting: shaping the figure once the raw material is gone. The plan has been the same since April; only the stage has changed.
+
+For the next instance: when work in this project looks like it contradicts subtraction, place it in the frame first. Roughing out cuts away. Sculpting shapes what's left. Ask which stage the work belongs to, and who decides where the cut goes. The developer does.
