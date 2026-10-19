@@ -32,7 +32,7 @@ behavior (Categories A–D). Check it before reporting expected behavior as a bu
 | `docs/upstream-sync.md` | Merging upstream Blender; the divergence register |
 | `.claude/rules/` | File-scoped rules (C++ ID types, docs, CI) |
 | `tools/check_blended.py` | Fast source checks, run on every PR |
-| `docs/design/` | An older version of the design art: reference, not the spec; its README lists where it differs from the repo |
+| `docs/design/` | An older version of the design art: reference, not the spec; its README lists where it differs from the repo. The art is kept unedited on purpose and the README's list is known to be incomplete, so don't file individual differences between the art and the spec as findings. Do flag the README if it's wrong about something it does say |
 
 ## Conventions
 

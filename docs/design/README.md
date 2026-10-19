@@ -61,7 +61,11 @@ site, and the launcher code. Fix these in any version that ships, and don't copy
   (GPL-2.0-or-later)" stand in for §16's required lines, "Based on Blender · blender.org" (GPL
   attribution) and "© [Year] CHJ 3 Productions LLC".
 - **Landing, Download button:** links to `#download`, but no element on the page has that ID, and
-  there's no download URL yet.
+  there's no download URL yet. "Source on GitHub" links to `#source`, which has no target either;
+  it should point at the repository.
+- **Pipeline, Export:** the final box lists ".blended, video" together. `.blended` is the project
+  file Charles saves, not an export; import and export are the boundary for other formats
+  (`BLENDED.md` §5). Show saving the project apart from exported deliverables.
 
 The launcher mockup's header ("+ New", "Open…") and its Recent Projects sidebar are one picture of
 the file-open model under discussion (`BLENDED.md` §11, "Opening a project enters it"). That model
