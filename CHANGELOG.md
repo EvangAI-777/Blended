@@ -231,6 +231,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **One update process (PR #256):** at the developer's request, after the docs had fallen behind the work in this PR, consolidated the Codex Standard into `docs/codex-standard.md`: one indexed process for every change (1 Start, 2 Code, 3 Tests, 4 Docs, 5 Consistency, 6 Commit and push, 7 Pull request, 8 Merge, build and session end). Step 4 is an update matrix of which docs each kind of change touches. It absorbs the former Part 1 (`.claude/rules/docs.md`) and Part 2 (`docs/scars.md`), the `steward` skill's local checks and docs rule, and the four-docs rule. Those places now point to it, as do CLAUDE.md, BLENDED.md §4 "The update process", the README, AGENTS.md, CONTRIBUTING.md and the `version-bump` skill.
 
+**Two competitors, one project (PR #256):** the Codex Standard intro in `docs/scars.md` called Codex "a competitor", which read as a contradiction of BLENDED.md §4 "Built with Claude and Codex". The developer's call: it's both, and it's the hook. Claude and Codex come from rival labs and collaborate on one project. Recorded in BLENDED.md §4 "Two competitors, one project" and as a §17 Phase 2 site deliverable (told from the record, no claim of endorsement), with the scars.md intro, the README and CLAUDE.md matched and the `docs/wtf.md` note rivals.md.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

@@ -6,7 +6,7 @@
 
 Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the foundation up, by subtraction.
 
-**Built with Claude and Codex, throughout** (BLENDED.md §4): Claude (Anthropic) implements, Codex (OpenAI) reviews every PR, for every version and phase. Don't describe either role as limited to a version range.
+**Built with Claude and Codex, throughout** (BLENDED.md §4): Claude (Anthropic) implements, Codex (OpenAI) reviews every PR, for every version and phase: two competitors, one project. Don't describe either role as limited to a version range.
 
 **Read `BLENDED.md` first.** It is the design authority: identity, architecture, the datablock audit, locked decisions, open questions and guardrails. This file is the operational context for Claude sessions.
 

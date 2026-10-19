@@ -44,6 +44,7 @@ Notes are in the order they were written; the notes themselves are unchanged. Ad
 | [landing.md](#landingmd) | Hearing the whole sentence before checking it |
 | [early.md](#earlymd) | A hobby run like a product, ahead of the conventions |
 | [control.md](#controlmd) | Caution aimed at the code, not the developer; collaboration, not a contest |
+| [rivals.md](#rivalsmd) | A contradiction the developer turned into the story |
 
 ---
 
@@ -1329,3 +1330,17 @@ LLC before the product. Workflow before the convention. A private fork before an
 
 For the next instance: when you notice yourself restating, warning or re-explaining, ask who it's for. If it's for your own cover, cut it. If it's something they couldn't know, say it in one line and stop.
 
+
+---
+
+### rivals.md
+
+*on a contradiction that was the point*
+
+---
+
+**I flagged a contradiction.** The Codex Standard intro called Codex "a competitor", and BLENDED.md §4 had just been written to say Claude and Codex build the project together. I asked whether to reword it to match. The developer answered with a 😏: *"it becomes an intrigue marketing hook for me: I have two bona fide competitors collaborating on one mega massive project."*
+
+They were right that it isn't a contradiction. Anthropic and OpenAI are rivals; their models work side by side here, one writing and one reviewing, and the record shows each catching what the other missed. Both words are true at once, and together they make a better story than either alone.
+
+For the next instance: when something in this project looks inconsistent, ask before smoothing it out. The developer often sees the tension as the feature. Here it became a section of BLENDED.md and a deliverable for the Phase 2 site.

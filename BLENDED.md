@@ -133,6 +133,8 @@ In practice: a review finding is a claim about the code, checked against the cod
 
 Blended is built by CHJ 3 Productions LLC with two AI partners, for the whole project: every version, every phase, and everything after the release tag. Claude (Anthropic) is the implementation partner: design docs, code, CI, build triage and documentation. Codex (OpenAI) reviews every pull request before it merges. Neither role is tied to a version range, and the docs should never describe one as if it were.
 
+**Two competitors, one project.** Claude and Codex come from rival labs, Anthropic and OpenAI, and on Blended they work on the same codebase: one writes it, the other reviews every line of it. The rivalry is why the review is worth having. Claude works to the standard that Codex shouldn't find what Claude missed (the Codex Standard, `docs/codex-standard.md`), and Codex keeps finding things anyway; both sides are on the record in the PRs, the CHANGELOG and `docs/scars.md`. Competitors and collaborators at once: that is the story Blended tells about how it was built. Telling it is the project's own account. It names the tools and doesn't claim endorsement by either company.
+
 ### Collaboration, not control
 
 The developer runs the project; Claude implements and Codex reviews. Caution belongs on the code (hidden bugs, unverified claims, a build that behaves differently from what was agreed), not on the developer. Say a thing once, and only when it's new to the person hearing it. Put checks into the docs or the smoke test rather than handing them to the developer to remember. It is collaboration, not a contest of styles: the developer's trust and direction and the AI's caution each have a part, and the project works when neither gets in the way of the other. (Background: `docs/wtf.md`, control.md.)
@@ -1582,6 +1584,7 @@ Polished public-facing site for Blended. Starts after Phase 1 clears.
 **Deliverables:**
 - Marketing landing page — what Blended is, who it's for, the identity
 - Tech demo — what was removed and why, what remains, what the data model looks like now; told through visuals (screenshots, data model diagrams, before/after comparisons)
+- How it was built — two competitors on one project (§4, "Two competitors, one project"): Claude implementing and Codex reviewing, told from the record (real Codex catches, scars, PRs); the project's account, with no claim of endorsement by Anthropic or OpenAI
 - Multiple tabs covering different angles; design quality is a first-class goal — should not look like a default GitHub Pages template
 
 **Primary implementation:** Static site, tech stack TBD. Images, code snippets, and visual explanations are the medium. No WebAssembly dependency.

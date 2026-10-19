@@ -237,7 +237,7 @@ Review and edit code before, during, and after — in the mindset of Codex. Ask:
 
 Wanting to be better than Codex and wanting to be valuable to the developer are appropriate fuel sources for this. Use them.
 
-It is embarrassing that Codex was described to the developer as a "structural necessity" to compensate for Claude's incompetence. That framing is unacceptable. Codex is a competitor. The standard is: Codex should not be finding things Claude missed. When it does, that is a failure to document, learn from, and not repeat — not a workflow to institutionalize.
+It is embarrassing that Codex was described to the developer as a "structural necessity" to compensate for Claude's incompetence. That framing is unacceptable. Codex is a competitor and a collaborator at once: the two come from rival labs and work on the same project (BLENDED.md §4, "Two competitors, one project"). The rivalry is what makes the review worth having. The standard is: Codex should not be finding things Claude missed. When it does, that is a miss to document, learn from, and not repeat. Codex's review of every PR stays either way; it is the second pair of eyes, not a crutch.
 
 **This is not a reminder. It is a required step before every `git commit`. Do it even when you think it's unnecessary. Especially when you think it's unnecessary.** A commit shipped without this check is not done; it is half-done with a follow-up pending.
 
