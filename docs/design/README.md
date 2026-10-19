@@ -21,8 +21,10 @@ that point.
 
 ## Where they differ from the repository
 
-Checked against the repo when the files were added. Fix these in any version that ships, and
-don't copy them from here:
+Found in checks against the repo when the files were added, by Claude and in Codex review. **This
+list is not complete.** Before using any piece of this art, check it against the spec it shows:
+`BLENDED.md` §11 for the launcher and pipeline, §16 for identity and the splash, §17 for the
+site, and the launcher code. Fix these in any version that ships, and don't copy them from here:
 
 - **Landing, status:** "Latest build: January 2026". The project began with the fork in April
   2026; the latest build when these were added was build 112 (October 2026).
@@ -50,6 +52,16 @@ don't copy them from here:
   `support.js` passes them to React as strings, not functions, so the hover states don't fire when
   the page renders through it. (The landing page uses CSS `:hover`, which works.) A shipped
   version uses CSS `:hover` or real handlers.
+- **Launcher, recent-project cards:** no `.blended` badge on each card, and no empty state.
+  §11 calls for both: a `.blended` badge per card, and "No recent projects." when there are none.
+- **Launcher, project-state cue:** sections with project data look the same as empty ones. The
+  shipped launcher marks them with an accent dot (`section_has_data` in
+  `space_blended_launcher.cc`, the build 111 fix).
+- **Branding, splash attribution:** "Developed by CHJ 3 Productions LLC" and "Based on Blender 5.2
+  (GPL-2.0-or-later)" stand in for §16's required lines, "Based on Blender · blender.org" (GPL
+  attribution) and "© [Year] CHJ 3 Productions LLC".
+- **Landing, Download button:** links to `#download`, but no element on the page has that ID, and
+  there's no download URL yet.
 
 The launcher mockup's header ("+ New", "Open…") and its Recent Projects sidebar are one picture of
 the file-open model under discussion (`BLENDED.md` §11, "Opening a project enters it"). That model
