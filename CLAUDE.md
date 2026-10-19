@@ -20,6 +20,7 @@ Blended is a fork of Blender 5.2 (GPL-2.0-or-later) being rebuilt from the found
 |------|--------------|
 | `BLENDED.md` | Always first. Design authority; its appendix holds the Development Philosophy |
 | `docs/runtime-audit.md` | Before calling anything a new bug: the audit protocol, open runtime checks, Categories A–D, build findings |
+| `docs/codex-standard.md` | Every change: the indexed update process (checks, the docs update matrix, consistency, commit, PR, build hand-off) |
 | `docs/scars.md` | Before your first session, and when a rule below points to a scar: the full story behind each rule |
 | `docs/fork-reference.md` | Branding locations, rig compatibility, update checker, completed layers, datablock audit |
 | `CHANGELOG.md` | Release record, per-session detail, Claude AI contributor notes |
@@ -149,9 +150,9 @@ Each comes from a real failure. The full story is in `docs/scars.md`; read it wh
 - **Collaboration, not control** (BLENDED.md §4): aim caution at the code, not the developer. Say a thing once, only when it's new to them; checks go into the docs or the smoke test, not onto the developer.
 - **Verify includes for every new or rewritten `.cc`**: grep the `#include` list for each API you call (`MEM_guardedalloc.h` for `MEM_new`).
 
-### Before every commit (the Codex Standard)
+### Every change: the update process (the Codex Standard)
 
-Ask: would Codex catch this? Catch it first. Run `python3 tools/check_blended.py`; for docs, the Part 1 checklist in `.claude/rules/docs.md`; then answer the rules above as yes/no questions. The full checklist is in `docs/scars.md`.
+Ask: would Codex catch this? Catch it first. Every change, of any size, follows [`docs/codex-standard.md`](docs/codex-standard.md) in order: **1** Start (branch, todo list, read first) → **2** Code (local checks, the code questions) → **3** Tests (where each check goes) → **4** Docs (the update matrix: which docs each kind of change touches) → **5** Consistency (read the diff; everything agrees) → **6** Commit and push → **7** Pull request (template, four-part Test Plan, Codex) → **8** Merge, build and session end. Skip a step only on purpose.
 
 ### Session discipline
 
@@ -166,7 +167,7 @@ Subtraction is the method: delete, follow the compile errors, and treat the brea
 
 ## Documentation
 
-**After every milestone or structural change, update all four mandatory docs before the session ends:** `CLAUDE.md` (current-version line, roadmap row), `CHANGELOG.md` (milestone note, Claude AI contributor note), `BLENDED.md` (status line, affected sections), `.github/README.md` (status sentence). Where each kind of content goes, and how to edit the docs, is in `.claude/rules/docs.md`. If you learn something the next session needs, write it into the right doc before the session ends, not just into the chat.
+**Which docs each change updates is the update matrix, step 4 of [`docs/codex-standard.md`](docs/codex-standard.md).** Every change gets a CHANGELOG entry; any change to behavior, workflow, process or structure updates all four mandatory docs in the same commit: `CLAUDE.md` (current-version line, roadmap row, or a rule line), `CHANGELOG.md` (the note and a Claude AI contributor note), `BLENDED.md` (status line, the section it belongs to), `.github/README.md` (status sentence, or the section it belongs to). Where content goes within each doc, and how to edit them, is in `.claude/rules/docs.md`. If you learn something the next session needs, write it into the right doc before the session ends, not just into the chat.
 
 ---
 

@@ -229,6 +229,8 @@ Also corrected the docs' account of the developer's coursework, at their request
 
 **Claude AI contributor (2026-10-19 — PR #256):** At the developer's request, told two windows apart from two instances across the runtime-audit docs and skill, after a build 111 second-instance pass had sat next to the still-open two-windows check. Split the PR template's Test Plan into four parts. Fixed two Codex catches in the same PR: the build list had no open PR to go into after merge, and BLENDED.md and the README hadn't been updated. Posted the build 112 test list on PRs #250–#254 and updated the four mandatory docs to match.
 
+**One update process (PR #256):** at the developer's request, after the docs had fallen behind the work in this PR, consolidated the Codex Standard into `docs/codex-standard.md`: one indexed process for every change (1 Start, 2 Code, 3 Tests, 4 Docs, 5 Consistency, 6 Commit and push, 7 Pull request, 8 Merge, build and session end). Step 4 is an update matrix of which docs each kind of change touches. It absorbs the former Part 1 (`.claude/rules/docs.md`) and Part 2 (`docs/scars.md`), the `steward` skill's local checks and docs rule, and the four-docs rule. Those places now point to it, as do CLAUDE.md, BLENDED.md §4 "The update process", the README, AGENTS.md, CONTRIBUTING.md and the `version-bump` skill.
+
 ---
 
 ## 0.9.0 — 2026-06-01 — CI-complete (build 101, commit `c8e87078`)

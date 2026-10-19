@@ -68,5 +68,7 @@ Check these first. Each comes from a bug that shipped in a build:
 7. **Workflows** (`.github/workflows/`). Actions pinned to full commit SHAs; no `${{ }}`
    expressions inside `run:` scripts (pass them through `env:`); least-privilege `permissions`.
 
+Claude follows the update process in `docs/codex-standard.md` for every change; a PR that skips one of its steps (for example a doc the step 4 update matrix requires) is a finding.
+
 A finding should name the input or call path that reaches the failure. Plans written into
 `CLAUDE.md` or `docs/` at implementation detail are reviewed as if they were code.

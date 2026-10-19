@@ -32,6 +32,8 @@ For security problems, see [`SECURITY.md`](SECURITY.md).
   requests it carries.
 - Subtraction is the method: when removing something, remove it completely and follow the compile
   errors ([`BLENDED.md`](BLENDED.md) §4 and its "Appendix — Development Philosophy").
+- Follow the update process in [`docs/codex-standard.md`](docs/codex-standard.md): checks, tests,
+  the docs each kind of change updates, consistency, commit and pull request.
 - Run the fast checks before pushing. They also run on every pull request:
 
   ```

@@ -241,56 +241,7 @@ It is embarrassing that Codex was described to the developer as a "structural ne
 
 **This is not a reminder. It is a required step before every `git commit`. Do it even when you think it's unnecessary. Especially when you think it's unnecessary.** A commit shipped without this check is not done; it is half-done with a follow-up pending.
 
-The checklist has two parts. Both run before every commit. Neither is optional.
-
----
-
-#### Part 1 — Documentation Consistency *(Scar 7)*
-
-Moved to the path-scoped rule [`.claude/rules/docs.md`](../.claude/rules/docs.md) in PR #253; it loads when editing the documentation.
-
-
----
-
-#### Part 2 — General Pre-Commit Checks
-
-These scars cannot be expressed as greps. Each is a yes/no question to answer before committing.
-
-- **Scar 1 — did I over-delete?** Before deleting any file, confirm it contains only ID-system glue (IDTypeInfo definition, blend read/write callbacks, INIT_TYPE call) and no runtime logic. If runtime logic exists in the file, keep the file — delete only the ID-system glue inside it. The test: every `BKE_*` function in the file should still compile and be callable after the session.
-
-- **Scar 2 — is `which_libbase` routing intact?** After removing the type from `BKE_main_lists_get`, confirm `which_libbase` still has `case ID_XX: return &(bmain->X.cast<ID>());`. The `bmain->X` field must stay in `Main`. Removing it produces ~200 compile errors and was the $15 mistake.
-
-- **Scar 3 — did I push after every layer?** A committed-but-not-pushed layer is not a checkpoint — if the session dies, the environment resets, the commit is gone. The rule is commit → push → continue. Not commit-and-hold. If the last push was more than one layer ago, push now before continuing.
-
-- **Scar 5 — did I make one Edit call per section?** When updating large documentation files (CLAUDE.md, CHANGELOG.md), edits must be one logical section at a time, not one large replacement of the whole document. Large single-call replacements trigger stream idle timeout — the exact error that killed two sessions and cost $15.
-
-- **Scar 6 — are session notes written from evidence, not preference?** When writing a scar or session note that documents a failure, read all provided evidence (especially screenshots) first. Write what the evidence shows. Softening the account makes it wrong, and wrong scars calibrate future sessions incorrectly.
-
-- **Scar 14 — am I producing a menu about something obviously wrong?** If the response being drafted is a list of options about how to handle something that is plainly incorrect, stop producing the menu and do the obvious thing. The menu pattern is the failure mode. Common sense is upstream of the rules.
-
-- **Scar 20 — did I grep the full repo root (no directory or extension filter) after any file rename?** When renaming a file that may be referenced by path strings anywhere in the codebase, the verification grep must cover the entire repo with no directory restriction and no `--include` filter. A scoped grep (`source/`, `build_files/`, `--include="*.cmake"`, `--include="*.txt"`) silently misses files outside those directories or with non-matching extensions. `doc/doxygen/Doxyfile` has no extension and lives in `doc/` — both invisible to scoped searches. Correct check after any rename:
-  ```bash
-  grep -rn "old_filename" /home/user/Blended --exclude-dir=.git
-  ```
-  Zero hits required. If any hit remains, update it before committing.
-
-- **Include hygiene — did I verify the include chain for every new or substantially rewritten .cc file?** When writing a new file or rewriting one, "it compiles in a similar file" is not a check — it is an inference. Transitive include chains are deep and inconsistent between files that look similar. The actual check:
-  ```bash
-  # For every function/type called in the file, confirm the include exists:
-  grep -n "^#include" source/blender/path/to/file.cc
-  # Then verify: is MEM_new covered? BlendWriter/BlendDataReader? Any BKE_* call?
-  # If MEM_new is called: grep -rn "MEM_guardedalloc" <file> must return a hit.
-  # If it doesn't, add: #include "MEM_guardedalloc.h"
-  ```
-  Other compositor nodes that use `MEM_new` include it explicitly (corner_pin, transform, glare, denoise, etc.) — match that pattern. "Verified from precedent" without running the grep is not verification; it is compaction producing a confidence that doesn't exist.
-
-- **Scar 22 — did I search all three axes of a format/type change?** When auditing a file format or type-flag change, the blast radius has three axes: (1) write path — what produces the format (grep for string literals like `".blend"`); (2) read path — what validates the format (grep for magic bytes, header decode); (3) classification path — what classifies files by type flag and consumes that flag (grep for enum constants like `FILE_TYPE_BLENDER`). The initial 0.8.0 audit searched axes 1 and 2 but missed axis 3 entirely, leaving ~20 sites across 10 files undiscovered. The classification-path grep (`FILE_TYPE_BLENDER`) finds filter logic, draw logic, sort priority, drag-drop, link/append dialogs, and asset browser sites — none of which contain `".blend"` as a string literal.
-
-- **Scar 24 — did I fix wrong things or just label them?** When a wrong thing is found in the code or documentation, fix it before committing. Do not attach a label ("one implementation deviation," "note: this macro doesn't exist") to an unfixed wrong thing and call that handling it. Note after fix — never instead of fix. CLAUDE.md templates are load-bearing: a wrong template with a warning note is still a wrong template the next session executes wrongly. The only acceptable state is a correct template with no label required.
-
-- **Scar 25 — if I just added a new checklist rule, did I run it retroactively against the full codebase?** New rules cover future work and silently miss existing violations. When Scar 10's "mandatory post-chisel grep" was written (2026-05-01, during 0.4.0 work), it was never run against ID_WM and ID_SCR which had been deregistered since 0.3.0. Three crashing `BKE_libblock_alloc` calls shipped in every build from 0.3.0 (2026-04-29) through 0.9.0 (2026-06-01). The rule: when adding any new checklist item, run it against the entire codebase before closing the session. The debt audit is part of the work of writing the rule.
-
-- **Scar 26 — after any identity/branding pass, did I audit binary artifact names alongside UI strings?** The 0.7.0 identity pass changed window titles, splash text, app icon, and accent color. It did not set `OUTPUT_NAME` for the Windows executable — that line was macOS-only (`elseif(APPLE)` block in `source/creator/CMakeLists.txt`). The binary shipped as `blender.exe` through all of 0.7.x–0.9.x. Runtime strings (what you see when the app runs) and artifact names (what you see in the file system before it runs) are different axes. An identity audit must cover both. Check: `grep -rn "OUTPUT_NAME" source/creator/CMakeLists.txt` — verify it's set for every target platform, not just the one you're building on.
+**The checklist itself is now [`docs/codex-standard.md`](codex-standard.md)** (consolidated in PR #256): one indexed update process, followed every time — 1 Start, 2 Code, 3 Tests, 4 Docs (the update matrix), 5 Consistency (the former Part 1, Scar 7), 6 Commit and push, 7 Pull request, 8 Merge, build and session end. The former Part 2 questions (Scars 1, 2, 3, 5, 6, 14, 20, 22, 24, 25, 26 and include hygiene) are its items 1.3–1.4, 2.6, 3.4 and 6.1. The scar sections keep the stories.
 
 ---
 

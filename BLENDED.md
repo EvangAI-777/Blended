@@ -137,6 +137,10 @@ Blended is built by CHJ 3 Productions LLC with two AI partners, for the whole pr
 
 The developer runs the project; Claude implements and Codex reviews. Caution belongs on the code (hidden bugs, unverified claims, a build that behaves differently from what was agreed), not on the developer. Say a thing once, and only when it's new to the person hearing it. Put checks into the docs or the smoke test rather than handing them to the developer to remember. It is collaboration, not a contest of styles: the developer's trust and direction and the AI's caution each have a part, and the project works when neither gets in the way of the other. (Background: `docs/wtf.md`, control.md.)
 
+### The update process
+
+Every change, of any size, follows one indexed process: `docs/codex-standard.md` (the Codex Standard). Start, code checks, tests, docs (an update matrix that says which docs each kind of change touches), consistency, commit and push, pull request, then merge, build and session end. It replaced checklists that had drifted apart across several files, so the docs fell behind the work; with one process, updates happen in the commit that makes the change, every time.
+
 ### Test plans
 
 Every pull request's Test Plan covers each kind of testing the change needs, in one place: automated checks (`tools/check_blended.py`, the smoke test), build testing (the hardware tests for the next Windows build, written before merge), developer testing (hands-on checks and design calls), and user testing where it applies. The Windows build runs only after merge, so the full test list Claude gives the developer for each build is posted verbatim on every merged PR the build carries. The template is `.github/pull_request_template.md`.

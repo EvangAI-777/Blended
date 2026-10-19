@@ -57,7 +57,8 @@ Categories A–D and the build-by-build findings. Read it before triaging.
   commit), add "Open — build N findings" with evidence, root cause and fix commit per finding, add
   Category D rows for crashes, and update the open runtime checks.
 - Update the four mandatory docs (CLAUDE.md current-version line, CHANGELOG findings entry and
-  contributor note, BLENDED.md status, `.github/README.md`), per `.claude/rules/docs.md`.
+  contributor note, BLENDED.md status, `.github/README.md`), per the update matrix in `docs/codex-standard.md`
+  (step 4) and `.claude/rules/docs.md` for placement.
 
 ## 4. Report in chat
 

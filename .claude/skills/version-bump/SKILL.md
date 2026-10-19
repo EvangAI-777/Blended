@@ -5,7 +5,7 @@ description: Bump the Blended version (BLENDED_VERSION_MAJOR/MINOR/PATCH) and up
 
 # Version bump
 
-Moved verbatim from CLAUDE.md "Version Management" in PR #253.
+Moved verbatim from CLAUDE.md "Version Management" in PR #253. A version bump is one row of the update matrix in `docs/codex-standard.md` (step 4); the rest of that process (consistency, commit, PR) applies as for any change.
 
 
 **The single source of truth:** `source/blender/blenkernel/BKE_blender_version.h` — three defines:
